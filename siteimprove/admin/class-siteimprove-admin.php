@@ -121,11 +121,14 @@ class Siteimprove_Admin {
 
 			case 'term.php':
 			case 'edit-tags.php':
-				if ($pagenow == 'term.php' || ($pagenow == 'edit-tags.php' && $_GET['action'] == 'edit')) {
+				if ( $pagenow == 'term.php' || ( $pagenow == 'edit-tags.php' && $_GET['action'] == 'edit' ) ) {
 					$this->siteimprove_add_js( get_term_link( (int) $_GET['tag_ID'], $_GET['taxonomy'] ), 'siteimprove_input' );
 					$this->siteimprove_add_js( get_term_link( (int) $_GET['tag_ID'], $_GET['taxonomy'] ), 'siteimprove_recheck_button' );
 				}
 				break;
+
+			default:
+				$this->siteimprove_add_js( ( isset( $_SERVER['HTTPS'] ) ? "https" : "http" ) . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", 'siteimprove_domain' );
 
 		}
 
@@ -223,8 +226,12 @@ class Siteimprove_Admin {
 				case 'single':
 				case 'category':
 				case 'tag':
+				case 'tax':
 					$this->siteimprove_add_js( get_permalink(), 'siteimprove_input' );
 					break;
+
+				default:
+					$this->siteimprove_add_js((isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", 'siteimprove_domain' );
 			}
 		}
 	}

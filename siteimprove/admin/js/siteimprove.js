@@ -12,6 +12,12 @@
       this.method = 'input';
       this.common();
     },
+    domain: function (url, token) {
+      this.url = url;
+      this.token = token;
+      this.method = 'domain';
+      this.common();
+    },
     recheck: function (url, token) {
       this.url = url;
       this.token = token;
@@ -50,22 +56,27 @@
   $(function () {
 
     // If exist siteimprove_recheck, call recheck Siteimprove method.
-    if (typeof siteimprove_recheck != 'undefined') {
+    if (typeof siteimprove_recheck !== 'undefined') {
       siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token);
     }
 
     // If exist siteimprove_input, call input Siteimprove method.
-    if (typeof siteimprove_input != 'undefined') {
+    if (typeof siteimprove_input !== 'undefined') {
       siteimprove.input(siteimprove_input.url, siteimprove_input.token);
     }
 
-    // If exist siteimprove_recrawl, call input Siteimprove method.
-    if (typeof siteimprove_recrawl != 'undefined') {
+    // If exist siteimprove_domain, call domain Siteimprove method.
+    if (typeof siteimprove_domain !== 'undefined') {
+      siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
+    }
+
+    // If exist siteimprove_recrawl, call recrawl Siteimprove method.
+    if (typeof siteimprove_recrawl !== 'undefined') {
       siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
     }
 
     // If exist siteimprove_recheck_button, create recheck button.
-    if (typeof siteimprove_recheck_button != 'undefined') {
+    if (typeof siteimprove_recheck_button !== 'undefined') {
       siteimprove.events.recheck();
     }
 
