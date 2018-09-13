@@ -97,7 +97,7 @@ class Siteimprove_Admin {
 		$urls = get_transient( 'siteimprove_url_' . get_current_user_id() );
 
 		if ( ! wp_doing_ajax() && ! empty( $urls ) ) {
-			if ( count( $urls ) > 1 ) {
+			if ( is_array( $urls ) && count( $urls ) > 1 ) {
 				$url    = esc_url( home_url() );
 				$method = 'siteimprove_recrawl';
 			} else {
