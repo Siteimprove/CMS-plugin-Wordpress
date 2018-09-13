@@ -1,8 +1,8 @@
 === Siteimprove ===
 Contributors: siteimprove
 Tags: woocommerce, accessibility, analytics, insights, readability, spelling, seo
-Requires at least: 4.0
-Tested up to: 4.7
+Requires at least: 4.7.2
+Tested up to: 4.9.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -38,6 +38,10 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 
 
 == Changelog ==
+
+= 1.1.0 =
+* Avoid PHP warnings/errors when saving posts
+* Properly display Siteimprove button when editing taxonomies
 
 = 1.0 =
 * First public version
