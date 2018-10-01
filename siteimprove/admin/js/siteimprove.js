@@ -40,12 +40,13 @@
                 if ($('#publishing-action').length > 0) {
                     $('<div class="clear"></div><div class="recheck-button-wrapper">' + button + '</div>').insertAfter('#publishing-action');
                 }
-                else {
-                    // insert button for posts
-                    $(button).insertAfter('#submit');
-
-                    // insert button for taxonomies
+                else if ($('.edit-tag-actions').length > 0) {
+                    // Insert button for taxonomies.
                     $(button).appendTo('.edit-tag-actions');
+                }
+                else {
+                    // Insert button for taxonomies (old versions).
+                    $(button).insertAfter('#submit');
                 }
 
                 $('.recheck-button').click(function(){
