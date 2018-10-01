@@ -96,10 +96,8 @@ class Siteimprove_Admin {
 
 		$urls = get_transient( 'siteimprove_url_' . get_current_user_id() );
 
-		if ( $pagenow != 'admin-ajax.php' &&
-		     ! empty( $urls )
-		) {
-			if ( count( $urls ) > 1 ) {
+		if ( ! wp_doing_ajax() && ! empty( $urls ) ) {
+			if ( is_array( $urls ) && count( $urls ) > 1 ) {
 				$url    = esc_url( home_url() );
 				$method = 'siteimprove_recrawl';
 			} else {
@@ -112,20 +110,31 @@ class Siteimprove_Admin {
 
 		switch ( $pagenow ) {
 			case 'post.php':
-				$this->siteimprove_add_js( get_permalink( $_GET['post'] ), 'siteimprove_input' );
-				// Only display recheck button in published posts.
-				if ( get_post_status( $_GET['post'] ) == 'publish' ) {
-					$this->siteimprove_add_js( get_permalink( $_GET['post'] ), 'siteimprove_recheck_button' );
+				$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+				$permalink = get_permalink( $post_id );
+
+				if( $permalink ) {
+					$this->siteimprove_add_js( get_permalink( $post_id ), 'siteimprove_input' );
+					// Only display recheck button in published posts.
+					if ( get_post_status( $post_id ) === 'publish' ) {
+						$this->siteimprove_add_js( get_permalink( $post_id ), 'siteimprove_recheck_button' );
+					}
 				}
 				break;
 
 			case 'term.php':
 			case 'edit-tags.php':
-				if ($pagenow == 'term.php' || ($pagenow == 'edit-tags.php' && $_GET['action'] == 'edit')) {
-					$this->siteimprove_add_js( get_term_link( (int) $_GET['tag_ID'], $_GET['taxonomy'] ), 'siteimprove_input' );
-					$this->siteimprove_add_js( get_term_link( (int) $_GET['tag_ID'], $_GET['taxonomy'] ), 'siteimprove_recheck_button' );
+				$tag_id   = ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
+				$taxonomy = ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
+
+				if ( $pagenow == 'term.php' || ( $pagenow == 'edit-tags.php' && ! empty( $_GET['action'] ) && $_GET['action'] === 'edit' ) ) {
+					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );
+					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_recheck_button' );
 				}
 				break;
+
+			default:
+				$this->siteimprove_add_js( ( isset( $_SERVER['HTTPS'] ) ? "https" : "http" ) . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", 'siteimprove_domain' );
 
 		}
 
@@ -137,7 +146,7 @@ class Siteimprove_Admin {
 	private function siteimprove_add_js( $url, $type, $auto = TRUE, $txt = FALSE ) {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, FALSE );
 		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL, array(), FALSE, TRUE );
-		wp_localize_script( $this->plugin_name, $type, array(
+		wp_localize_script( $this->plugin_name, esc_js( $type ), array(
 			'token' => get_option( 'siteimprove_token' ),
 			'txt'   => __( 'Siteimprove Recheck' ),
 			'url'   => $url,
@@ -223,8 +232,12 @@ class Siteimprove_Admin {
 				case 'single':
 				case 'category':
 				case 'tag':
+				case 'tax':
 					$this->siteimprove_add_js( get_permalink(), 'siteimprove_input' );
 					break;
+
+				default:
+					$this->siteimprove_add_js((isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", 'siteimprove_domain' );
 			}
 		}
 	}
