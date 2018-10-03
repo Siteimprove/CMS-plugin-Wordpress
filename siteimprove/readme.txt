@@ -42,6 +42,7 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 = 1.1.0 =
 * Avoid PHP warnings/errors when saving posts
 * Properly display Siteimprove button when editing taxonomies
+* Send cms version when request siteimprove token.
 
 = 1.0 =
 * First public version

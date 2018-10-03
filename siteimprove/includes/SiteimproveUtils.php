@@ -12,7 +12,7 @@ class SiteimproveUtils {
 	 */
 	static public function requestToken() {
 		// Request new token.
-		$response = wp_remote_get( self::TOKEN_REQUEST_URL, array( 'headers' => array( 'Accept' => 'application/json' ) ) );
+		$response = wp_remote_get( self::TOKEN_REQUEST_URL . '?cms=wordpress_' . get_bloginfo( 'version' ), array( 'headers' => array( 'Accept' => 'application/json' ) ) );
 
 		// Check the response code.
 		$response_code = wp_remote_retrieve_response_code( $response );
