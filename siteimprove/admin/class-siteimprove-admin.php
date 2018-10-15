@@ -144,7 +144,7 @@ class Siteimprove_Admin {
 	 * Include siteimprove js.
 	 */
 	private function siteimprove_add_js( $url, $type, $auto = TRUE, $txt = FALSE ) {
-		wp_enqueue_script( 'siteimprove_js', plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, FALSE );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, FALSE );
 		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL, array(), FALSE, TRUE );
 		wp_localize_script( $this->plugin_name, esc_js( $type ), array(
 			'token' => get_option( 'siteimprove_token' ),
