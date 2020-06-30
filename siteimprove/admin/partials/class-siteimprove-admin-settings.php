@@ -67,8 +67,8 @@ class Siteimprove_Admin_Settings {
 	 */
 	public static function siteimprove_token_field( $args ) { ?>
 
-		<input type="text" id="siteimprove_token_field" name="siteimprove_token" value="<?php print get_option( 'siteimprove_token' ); ?>" maxlength="50" size="50" />
-        <input class="button" id="siteimprove_token_request" type="button" value="<?php print __( 'Request new token', 'siteimprove' ); ?>" />
+		<input type="text" id="siteimprove_token_field" name="siteimprove_token" value="<?php echo esc_attr( get_option( 'siteimprove_token' ) ); ?>" maxlength="50" size="50" />
+        <input class="button" id="siteimprove_token_request" type="button" value="<?php echo esc_attr( __( 'Request new token', 'siteimprove' ) ); ?>" />
 
         <?php
 	}
@@ -111,7 +111,7 @@ class Siteimprove_Admin_Settings {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		echo SiteimproveUtils::requestToken();
+		echo esc_html( SiteimproveUtils::requestToken() );
 		wp_die();
 	}
 
