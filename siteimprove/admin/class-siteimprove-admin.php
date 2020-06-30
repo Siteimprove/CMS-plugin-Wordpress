@@ -134,8 +134,9 @@ class Siteimprove_Admin {
 				break;
 
 			default:
-				$this->siteimprove_add_js( ( isset( $_SERVER['HTTPS'] ) ? "https" : "http" ) . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", 'siteimprove_domain' );
-
+				$host = isset($_SERVER['HTTP_HOST']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_HOST'])) : "";
+				$request = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : "";
+				$this->siteimprove_add_js( $host . $request, 'siteimprove_domain' );
 		}
 
 	}
@@ -237,7 +238,9 @@ class Siteimprove_Admin {
 					break;
 
 				default:
-					$this->siteimprove_add_js((isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]", 'siteimprove_domain' );
+					$host = isset($_SERVER['HTTP_HOST']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_HOST'])) : "";
+					$request = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : "";
+					$this->siteimprove_add_js( $host . $request, 'siteimprove_domain' );
 			}
 		}
 	}
