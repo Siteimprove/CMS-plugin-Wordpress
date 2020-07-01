@@ -17,6 +17,11 @@
  */
 class Siteimprove_Admin_Settings {
 
+	private $siteimprove_nonce;
+	public function request_siteimprove_nonce() {
+		return $this->siteimprove_nonce;
+	}
+
 	/**
 	 * Register section.
 	 */
@@ -40,6 +45,8 @@ class Siteimprove_Admin_Settings {
 			'siteimprove',
 			'siteimprove_token'
 		);
+
+		$this->siteimprove_nonce = wp_create_nonce('siteimprove_nonce');
 	}
 
 	/**
@@ -83,7 +90,7 @@ class Siteimprove_Admin_Settings {
 		}
 
 		// Show success message.
-		if ( isset( $_GET['settings-updated'] ) ) {
+		if ( wp_verify_nonce( $siteimprove_nonce, 'siteimprove_nonce' ) && isset( $_GET['settings-updated'] ) ) {
 			add_settings_error( 'siteimprove_messages', 'siteimprove_message', __( 'Settings Saved', 'siteimprove' ), 'updated' );
 		}
 		settings_errors( 'siteimprove_messages' );

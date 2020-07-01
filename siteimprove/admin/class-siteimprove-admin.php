@@ -110,7 +110,7 @@ class Siteimprove_Admin {
 
 		switch ( $pagenow ) {
 			case 'post.php':
-				$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+				$post_id = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 				$permalink = get_permalink( $post_id );
 
 				if( $permalink ) {
@@ -124,10 +124,10 @@ class Siteimprove_Admin {
 
 			case 'term.php':
 			case 'edit-tags.php':
-				$tag_id   = ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
-				$taxonomy = ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
+				$tag_id   = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
+				$taxonomy = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
 
-				if ( $pagenow == 'term.php' || ( $pagenow == 'edit-tags.php' && ! empty( $_GET['action'] ) && $_GET['action'] === 'edit' ) ) {
+				if ( $pagenow == 'term.php' || ( $pagenow == 'edit-tags.php' && wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['action'] ) && $_GET['action'] === 'edit' ) ) {
 					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );
 					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_recheck_button' );
 				}
