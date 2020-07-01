@@ -39,6 +39,9 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 
 == Changelog ==
 
+= 1.2.0 =
+* Security fixes according to WordPress Coding Standards and PHPCompatibility rulesets
+
 = 1.1.0 =
 * Avoid PHP warnings/errors when saving posts
 * Properly display Siteimprove button when editing taxonomies
