@@ -46,7 +46,7 @@ class Siteimprove_Admin_Settings {
 			'siteimprove_token'
 		);
 
-		$this->siteimprove_nonce = wp_create_nonce('siteimprove_nonce');
+		$this->siteimprove_nonce = wp_create_nonce( 'siteimprove_nonce' );
 	}
 
 	/**
@@ -55,8 +55,8 @@ class Siteimprove_Admin_Settings {
 	public function register_menu() {
 		// Add top level menu page.
 		add_menu_page(
-			__('Siteimprove Plugin'),
-			__('Siteimprove'),
+			__( 'Siteimprove Plugin' ),
+			__( 'Siteimprove' ),
 			'manage_options',
 			'siteimprove',
 			'Siteimprove_Admin_Settings::siteimprove_settings_form'
@@ -75,9 +75,9 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_token_field( $args ) { ?>
 
 		<input type="text" id="siteimprove_token_field" name="siteimprove_token" value="<?php echo esc_attr( get_option( 'siteimprove_token' ) ); ?>" maxlength="50" size="50" />
-        <input class="button" id="siteimprove_token_request" type="button" value="<?php echo esc_attr( __( 'Request new token', 'siteimprove' ) ); ?>" />
+		<input class="button" id="siteimprove_token_request" type="button" value="<?php echo esc_attr( __( 'Request new token', 'siteimprove' ) ); ?>" />
 
-        <?php
+		<?php
 	}
 
 	/**
@@ -90,23 +90,23 @@ class Siteimprove_Admin_Settings {
 		}
 
 		// Show success message.
-		if ( wp_verify_nonce( $siteimprove_nonce, 'siteimprove_nonce' ) && isset( $_GET['settings-updated'] ) ) {
+		if ( filter_input( INPUT_GET, 'settings-updated' ) ) {
 			add_settings_error( 'siteimprove_messages', 'siteimprove_message', __( 'Settings Saved', 'siteimprove' ), 'updated' );
 		}
 		settings_errors( 'siteimprove_messages' );
 		?>
-        <div class="wrap">
-            <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-            <form action="options.php" method="post">
+		<div class="wrap">
+			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+			<form action="options.php" method="post">
 				<?php
 				// Display settings fields.
 				settings_fields( 'siteimprove' );
 				do_settings_sections( 'siteimprove' );
 				// Submit button.
-				submit_button( __('Save Settings') );
+				submit_button( __( 'Save Settings' ) );
 				?>
-            </form>
-        </div>
+			</form>
+		</div>
 		<?php
 	}
 
