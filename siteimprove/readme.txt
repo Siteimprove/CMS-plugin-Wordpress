@@ -39,6 +39,9 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 
 == Changelog ==
 
+= 1.2.1 =
+* Bugfix - added check on nonce variable
+
 = 1.2.0 =
 * Security fixes according to WordPress Coding Standards and PHPCompatibility rulesets
 

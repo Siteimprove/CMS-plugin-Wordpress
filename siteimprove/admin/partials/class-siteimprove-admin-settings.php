@@ -90,7 +90,7 @@ class Siteimprove_Admin_Settings {
 		}
 
 		// Show success message.
-		if ( wp_verify_nonce( $siteimprove_nonce, 'siteimprove_nonce' ) && isset( $_GET['settings-updated'] ) ) {
+		if ( isset( $siteimprove_nonce ) && wp_verify_nonce( $siteimprove_nonce, 'siteimprove_nonce' ) && isset( $_GET['settings-updated'] ) ) {
 			add_settings_error( 'siteimprove_messages', 'siteimprove_message', __( 'Settings Saved', 'siteimprove' ), 'updated' );
 		}
 		settings_errors( 'siteimprove_messages' );
