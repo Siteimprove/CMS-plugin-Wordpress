@@ -36,9 +36,9 @@
         },
         events: {
             recheck: function() {
-                var button = '<input type="button" class="recheck-button button button-large" value="' + siteimprove_recheck_button.txt + '" />';
+                var button = '<input type="button" class="siteimprove_ui recheck-button button button-large" value="' + siteimprove_recheck_button.txt + '" />';
                 if ($('#publishing-action').length > 0) {
-                    $('<div class="clear"></div><div class="recheck-button-wrapper">' + button + '</div>').insertAfter('#publishing-action');
+                    $('<div class="clear"></div><div class="siteimprove_ui recheck-button-wrapper">' + button + '</div>').insertAfter('#publishing-action');
                 }
                 else if ($('.edit-tag-actions').length > 0) {
                     // Insert button for taxonomies.
