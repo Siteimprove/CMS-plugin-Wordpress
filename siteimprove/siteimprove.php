@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * Main Plugin File
+ *
  * @package Siteimprove
  */
 
@@ -8,7 +9,7 @@
  * Plugin Name:         Siteimprove Plugin
  * Plugin URI:          http://siteimprove.com/product/cms-plugin
  * Description:         Integration with Siteimprove.
- * Version:             1.2.1
+ * Version:             1.2.2
  * Author:              Siteimprove
  * Author URI:          http://www.siteimprove.com/
  * Requires at least:   4.7.2
@@ -26,7 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Include SiteimproveUtils class.
  */
-require_once plugin_dir_path( __FILE__ ) . 'includes/SiteimproveUtils.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-siteimproveutils.php';
 
 /**
  * Activation hook.

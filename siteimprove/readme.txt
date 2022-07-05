@@ -2,7 +2,7 @@
 Contributors: siteimprove
 Tags: woocommerce, accessibility, analytics, insights, readability, spelling, seo
 Requires at least: 4.7.2
-Tested up to: 4.9.8
+Tested up to: 6.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -38,6 +38,9 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 
 
 == Changelog ==
+
+= 1.2.2 =
+* Bufgix - added CSS naming prefixes to avoid collision with other plugins
 
 = 1.2.1 =
 * Bugfix - added check on nonce variable
