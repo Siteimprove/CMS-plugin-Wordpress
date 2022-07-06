@@ -160,10 +160,6 @@ class Siteimprove_Admin_Settings {
 			return;
 		}
 
-		// Show success message.
-		if ( empty( get_settings_errors( 'siteimprove_messages' ) ) && isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
-			add_settings_error( 'siteimprove_messages', 'siteimprove_message', __( 'Settings Saved', 'siteimprove' ), 'updated' );
-		}
 		settings_errors( 'siteimprove_messages' );
 		?>
 		<div class="wrap">
@@ -231,6 +227,8 @@ class Siteimprove_Admin_Settings {
 					$result   = self::check_credentials( $username, $key );
 					if ( 'false' === $result['status'] ) {
 						add_settings_error( 'siteimprove_messages', 'siteimprove_api_credentials_error', $result['error'] );
+					} else {
+						add_settings_error( 'siteimprove_messages', 'siteimprove_message', __( 'Settings Saved', 'siteimprove' ), 'updated' );
 					}
 				}
 			}
@@ -286,17 +284,33 @@ class Siteimprove_Admin_Settings {
 			return $return;
 		}
 
-		// @codingStandardsIgnoreStart
 		$request = self::make_api_request( $username, $key, '/sites' );
 
+		// @codingStandardsIgnoreStart
 		if ( isset( $request['response'] ) && 200 === $request['response']['code'] ) {
 			echo '<pre>';
-			var_dump( $request );
-			wp_die();
+			$results       = json_decode( $request['body'] );
+			$account_sites = $results->items;
+
+			$domain     = parse_url( get_site_url(), PHP_URL_HOST );
+			$site_found = false;
+
+			foreach ( $account_sites as $site_key => $site_data ) {
+				if ( false !== strpos( $site_data->url, $domain ) ) {
+					$site_found = true;
+				}
+			}
+
+			if ( true === $site_found ) {
+				$return = array(
+					'status' => 'true',
+				);
+			} else {
+				$return['error'] = __( 'Current Website not found within the API credentials provided, please check if you\'re using the correct credentials', 'siteimprove' );
+			}
 		} else {
 			$return['error'] = __( 'Unable to check website domain. Please try again later', 'siteimprove' );
 		}
-
 		// @codingStandardsIgnoreEnd
 
 		return $return;
