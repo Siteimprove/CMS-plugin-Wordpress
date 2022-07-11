@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -35,6 +34,8 @@ class Siteimprove_Admin {
 	private $version;
 
 	/**
+	 * Instance of Siteimprove_Admin_Settings class used inside the Admin class to load dependencies
+	 *
 	 * @var Siteimprove_Admin_Settings
 	 */
 	private $settings;
@@ -85,7 +86,7 @@ class Siteimprove_Admin {
 	 * Register the JavaScript for the admin area.
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'siteimprove_admin_js', plugin_dir_url( __FILE__ ) . 'js/siteimprove-admin.js', array( 'jquery' ), $this->version, FALSE );
+		wp_enqueue_script( 'siteimprove_admin_js', plugin_dir_url( __FILE__ ) . 'js/siteimprove-admin.js', array( 'jquery' ), $this->version, false );
 	}
 
 	/**
@@ -110,10 +111,10 @@ class Siteimprove_Admin {
 
 		switch ( $pagenow ) {
 			case 'post.php':
-				$post_id = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+				$post_id   = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 				$permalink = get_permalink( $post_id );
 
-				if( $permalink ) {
+				if ( $permalink ) {
 					$this->siteimprove_add_js( get_permalink( $post_id ), 'siteimprove_input' );
 					// Only display recheck button in published posts.
 					if ( get_post_status( $post_id ) === 'publish' ) {
@@ -127,15 +128,15 @@ class Siteimprove_Admin {
 				$tag_id   = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
 				$taxonomy = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
 
-				if ( $pagenow == 'term.php' || ( $pagenow == 'edit-tags.php' && wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['action'] ) && $_GET['action'] === 'edit' ) ) {
+				if ( 'term.php' === $pagenow || ( 'edit-tags.php' === $pagenow && wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['action'] ) && 'edit' === $_GET['action'] ) ) {
 					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );
 					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_recheck_button' );
 				}
 				break;
 
 			default:
-				$host = isset($_SERVER['HTTP_HOST']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_HOST'])) : "";
-				$request = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : "";
+				$host    = isset( $_SERVER['HTTP_HOST'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
+				$request = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 				$this->siteimprove_add_js( $host . $request, 'siteimprove_domain' );
 		}
 
@@ -143,15 +144,23 @@ class Siteimprove_Admin {
 
 	/**
 	 * Include siteimprove js.
+	 *
+	 * @param string $url Url of the included js file.
+	 * @param string $type Type/Handle of resource being included to localize the script correctly.
+	 * @return void
 	 */
-	private function siteimprove_add_js( $url, $type, $auto = TRUE, $txt = FALSE ) {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, FALSE );
-		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL, array(), FALSE, TRUE );
-		wp_localize_script( $this->plugin_name, esc_js( $type ), array(
-			'token' => get_option( 'siteimprove_token' ),
-			'txt'   => __( 'Siteimprove Recheck' ),
-			'url'   => $url,
-		) );
+	private function siteimprove_add_js( $url, $type ) {
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL, array(), $this->version, true );
+		wp_localize_script(
+			$this->plugin_name,
+			esc_js( $type ),
+			array(
+				'token' => get_option( 'siteimprove_token' ),
+				'txt'   => __( 'Siteimprove Recheck' ),
+				'url'   => $url,
+			)
+		);
 	}
 
 	/**
@@ -177,6 +186,9 @@ class Siteimprove_Admin {
 
 	/**
 	 * Save in session post url.
+	 *
+	 * @param integer $post_ID WordPress Post ID.
+	 * @return void
 	 */
 	public function siteimprove_save_session_url_post( $post_ID ) {
 		if ( ! wp_is_post_revision( $post_ID ) && ! wp_is_post_autosave( $post_ID ) ) {
@@ -188,6 +200,11 @@ class Siteimprove_Admin {
 
 	/**
 	 * Save in session term url.
+	 *
+	 * @param integer $term_id WordPress Term ID.
+	 * @param mixed   $tt_id WordPress parameter added for hook compatibility.
+	 * @param mixed   $taxonomy WordPress taxonomy.
+	 * @return void
 	 */
 	public function siteimprove_save_session_url_term( $term_id, $tt_id, $taxonomy ) {
 		$urls   = get_transient( 'siteimprove_url_' . get_current_user_id() );
@@ -197,13 +214,20 @@ class Siteimprove_Admin {
 
 	/**
 	 * Save in session product url.
+	 *
+	 * @param string $new_status WordPress post status.
+	 * @param string $old_status WordPress post status.
+	 * @param object $post WordPress Post Object.
+	 * @return void
 	 */
 	public function siteimprove_save_session_url_product( $new_status, $old_status, $post ) {
 		if (
-			$new_status == 'publish'
+			'publish' === $new_status
 			&& ! empty( $post->ID )
-			&& in_array( $post->post_type,
-				array( 'product' )
+			&& in_array(
+				$post->post_type,
+				array( 'product' ),
+				true
 			)
 		) {
 			$urls   = get_transient( 'siteimprove_url_' . get_current_user_id() );
@@ -223,7 +247,7 @@ class Siteimprove_Admin {
 			'contributor',
 			'author',
 			'editor',
-			'administrator'
+			'administrator',
 		);
 
 		if ( array_intersect( $allowed_roles, $user->roles ) ) {
@@ -238,8 +262,8 @@ class Siteimprove_Admin {
 					break;
 
 				default:
-					$host = isset($_SERVER['HTTP_HOST']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_HOST'])) : "";
-					$request = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : "";
+					$host    = isset( $_SERVER['HTTP_HOST'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
+					$request = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 					$this->siteimprove_add_js( $host . $request, 'siteimprove_domain' );
 			}
 		}
@@ -283,6 +307,33 @@ class Siteimprove_Admin {
 		}
 
 		return $loop;
+	}
+
+	/**
+	 * Adds the prepublish menu item on the top bar when user is
+	 * in preview mode so he can send the content to prepublish.
+	 *
+	 * @param WP_Admin_Bar $admin_bar WordPress Admin Bar Object.
+	 * @return void
+	 */
+	public function add_prepublish_toolbar_item( WP_Admin_Bar $admin_bar ) {
+		global $pagenow;
+
+		if ( is_preview() ) {
+			$admin_bar->add_menu(
+				array(
+					'id'     => 'siteimprove-trigger-contentcheck',
+					'title'  => 'Siteimprove Prepublish',
+					'parent' => 'top-secondary',
+					'group'  => null,
+					'href'   => '#',
+					'meta'   => array(
+						'title' => __( 'Siteimprove Prepublish', 'siteimprove' ),
+						'class' => 'siteimprove-trigger-contentcheck',
+					),
+				)
+			);
+		}
 	}
 
 }

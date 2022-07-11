@@ -130,34 +130,34 @@ class Siteimprove_Admin_Settings {
 					if ( 0 === $prepublish_enabled ) :
 						?>
 							<p>
-							<?php
-							echo wp_kses(
-								__( 'To enable prepublish for this website click <a href="#" id="siteimprove-recheck" class="button button-primary">here</a>', 'siteimprove' ),
-								array(
-									'a' => array(
-										'href'  => array(),
-										'id'    => array(),
-										'class' => array(),
-									),
-								)
-							);
-							?>
-							</p>
-						<?php
-					else :
-						?>
-						<p>
 						<?php
 						echo wp_kses(
-							__( 'Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel', 'siteimprove' ),
+							__( 'To enable prepublish for this website click <a href="#" id="siteimprove-recheck" class="button button-primary">here</a>', 'siteimprove' ),
 							array(
-								'strong' => array(),
+								'a' => array(
+									'href'  => array(),
+									'id'    => array(),
+									'class' => array(),
+								),
 							)
 						);
 						?>
+							</p>
+							<?php
+						else :
+							?>
+						<p>
+							<?php
+							echo wp_kses(
+								__( 'Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel', 'siteimprove' ),
+								array(
+									'strong' => array(),
+								)
+							);
+							?>
 						</p>
-						<?php
-					endif;
+							<?php
+						endif;
 				} else {
 					?>
 					<p>
@@ -233,16 +233,16 @@ class Siteimprove_Admin_Settings {
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<form action="options.php" method="post">
-				<?php
-				// Display settings fields.
-				settings_fields( 'siteimprove' );
-				do_settings_sections( 'siteimprove' );
-				// Submit button.
-				submit_button( __( 'Save Settings', 'siteimprove' ) );
-				?>
+			<?php
+			// Display settings fields.
+			settings_fields( 'siteimprove' );
+			do_settings_sections( 'siteimprove' );
+			// Submit button.
+			submit_button( __( 'Save Settings', 'siteimprove' ) );
+			?>
 			</form>
 		</div>
-		<?php
+			<?php
 	}
 
 	/**
@@ -287,8 +287,8 @@ class Siteimprove_Admin_Settings {
 				and also if the keys correspond to the current website
 				*/
 				if (
-					isset( $_POST['siteimprove_api_username'], $_POST['siteimprove_api_key'], $_REQUEST['_wpnonce'] )
-					&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
+				isset( $_POST['siteimprove_api_username'], $_POST['siteimprove_api_key'], $_REQUEST['_wpnonce'] )
+				&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
 				) {
 					$username = sanitize_text_field( wp_unslash( $_POST['siteimprove_api_username'] ) );
 					$key      = sanitize_text_field( wp_unslash( $_POST['siteimprove_api_key'] ) );
@@ -408,7 +408,7 @@ class Siteimprove_Admin_Settings {
 
 			/*
 			Now we'll try to see if the prepublish feature is already enabled.
-			If not, then we can	show the user a button so he can enable it himself.
+			If not, then we can show the user a button so he can enable it himself.
 			*/
 			$results = json_decode( $request['body'] );
 			if ( isset( $results->is_ready ) && true === $results->is_ready ) {

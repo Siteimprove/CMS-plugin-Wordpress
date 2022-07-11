@@ -30,9 +30,20 @@
             this.method = 'recrawl';
             this.common();
         },
+        contentcheck: function(domContent, url, token) {
+            this.url = url;
+            this.token = token;
+            this.domContent = domContent;
+            this.method = 'contentcheck';
+            this.common();
+        },
         common: function () {
             var _si = window._si || [];
-            _si.push([this.method, this.url, this.token]);
+            if (this.method == 'contentcheck-flat-dom' || this.method == 'contentcheck') {
+                _si.push([this.method, this.domContent, this.url, this.token]);
+            } else {
+                _si.push([this.method, this.url, this.token]);
+            }
         },
         events: {
             recheck: function() {
@@ -84,6 +95,11 @@
         if (typeof siteimprove_recheck_button !== 'undefined') {
             siteimprove.events.recheck();
         }
+
+        $('.siteimprove-trigger-contentcheck').find('a').on('click', function(evt) {
+            evt.preventDefault();
+            siteimprove.contentcheck($('html')[0].outerHTML, window.location.href, siteimprove_input.token);
+        });
 
     });
 
