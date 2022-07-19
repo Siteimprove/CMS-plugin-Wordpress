@@ -83,6 +83,19 @@ class Siteimprove_Admin {
 	}
 
 	/**
+	 * Register the stylesheets for the preview area.
+	 */
+	public function enqueue_preview_styles() {
+		global $wp_query;
+		$prepublish_allowed = intval( get_option( 'siteimprove_prepublish_allowed', 0 ) );
+		$prepublish_enabled = intval( get_option( 'siteimprove_prepublish_enabled', 0 ) );
+
+		if ( $wp_query->is_preview() && 1 === $prepublish_allowed && 1 === $prepublish_enabled ) {
+			wp_enqueue_style( 'siteimprove_preview_css', plugin_dir_url( __FILE__ ) . 'css/siteimprove-preview.css', array(), $this->version, 'all' );
+		}
+	}
+
+	/**
 	 * Register the JavaScript for the admin area.
 	 */
 	public function enqueue_scripts() {
@@ -157,8 +170,20 @@ class Siteimprove_Admin {
 			esc_js( $type ),
 			array(
 				'token' => get_option( 'siteimprove_token' ),
-				'txt'   => __( 'Siteimprove Recheck' ),
+				'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
 				'url'   => $url,
+			)
+		);
+
+		// Adding translation strings.
+		wp_localize_script(
+			$this->plugin_name,
+			'siteimprove_plugin_text',
+			array(
+				'loading'                     => __( 'Loading... Please wait.', 'siteimprove' ),
+				'prepublish_activate_running' => __( 'We are now activating prepublish for your website... Please keep the current page open while the process is running.', 'siteimprove' ),
+				'prepublish_feature_ready'    => __( 'Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel.', 'siteimprove' ),
+				'prepublish_activation_error' => __( 'Error activating prepublish. Please contact support team.', 'siteimprove' ),
 			)
 		);
 	}
@@ -183,6 +208,25 @@ class Siteimprove_Admin {
 	public function siteimprove_request_token() {
 		$this->settings->request_token();
 	}
+
+	/**
+	 * Register action for prepublish feature check after manual activation on the admin panel side
+	 *
+	 * @return void
+	 */
+	public function siteimprove_check_prepublish_activation() {
+		$this->settings->check_prepublish_activation();
+	}
+
+	/**
+	 * Register action for prepublish feature manual activation made on the admin panel side
+	 *
+	 * @return void
+	 */
+	public function siteimprove_prepublish_manual_activation() {
+		$this->settings->prepublish_manual_activation();
+	}
+
 
 	/**
 	 * Save in session post url.
@@ -318,12 +362,15 @@ class Siteimprove_Admin {
 	 */
 	public function add_prepublish_toolbar_item( WP_Admin_Bar $admin_bar ) {
 		global $pagenow;
+		$prepublish_allowed = intval( get_option( 'siteimprove_prepublish_allowed', 0 ) );
+		$prepublish_enabled = intval( get_option( 'siteimprove_prepublish_enabled', 0 ) );
 
-		if ( is_preview() ) {
+		if ( is_preview() && 1 === $prepublish_allowed && 1 === $prepublish_enabled ) {
+			$prepublish_button = '<svg xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" viewBox="0 0 80 80"><path d="M40 0C18 0 0 18 0 40.1 0 62.1 18 80 40 80 62 80 80 62.1 80 40.1 80 18 62.1 0 40 0Zm0 67C25.2 67 13.1 54.9 13.1 40.1 13.1 25.2 25.2 13.2 40 13.2c14.4 0 26.2 11.4 26.9 25.6-16.7 12-30.5-10.9-46.5-2.6 18.7-5.6 25.1 22.3 43.7 16C59.6 60.9 50.5 67 40 67Z" fill="#F0F6FC" fill-opacity="0.6"/></svg>';
 			$admin_bar->add_menu(
 				array(
 					'id'     => 'siteimprove-trigger-contentcheck',
-					'title'  => 'Siteimprove Prepublish',
+					'title'  => $prepublish_button,
 					'parent' => 'top-secondary',
 					'group'  => null,
 					'href'   => '#',

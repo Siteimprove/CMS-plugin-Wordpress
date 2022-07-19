@@ -98,7 +98,12 @@
 
         $('.siteimprove-trigger-contentcheck').find('a').on('click', function(evt) {
             evt.preventDefault();
-            siteimprove.contentcheck($('html')[0].outerHTML, window.location.href, siteimprove_input.token);
+            if (typeof siteimprove_input.url !== 'undefined') {
+                var url = siteimprove_input.url;
+            } else {
+                var url = window.location.href;
+            }
+            siteimprove.contentcheck($('html')[0].outerHTML, url, siteimprove_input.token);
         });
 
     });

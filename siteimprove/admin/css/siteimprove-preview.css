@@ -1,0 +1,6 @@
+#wpadminbar .siteimprove-trigger-contentcheck a svg {
+  max-height: 20px;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

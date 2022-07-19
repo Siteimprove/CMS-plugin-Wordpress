@@ -129,10 +129,10 @@ class Siteimprove_Admin_Settings {
 					<?php
 					if ( 0 === $prepublish_enabled ) :
 						?>
-							<p>
+							<p class="siteimprove_prepublish_activation_messages">
 						<?php
 						echo wp_kses(
-							__( 'To enable prepublish for this website click <a href="#" id="siteimprove-recheck" class="button button-primary">here</a>', 'siteimprove' ),
+							__( 'To enable prepublish for this website click <a href="#" id="siteimprove_enable_prepublish" class="button button-primary">here</a>', 'siteimprove' ),
 							array(
 								'a' => array(
 									'href'  => array(),
@@ -313,10 +313,12 @@ class Siteimprove_Admin_Settings {
 	 * @param string $key API Key.
 	 * @param string $path endpoint on the API.
 	 * @param array  $args optional arguments to be sent on the request.
+	 * @param string $alternate_url Optional url to use on API requests to the Siteimprove platform.
+	 * @param string $method Optional, defaults to get. Accepted methods are 'post' and 'get'.
 	 *
 	 * @return object Results of the API call.
 	 */
-	public static function make_api_request( $username, $key, $path, $args = array() ) {
+	public static function make_api_request( $username, $key, $path, $args = array(), $alternate_url = '', $method = 'get' ) {
 		$params = array(
 			'httpversion' => '1.1',
 			'blocking'    => true,
@@ -327,10 +329,19 @@ class Siteimprove_Admin_Settings {
 		);
 		array_merge( $params, $args );
 
-		$request = wp_remote_get(
-			self::SITEIMPROVE_API_URL . $path,
-			$params
-		);
+		$url = ( ! empty( $alternate_url ) ) ? $alternate_url : self::SITEIMPROVE_API_URL;
+
+		if ( 'get' === $method ) {
+			$request = wp_remote_get(
+				$url . $path,
+				$params
+			);
+		} else {
+			$request = wp_remote_post(
+				$url . $path,
+				$params
+			);
+		}
 		return $request;
 	}
 	/**
@@ -417,6 +428,55 @@ class Siteimprove_Admin_Settings {
 				update_option( 'siteimprove_prepublish_enabled', 0 );
 			}
 		}
+	}
+
+	/**
+	 * Check against the API endpoint if the user has the prepublish (AKA contentcheck) available but not enabled yet.
+	 *
+	 * @return void
+	 */
+	public function prepublish_manual_activation() {
+		$siteimprove_api_username = get_option( 'siteimprove_api_username', '' );
+		$siteimprove_api_key      = get_option( 'siteimprove_api_key', '' );
+
+		$return = array(
+			'message' => 'activation_triggered',
+			'result'  => true,
+		);
+
+		$request = self::make_api_request( $siteimprove_api_username, $siteimprove_api_key, '/settings/content_checking', array(), '', 'post' );
+		$results = json_decode( $request['body'] );
+		if ( 400 === $request['response']['code'] ) {
+			$return['result'] = false;
+		} elseif ( '' !== $results ) {
+			$return['result'] = false;
+		}
+		wp_send_json( $return );
+		wp_die();
+	}
+
+	/**
+	 * Check against the API endpoint if the user has the prepublish (AKA contentcheck) available but not enabled yet.
+	 *
+	 * @return void
+	 */
+	public function check_prepublish_activation() {
+		$siteimprove_api_username = get_option( 'siteimprove_api_username', '' );
+		$siteimprove_api_key      = get_option( 'siteimprove_api_key', '' );
+
+		$return = array(
+			'message' => 'enabled',
+			'result'  => false,
+		);
+
+		$request = self::make_api_request( $siteimprove_api_username, $siteimprove_api_key, '/settings/1/content_checking', array(), 'https://62d036b4d9bf9f170585ca47.mockapi.io/api/v1' );
+		$results = json_decode( $request['body'] );
+		if ( isset( $results->is_ready ) && true === $results->is_ready ) {
+			update_option( 'siteimprove_prepublish_enabled', 1 );
+			$return['result'] = true;
+		}
+		wp_send_json( $return );
+		wp_die();
 	}
 
 	/**
