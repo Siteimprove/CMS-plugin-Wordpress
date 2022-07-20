@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -140,6 +139,7 @@ class Siteimprove {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_settings' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'siteimprove_settings_page' );
 		$this->loader->add_action( 'wp_ajax_siteimprove_request_token', $plugin_admin, 'siteimprove_request_token' );
+		$this->loader->add_action( 'siteimprove_before_settings_form', $plugin_admin, 'siteimprove_before_settings_form' );
 
 		// Siteimprove Actions.
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_init' );

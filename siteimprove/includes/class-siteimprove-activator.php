@@ -22,7 +22,7 @@ class Siteimprove_Activator {
 	 */
 	public static function activate() {
 		// Request new token.
-		if ( $token = SiteimproveUtils::requestToken() ) {
+		if ( $token = SiteimproveUtils::request_token() ) {
 			add_option( 'siteimprove_token', $token );
 		}
 	}

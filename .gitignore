@@ -1,6 +1,7 @@
 # OS generated files #
 ######################
 
+.vscode
 .DS_Store*
 ehthumbs.db
 ._*

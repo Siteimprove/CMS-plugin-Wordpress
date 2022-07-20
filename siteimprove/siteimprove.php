@@ -1,6 +1,7 @@
 <?php
-
 /**
+ * Main Plugin File
+ *
  * @package Siteimprove
  */
 
@@ -26,7 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Include SiteimproveUtils class.
  */
-require_once plugin_dir_path( __FILE__ ) . 'includes/SiteimproveUtils.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-siteimproveutils.php';
 
 /**
  * Activation hook.
