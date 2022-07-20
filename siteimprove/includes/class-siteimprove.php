@@ -60,7 +60,7 @@ class Siteimprove {
 	public function __construct() {
 
 		$this->plugin_name = 'siteimprove';
-		$this->version     = '1.0.0';
+		$this->version     = '1.3.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -152,7 +152,7 @@ class Siteimprove {
 		$this->loader->add_action( 'create_term', $plugin_admin, 'siteimprove_save_session_url_term', 10, 3 );
 		$this->loader->add_action( 'transition_post_status', $plugin_admin, 'siteimprove_save_session_url_product', 10, 3 );
 		$this->loader->add_action( 'wp_head', $plugin_admin, 'siteimprove_wp_head' );
-		$this->loader->add_action( 'admin_bar_menu', $plugin_admin, 'add_prepublish_toolbar_item', 10, 1 );
+		$this->loader->add_action( 'admin_bar_menu', $plugin_admin, 'add_prepublish_toolbar_item', 500, 1 );
 	}
 
 	/**

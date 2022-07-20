@@ -369,12 +369,11 @@ class Siteimprove_Admin {
 			$prepublish_button = '<svg xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" viewBox="0 0 80 80"><path d="M40 0C18 0 0 18 0 40.1 0 62.1 18 80 40 80 62 80 80 62.1 80 40.1 80 18 62.1 0 40 0Zm0 67C25.2 67 13.1 54.9 13.1 40.1 13.1 25.2 25.2 13.2 40 13.2c14.4 0 26.2 11.4 26.9 25.6-16.7 12-30.5-10.9-46.5-2.6 18.7-5.6 25.1 22.3 43.7 16C59.6 60.9 50.5 67 40 67Z" fill="#F0F6FC" fill-opacity="0.6"/></svg>';
 			$admin_bar->add_menu(
 				array(
-					'id'     => 'siteimprove-trigger-contentcheck',
-					'title'  => $prepublish_button,
-					'parent' => 'top-secondary',
-					'group'  => null,
-					'href'   => '#',
-					'meta'   => array(
+					'id'    => 'siteimprove-trigger-contentcheck',
+					'title' => $prepublish_button . __( 'Prepublish', 'siteimprove' ),
+					'group' => null,
+					'href'  => '#',
+					'meta'  => array(
 						'title' => __( 'Siteimprove Prepublish', 'siteimprove' ),
 						'class' => 'siteimprove-trigger-contentcheck',
 					),

@@ -30,17 +30,18 @@
             this.method = 'recrawl';
             this.common();
         },
-        contentcheck: function(domContent, url, token) {
+        contentcheck: function(domContent, url, token, callback) {
             this.url = url;
             this.token = token;
             this.domContent = domContent;
             this.method = 'contentcheck';
+            this.callback = callback;
             this.common();
         },
         common: function () {
             var _si = window._si || [];
             if (this.method == 'contentcheck-flat-dom' || this.method == 'contentcheck') {
-                _si.push([this.method, this.domContent, this.url, this.token]);
+                _si.push([this.method, this.domContent, this.url, this.token, this.callback]);
             } else {
                 _si.push([this.method, this.url, this.token]);
             }
@@ -98,12 +99,15 @@
 
         $('.siteimprove-trigger-contentcheck').find('a').on('click', function(evt) {
             evt.preventDefault();
+            $("body").append('<div class="si-overlay"></div>');
             if (typeof siteimprove_input.url !== 'undefined') {
                 var url = siteimprove_input.url;
             } else {
                 var url = window.location.href;
             }
-            siteimprove.contentcheck($('html')[0].outerHTML, url, siteimprove_input.token);
+            siteimprove.contentcheck($('html')[0].outerHTML, url, siteimprove_input.token, function() {
+                $( ".si-overlay" ).remove();
+            });
         });
 
     });

@@ -9,7 +9,7 @@
  * Plugin Name:         Siteimprove Plugin
  * Plugin URI:          http://siteimprove.com/product/cms-plugin
  * Description:         Integration with Siteimprove.
- * Version:             1.2.2
+ * Version:             1.3.0
  * Author:              Siteimprove
  * Author URI:          http://www.siteimprove.com/
  * Requires at least:   4.7.2

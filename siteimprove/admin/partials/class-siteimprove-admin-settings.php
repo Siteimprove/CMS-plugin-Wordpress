@@ -107,7 +107,8 @@ class Siteimprove_Admin_Settings {
 			__( 'Siteimprove' ),
 			'manage_options',
 			'siteimprove',
-			'Siteimprove_Admin_Settings::siteimprove_settings_form'
+			'Siteimprove_Admin_Settings::siteimprove_settings_form',
+			plugins_url( 'siteimprove/admin/img/si-icon.svg' ),
 		);
 	}
 
@@ -272,11 +273,12 @@ class Siteimprove_Admin_Settings {
 	 * @return string
 	 */
 	public static function validate_api_key( $value ) {
+		$old_value = get_option( 'siteimprove_api_key' );
+
 		if ( ! empty( $value ) ) {
 			// new API key inserted, let's check if it's a valid one.
 			if ( ! preg_match( '/^[a-zA-Z0-9]{32}$/', $value ) ) {
 				add_settings_error( 'siteimprove_messages', 'siteimprove_api_key_error', __( 'Invalid format for API Key field', 'siteimprove' ) );
-				$old_value = get_option( 'siteimprove_api_key' );
 				if ( ! empty( $old_value ) ) {
 					return $old_value;
 				}
@@ -295,6 +297,9 @@ class Siteimprove_Admin_Settings {
 					$result   = self::check_credentials( $username, $key );
 					if ( 'false' === $result['status'] ) {
 						add_settings_error( 'siteimprove_messages', 'siteimprove_api_credentials_error', $result['error'] );
+						if ( ! empty( $old_value ) ) {
+							return $old_value;
+						}
 					} else {
 						add_settings_error( 'siteimprove_messages', 'siteimprove_message', __( 'Settings Saved', 'siteimprove' ), 'updated' );
 						// check if user has the prepublish feature (AKA contentcheck) enabled.
