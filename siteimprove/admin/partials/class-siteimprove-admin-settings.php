@@ -474,7 +474,7 @@ class Siteimprove_Admin_Settings {
 			'result'  => false,
 		);
 
-		$request = self::make_api_request( $siteimprove_api_username, $siteimprove_api_key, '/settings/1/content_checking', array(), 'https://62d036b4d9bf9f170585ca47.mockapi.io/api/v1' );
+		$request = self::make_api_request( $siteimprove_api_username, $siteimprove_api_key, '/settings/content_checking', array() );
 		$results = json_decode( $request['body'] );
 		if ( isset( $results->is_ready ) && true === $results->is_ready ) {
 			update_option( 'siteimprove_prepublish_enabled', 1 );

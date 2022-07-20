@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Siteimprove Plugin 1.0.0\n"
-"POT-Creation-Date: 2022-07-13 15:03-0300\n"
+"POT-Creation-Date: 2022-07-20 15:40-0300\n"
 "PO-Revision-Date: 2017-02-20 08:48+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,11 +17,32 @@ msgstr ""
 "X-Poedit-SearchPath-0: languages\n"
 "X-Poedit-SearchPath-1: .\n"
 
-#: admin/class-siteimprove-admin.php:160
+#: admin/class-siteimprove-admin.php:173
 msgid "Siteimprove Recheck"
 msgstr ""
 
-#: admin/class-siteimprove-admin.php:331
+#: admin/class-siteimprove-admin.php:183
+msgid "Loading... Please wait."
+msgstr ""
+
+#: admin/class-siteimprove-admin.php:184
+msgid "We are now activating prepublish for your website... Please keep the current page open while the process is running."
+msgstr ""
+
+#: admin/class-siteimprove-admin.php:185
+msgid "Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel."
+msgstr ""
+
+#: admin/class-siteimprove-admin.php:186
+msgid "Error activating prepublish. Please contact support team."
+msgstr ""
+
+#: admin/class-siteimprove-admin.php:373
+#: admin/partials/class-siteimprove-admin-settings.php:92
+msgid "Prepublish"
+msgstr ""
+
+#: admin/class-siteimprove-admin.php:377
 msgid "Siteimprove Prepublish"
 msgstr ""
 
@@ -42,10 +63,6 @@ msgstr ""
 msgid "API Key"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:92
-msgid "Prepublish"
-msgstr ""
-
 #: admin/partials/class-siteimprove-admin-settings.php:106
 msgid "Siteimprove Plugin"
 msgstr ""
@@ -54,46 +71,46 @@ msgstr ""
 msgid "Siteimprove"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:135
-msgid "To enable prepublish for this website click <a href=\"#\" id=\"siteimprove-recheck\" class=\"button button-primary\">here</a>"
+#: admin/partials/class-siteimprove-admin-settings.php:136
+msgid "To enable prepublish for this website click <a href=\"#\" id=\"siteimprove_enable_prepublish\" class=\"button button-primary\">here</a>"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:152
+#: admin/partials/class-siteimprove-admin-settings.php:153
 msgid "Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:192
+#: admin/partials/class-siteimprove-admin-settings.php:193
 msgid "Request new token"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:241
+#: admin/partials/class-siteimprove-admin-settings.php:242
 msgid "Save Settings"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:258
+#: admin/partials/class-siteimprove-admin-settings.php:259
 msgid "API Username must be a valid email"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:278
+#: admin/partials/class-siteimprove-admin-settings.php:281
 msgid "Invalid format for API Key field"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:299
+#: admin/partials/class-siteimprove-admin-settings.php:304
 msgid "Settings Saved"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:346
+#: admin/partials/class-siteimprove-admin-settings.php:362
 msgid "Unable to check API Credentials, please try again"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:353
+#: admin/partials/class-siteimprove-admin-settings.php:369
 msgid "Wrong API Credentials, API access denied. Please fix the credentials and try again"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:377
+#: admin/partials/class-siteimprove-admin-settings.php:393
 msgid "Current domain/website not found for the provided credentials"
 msgstr ""
 
-#: admin/partials/class-siteimprove-admin-settings.php:380
+#: admin/partials/class-siteimprove-admin-settings.php:396
 msgid "Unable to check website domain. Please try again later"
 msgstr ""
