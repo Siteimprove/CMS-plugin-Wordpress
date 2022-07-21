@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -19,7 +18,7 @@
  * @package    Siteimprove
  * @subpackage Siteimprove/includes
  */
-class Siteimprove_i18n {
+class Siteimprove_I18n {
 
 
 	/**
@@ -29,7 +28,7 @@ class Siteimprove_i18n {
 
 		load_plugin_textdomain(
 			'siteimprove',
-			FALSE,
+			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
 

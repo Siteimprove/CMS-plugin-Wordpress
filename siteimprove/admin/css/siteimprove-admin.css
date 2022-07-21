@@ -3,19 +3,23 @@
  * Contains the Siteimprove Plugin css styles.
  */
 .siteimprove_admin_spinner.no-float {
-    float: none;
-    vertical-align: top;
+	float: none;
+	vertical-align: top;
 }
 .siteimprove_ui.recheck-button-wrapper {
-    border-top: 1px solid #DDD;
-    clear: both;
-    margin-top: 1em;
-    padding-top: 1em;
+	border-top: 1px solid #DDD;
+	clear: both;
+	margin-top: 1em;
+	padding-top: 1em;
 }
 .siteimprove_ui.recheck-button-wrapper input {
-    width: 100%;
+	width: 100%;
 }
 #edittag .submit .button-primary {
-    margin-bottom: 1em;
-    margin-right: 1em;
+	margin-bottom: 1em;
+	margin-right: 1em;
+}
+
+#adminmenu li.toplevel_page_siteimprove .wp-menu-image img {
+	padding: 6px 0 0;
 }

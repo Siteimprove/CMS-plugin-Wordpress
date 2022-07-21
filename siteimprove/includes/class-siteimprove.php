@@ -60,7 +60,7 @@ class Siteimprove {
 	public function __construct() {
 
 		$this->plugin_name = 'siteimprove';
-		$this->version     = '1.0.0';
+		$this->version     = '1.3.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -74,7 +74,7 @@ class Siteimprove {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Siteimprove_Loader. Orchestrates the hooks of the plugin.
-	 * - Siteimprove_i18n. Defines internationalization functionality.
+	 * - Siteimprove_I18n. Defines internationalization functionality.
 	 * - Siteimprove_Admin. Defines all hooks for the admin area.
 	 * - Siteimprove_Public. Defines all hooks for the public side of the site.
 	 *
@@ -109,14 +109,14 @@ class Siteimprove {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Siteimprove_i18n class in order to set the domain and to register the hook
+	 * Uses the Siteimprove_I18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @access   private
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Siteimprove_i18n();
+		$plugin_i18n = new Siteimprove_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -133,12 +133,15 @@ class Siteimprove {
 		$plugin_admin = new Siteimprove_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_preview_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		// Settings form.
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_settings' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'siteimprove_settings_page' );
 		$this->loader->add_action( 'wp_ajax_siteimprove_request_token', $plugin_admin, 'siteimprove_request_token' );
+		$this->loader->add_action( 'wp_ajax_siteimprove_prepublish_activation', $plugin_admin, 'siteimprove_prepublish_manual_activation' );
+		$this->loader->add_action( 'wp_ajax_siteimprove_check_prepublish_activation', $plugin_admin, 'siteimprove_check_prepublish_activation' );
 		$this->loader->add_action( 'siteimprove_before_settings_form', $plugin_admin, 'siteimprove_before_settings_form' );
 
 		// Siteimprove Actions.
@@ -149,6 +152,7 @@ class Siteimprove {
 		$this->loader->add_action( 'create_term', $plugin_admin, 'siteimprove_save_session_url_term', 10, 3 );
 		$this->loader->add_action( 'transition_post_status', $plugin_admin, 'siteimprove_save_session_url_product', 10, 3 );
 		$this->loader->add_action( 'wp_head', $plugin_admin, 'siteimprove_wp_head' );
+		$this->loader->add_action( 'admin_bar_menu', $plugin_admin, 'add_prepublish_toolbar_item', 500, 1 );
 	}
 
 	/**

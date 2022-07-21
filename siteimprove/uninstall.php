@@ -1,6 +1,10 @@
 <?php
+/**
+ * If this file is called directly, abort.
+ *
+ * @package Siteimprove
+ */
 
-// If this file is called directly, abort.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }

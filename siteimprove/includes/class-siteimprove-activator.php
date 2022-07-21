@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin activation
  *
@@ -22,6 +21,8 @@ class Siteimprove_Activator {
 	 */
 	public static function activate() {
 		// Request new token.
+
+		// phpcs:ignore
 		if ( $token = SiteimproveUtils::request_token() ) {
 			add_option( 'siteimprove_token', $token );
 		}
