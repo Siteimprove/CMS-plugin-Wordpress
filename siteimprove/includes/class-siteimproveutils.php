@@ -1,6 +1,16 @@
 <?php
 /**
- * Class SiteimproveUtils.
+ * Global Utilities used by the plugin
+ *
+ * @package    Siteimprove
+ * @subpackage Siteimprove/includes
+ */
+
+/**
+ * Global Utilities Class used throughout the plugin
+ *
+ * @package    Siteimprove
+ * @subpackage Siteimprove/includes
  */
 class SiteimproveUtils {
 

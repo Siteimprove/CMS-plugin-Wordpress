@@ -74,7 +74,7 @@ class Siteimprove {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Siteimprove_Loader. Orchestrates the hooks of the plugin.
-	 * - Siteimprove_i18n. Defines internationalization functionality.
+	 * - Siteimprove_I18n. Defines internationalization functionality.
 	 * - Siteimprove_Admin. Defines all hooks for the admin area.
 	 * - Siteimprove_Public. Defines all hooks for the public side of the site.
 	 *
@@ -109,14 +109,14 @@ class Siteimprove {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Siteimprove_i18n class in order to set the domain and to register the hook
+	 * Uses the Siteimprove_I18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @access   private
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Siteimprove_i18n();
+		$plugin_i18n = new Siteimprove_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 

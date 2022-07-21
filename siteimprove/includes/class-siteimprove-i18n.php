@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -19,7 +18,7 @@
  * @package    Siteimprove
  * @subpackage Siteimprove/includes
  */
-class Siteimprove_i18n {
+class Siteimprove_I18n {
 
 
 	/**

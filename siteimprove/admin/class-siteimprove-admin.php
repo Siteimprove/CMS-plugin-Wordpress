@@ -61,7 +61,7 @@ class Siteimprove_Admin {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Siteimprove_Loader. Orchestrates the hooks of the plugin.
-	 * - Siteimprove_i18n. Defines internationalization functionality.
+	 * - Siteimprove_I18n. Defines internationalization functionality.
 	 * - Siteimprove_Admin. Defines all hooks for the admin area.
 	 * - Siteimprove_Public. Defines all hooks for the public side of the site.
 	 *

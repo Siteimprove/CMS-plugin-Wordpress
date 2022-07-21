@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Plugin settings form.
  *
