@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Siteimprove WordPress Plugin" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+
+	<description>Custom set of rules for Siteimprove WordPress Plugin based on WPCS and extended to match the project needs</description>
+
+	<rule ref="WordPress">
+		<exclude name="Squiz.Commenting.FileComment.SpacingAfterComment"/>
+	</rule>
+
+</ruleset>
