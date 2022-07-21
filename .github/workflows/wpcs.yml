@@ -9,7 +9,7 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - name: WPCS check
-          uses: 10up/wpcs-action@stable
+          uses: Siteimprove/wpcs-action@stable
           with:
             enable_warnings: false # Enable checking for warnings (-w)
             paths: '.' # Paths to check, space separated
