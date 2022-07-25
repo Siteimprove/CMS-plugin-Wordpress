@@ -98,20 +98,38 @@
 				siteimprove.events.recheck();
 			}
 
+			window.siGetCurrentUrlAndToken = function() {
+				var result = {
+					url: window.location.href,
+					token: ''
+				}
+
+				if (typeof siteimprove_input !== 'undefined') {
+					if (typeof siteimprove_input.url !== 'undefined') {
+						result.url = siteimprove_input.url;
+					}
+					result.token = siteimprove_input.token;
+				}
+
+				if (typeof siteimprove_domain !== 'undefined') {
+					if (typeof siteimprove_domain.url !== 'undefined') {
+						result.url = siteimprove_domain.url;
+					}
+					result.token = siteimprove_domain.token;
+				}
+				return result;
+			}
+
 			$( '.siteimprove-trigger-contentcheck' ).find( 'a' ).on(
 				'click',
 				function(evt) {
+					var si_prepublish_data = siGetCurrentUrlAndToken();
 					evt.preventDefault();
 					$( "body" ).append( '<div class="si-overlay"></div>' );
-					if (typeof siteimprove_input.url !== 'undefined') {
-						var url = siteimprove_input.url;
-					} else {
-						var url = window.location.href;
-					}
 					siteimprove.contentcheck(
 						$( 'html' )[0].outerHTML,
-						url,
-						siteimprove_input.token,
+						si_prepublish_data.url,
+						si_prepublish_data.token,
 						function() {
 							$( ".si-overlay" ).remove();
 						}
