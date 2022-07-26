@@ -254,11 +254,24 @@ class Siteimprove_Admin_Settings {
 	 */
 	public static function validate_api_username( $value ) {
 		if ( ! empty( $value ) ) {
+			$old_value = get_option( 'siteimprove_api_username' );
 			// new username was inputted, check if it's a valid email.
 			if ( ! filter_var( $value, FILTER_VALIDATE_EMAIL ) ) {
 				add_settings_error( 'siteimprove_messages', 'siteimprove_api_username_error', __( 'API Username must be a valid email', 'siteimprove' ) );
-				$old_value = get_option( 'siteimprove_api_username' );
 				if ( ! empty( $old_value ) ) {
+					return $old_value;
+				}
+			}
+
+			if (
+				isset( $_POST['siteimprove_api_username'], $_POST['siteimprove_api_key'], $_REQUEST['_wpnonce'] )
+				&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
+				) {
+					$username = sanitize_text_field( wp_unslash( $_POST['siteimprove_api_username'] ) );
+					$key      = sanitize_text_field( wp_unslash( $_POST['siteimprove_api_key'] ) );
+					$result   = self::check_credentials( $username, $key );
+				if ( 'false' === $result['status'] ) {
+					// return previous username when error is returned from checking both fields.
 					return $old_value;
 				}
 			}
