@@ -169,9 +169,10 @@ class Siteimprove_Admin {
 			$this->plugin_name,
 			esc_js( $type ),
 			array(
-				'token' => get_option( 'siteimprove_token' ),
-				'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
-				'url'   => $url,
+				'use_flatdom' => 0, // this will be used as a feature flag until flatOM is fully launched.
+				'token'       => get_option( 'siteimprove_token' ),
+				'txt'         => __( 'Siteimprove Recheck', 'siteimprove' ),
+				'url'         => $url,
 			)
 		);
 
