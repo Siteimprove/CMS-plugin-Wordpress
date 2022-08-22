@@ -30,14 +30,6 @@
       this.method = "recrawl";
       this.common();
     },
-    contentcheck: function (domContent, url, token, callback) {
-      this.url = url;
-      this.token = token;
-      this.domContent = domContent;
-      this.method = "contentcheck";
-      this.callback = callback;
-      this.common();
-    },
     contentcheck_flatdom: function (domReference, url, token, callback) {
       this.url = url;
       this.token = token;
@@ -48,17 +40,6 @@
     },
     common: function () {
       var _si = window._si || [];
-      if (this.method == "contentcheck") {
-        _si.push([
-          this.method,
-          this.domContent,
-          this.url,
-          this.token,
-          this.callback,
-        ]);
-        return;
-      }
-
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
           this.method,
@@ -134,7 +115,6 @@
       var result = {
         url: window.location.href,
         token: "",
-				use_flatdom: 0
       };
 
       if (typeof siteimprove_input !== "undefined") {
@@ -142,7 +122,6 @@
           result.url = siteimprove_input.url;
         }
         result.token = siteimprove_input.token;
-				result.use_flatdom = siteimprove_input.use_flatdom;
       }
 
       if (typeof siteimprove_domain !== "undefined") {
@@ -150,7 +129,6 @@
           result.url = siteimprove_domain.url;
         }
         result.token = siteimprove_domain.token;
-				result.use_flatdom = siteimprove_domain.use_flatdom;
       }
       return result;
     };
@@ -159,28 +137,16 @@
       .find("a")
       .on("click", function (evt) {
         var si_prepublish_data = siGetCurrentUrlAndToken();
-        var domContents = $("html")[0].outerHTML;
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
-				if (si_prepublish_data.use_flatdom == 1) {
-					siteimprove.contentcheck_flatdom(
-						document,
-						si_prepublish_data.url,
-						si_prepublish_data.token,
-						function () {
-							$(".si-overlay").remove();
-						}
-					);
-				} else {
-					siteimprove.contentcheck(
-						domContents,
-						si_prepublish_data.url,
-						si_prepublish_data.token,
-						function () {
-							$(".si-overlay").remove();
-						}
-					);
-				}
+        siteimprove.contentcheck_flatdom(
+          document,
+          si_prepublish_data.url,
+          si_prepublish_data.token,
+          function () {
+            $(".si-overlay").remove();
+          }
+        );
       });
   });
 })(jQuery);
