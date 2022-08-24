@@ -1,0 +1,22 @@
+name: Create Release
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Archive Release
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'siteimprove.zip'
+        exclusions: '*.git* /*node_modules/* .editorconfig .gitignore phpcs.xml README.md /*.github/*'
+    - name: Upload Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "siteimprove.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
