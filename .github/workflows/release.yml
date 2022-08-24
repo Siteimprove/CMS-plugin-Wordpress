@@ -10,13 +10,13 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Archive Release
-      uses: thedoctor0/zip-release@main
+      uses: Siteimprove/zip-release@main
       with:
         type: 'zip'
         filename: 'siteimprove.zip'
         exclusions: '*.git* /*node_modules/* .editorconfig .gitignore phpcs.xml README.md /*.github/*'
     - name: Upload Release
-      uses: ncipollo/release-action@v1
+      uses: Siteimprove/release-action@v1
       with:
         artifacts: "siteimprove.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
