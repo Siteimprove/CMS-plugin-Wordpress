@@ -48,7 +48,8 @@ class Siteimprove {
 	 */
 	protected $version;
 
-	const JS_LIBRARY_URL = 'https://cdn.siteimprove.net/cms/overlay.js';
+	const JS_LIBRARY_URL     = 'https://cdn.siteimprove.net/cms/overlay.js';
+	const JS_LIBRARY_DEV_URL = 'https://cdn.siteimprove.net/cms/overlay.js';
 
 	/**
 	 * Define the core functionality of the plugin.

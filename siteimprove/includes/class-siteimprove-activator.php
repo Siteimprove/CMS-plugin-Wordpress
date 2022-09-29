@@ -22,9 +22,13 @@ class Siteimprove_Activator {
 	public static function activate() {
 		// Request new token.
 
-		// phpcs:ignore
+		//phpcs:ignore
 		if ( $token = SiteimproveUtils::request_token() ) {
 			add_option( 'siteimprove_token', $token );
+		}
+
+		if ( ! SiteimproveUtils::option_exists( 'siteimprove_dev_mode' ) ) {
+			add_option( 'siteimprove_dev_mode', '0' );
 		}
 	}
 

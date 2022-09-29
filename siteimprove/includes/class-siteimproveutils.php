@@ -36,4 +36,17 @@ class SiteimproveUtils {
 		return false;
 	}
 
+	/**
+	 * Check if the option exists
+	 *
+	 * @param string  $name Option name.
+	 * @param boolean $site_wide If.
+	 * @return boolean True if the option exists, false otherwise
+	 */
+	public static function option_exists( $name, $site_wide = false ) {
+		global $wpdb;
+
+		return $wpdb->query( 'SELECT * FROM ' . $wpdb->prepare( '%s options WHERE option_name = `%s` LIMIT 1', ( $site_wide ? $wpdb->base_prefix : $wpdb->prefix ), $name ) );
+	}
+
 }
