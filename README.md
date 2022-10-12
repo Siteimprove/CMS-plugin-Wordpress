@@ -9,7 +9,8 @@ Every pull request will be checked against WPCS trough github actions.
 ## Version History
 
 ### 1.3.0
-* Added Prepublish feature to the plugin. This adds additional fields in the configuration page for the plugin so that the user can set the API key and API username to use the Prebulish Button accordingly. 
+* Added Prepublish feature to the plugin
+* Added configuration page to set up an API key and API username
 
 ### 1.2.2
 * Bufgix - added CSS naming prefixes to avoid collision with other plugins
