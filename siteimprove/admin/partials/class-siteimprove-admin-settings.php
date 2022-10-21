@@ -86,6 +86,15 @@ class Siteimprove_Admin_Settings {
 			'siteimprove_api_credentials'
 		);
 
+		// register a new field Development_mode, inside the siteimprove_api_credentials section of the settings page.
+		add_settings_field(
+			'siteimprove_development_mode',
+			__( 'Development mode - use beta javascript', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_development_mode_field',
+			'siteimprove',
+			'siteimprove_api_credentials'
+		);
+
 		// Register a new section in the siteimprove page.
 		add_settings_section(
 			'siteimprove_prepublish',
@@ -217,6 +226,19 @@ class Siteimprove_Admin_Settings {
 		?>
 
 		<input type="text" id="siteimprove_api_key_field" name="siteimprove_api_key" value="<?php echo esc_attr( get_option( 'siteimprove_api_key' ) ); ?>" maxlength="50" size="50" />
+		<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
+	public static function siteimprove_development_mode_field( $args ) {
+		?>
+
+		<input type="checkbox" id="siteimprove_development_mode_field" name="siteimprove_development_mode"  />
 		<?php
 	}
 
