@@ -15,6 +15,7 @@ Thumbs.db
 .idea
 pimple.json
 .phpstorm.meta.php
+phpcs.xml
 
 # Vim generated files #
 #######################
