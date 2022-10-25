@@ -42,6 +42,7 @@ class Siteimprove_Admin_Settings {
 		register_setting( 'siteimprove', 'siteimprove_token' );
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
+		register_setting( 'siteimprove', 'siteimprove_development_mode' );
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
@@ -238,7 +239,7 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_development_mode_field( $args ) {
 		?>
 
-		<input type="checkbox" id="siteimprove_development_mode_field" name="siteimprove_development_mode"  />
+		<input type="checkbox" id="siteimprove_development_mode_field" name="siteimprove_development_mode"  <?php echo esc_attr( get_option( 'siteimprove_dev_mode' ) ? 'checked' : '' ); ?> />
 		<?php
 	}
 
@@ -529,5 +530,13 @@ class Siteimprove_Admin_Settings {
 		}
 		echo esc_html( SiteimproveUtils::request_token() );
 		wp_die();
+	}
+
+	/**
+	 * Retrieve the correct value to the checkbox.
+	 */
+	public static function get_development_value() {
+		$stored_value = get_option( 'siteimprove_dev_mode' );
+		return $stored_value ? $stored_value : 0;
 	}
 }
