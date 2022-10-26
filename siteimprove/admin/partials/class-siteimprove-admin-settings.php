@@ -42,7 +42,7 @@ class Siteimprove_Admin_Settings {
 		register_setting( 'siteimprove', 'siteimprove_token' );
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
-		register_setting( 'siteimprove', 'siteimprove_development_mode' );
+		register_setting( 'siteimprove', 'siteimprove_dev_mode', 'Siteimprove_Admin_Settings::validate_siteimprove_dev_mode' );
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
@@ -89,9 +89,9 @@ class Siteimprove_Admin_Settings {
 
 		// register a new field Development_mode, inside the siteimprove_api_credentials section of the settings page.
 		add_settings_field(
-			'siteimprove_development_mode',
+			'siteimprove_dev_mode',
 			__( 'Development mode - use beta javascript', 'siteimprove' ),
-			'Siteimprove_Admin_Settings::siteimprove_development_mode_field',
+			'Siteimprove_Admin_Settings::siteimprove_dev_mode_field',
 			'siteimprove',
 			'siteimprove_api_credentials'
 		);
@@ -236,10 +236,14 @@ class Siteimprove_Admin_Settings {
 	 * @param mixed $args Field Arguments.
 	 * @return void
 	 */
-	public static function siteimprove_development_mode_field( $args ) {
+	public static function siteimprove_dev_mode_field( $args ) {
+		$is_checked = '';
+		if ( 1 === intval( get_option( 'siteimprove_dev_mode' ) ) ) {
+			$is_checked = 'checked';
+		}
 		?>
 
-		<input type="checkbox" id="siteimprove_development_mode_field" name="siteimprove_development_mode"  <?php echo esc_attr( get_option( 'siteimprove_dev_mode' ) ? 'checked' : '' ); ?> />
+		<input type="checkbox" id="siteimprove_dev_mode_field" name="siteimprove_dev_mode"  value='1' <?php echo esc_attr( $is_checked ); ?> />
 		<?php
 	}
 
@@ -300,6 +304,22 @@ class Siteimprove_Admin_Settings {
 			}
 		}
 		return $value;
+	}
+
+	/**
+	 * Field Update
+	 */
+	public static function validate_siteimprove_dev_mode( $value ) {
+		if ( ! empty( $value ) ) {
+			return $value;
+		}
+		if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+			$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
+			if ( '' !== trim( $checkbox_value ) ) {
+				return 1;
+			}
+		}
+		return 0;
 	}
 
 	/**
