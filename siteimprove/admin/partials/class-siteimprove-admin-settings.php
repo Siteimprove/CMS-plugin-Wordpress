@@ -308,6 +308,9 @@ class Siteimprove_Admin_Settings {
 
 	/**
 	 * Field Update
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return bool
 	 */
 	public static function validate_siteimprove_dev_mode( $value ) {
 		if ( ! empty( $value ) ) {
