@@ -43,6 +43,7 @@ class Siteimprove_Admin_Settings {
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
 		register_setting( 'siteimprove', 'siteimprove_dev_mode', 'Siteimprove_Admin_Settings::validate_siteimprove_dev_mode' );
+		register_setting( 'siteimprove', 'siteimprove_overlayjs_file', 'Siteimprove_Admin_Settings::validate_siteimprove_overlayjs_file' );
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
@@ -92,6 +93,15 @@ class Siteimprove_Admin_Settings {
 			'siteimprove_dev_mode',
 			__( 'Development mode - use beta javascript', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_dev_mode_field',
+			'siteimprove',
+			'siteimprove_api_credentials'
+		);
+
+		// register a new field Overlayjs_file, inside the siteimprove_api_credentials section of the settings page.
+		add_settings_field(
+			'siteimprove_overlayjs_file',
+			__( 'Overlay JS File', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_overlayjs_file_field',
 			'siteimprove',
 			'siteimprove_api_credentials'
 		);
@@ -248,6 +258,19 @@ class Siteimprove_Admin_Settings {
 	}
 
 	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
+	public static function siteimprove_overlayjs_file_field( $args ) {
+		?>
+
+		<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>" maxlength="50" size="60" />
+		<?php
+	}
+
+	/**
 	 * Create settings form.
 	 */
 	public static function siteimprove_settings_form() {
@@ -323,6 +346,16 @@ class Siteimprove_Admin_Settings {
 			}
 		}
 		return 0;
+	}
+
+	/**
+	 * Field Update
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return bool
+	 */
+	public static function validate_siteimprove_overlayjs_file( $value ) {
+		return true;
 	}
 
 	/**
