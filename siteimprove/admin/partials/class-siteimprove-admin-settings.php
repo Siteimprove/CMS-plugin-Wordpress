@@ -355,7 +355,23 @@ class Siteimprove_Admin_Settings {
 	 * @return bool
 	 */
 	public static function validate_siteimprove_overlayjs_file( $value ) {
-		return true;
+		if ( ! empty( $value ) ) {
+			$old_value = get_option( 'siteimprove_overlayjs_file' );
+			if ( ! preg_match( '/.+\..{2,}/', $value ) ) {
+				add_settings_error( 'siteimprove_messages', 'siteimprove_api_key_error', __( 'Overlay file not saved - Invalid format (please verify if name and extention are correct).', 'siteimprove' ) );
+				if ( ! empty( $old_value ) ) {
+					return $old_value;
+				}
+			} else {
+				if (
+				isset( $_POST['siteimprove_overlayjs_file'], $_REQUEST['_wpnonce'] )
+				&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
+				) {
+					return $value;
+				}
+			}
+		}
+		return $value;
 	}
 
 	/**
