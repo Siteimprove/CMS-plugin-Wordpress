@@ -9,6 +9,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Siteimprove allows users to continuously test, fix and optimize their work through actionable content and analytics insights. Works with WooCommerce.
 
+
 == Description ==
 
 The Siteimprove CMS Plugin bridges the gap between the WordPress content management system (CMS) and the Siteimprove Intelligence Platform. Now you can scan your website for errors as soon as a page is published, allowing you to fix mistakes, optimize content, and manage your site more efficiently.
