@@ -11,22 +11,61 @@ Siteimprove allows users to continuously test, fix and optimize their work throu
 
 == Description ==
 
-The Siteimprove plugin bridges the gap between WordPress and the Siteimprove Intelligence Platform. You are now able to put your Siteimprove results to use where they are most valuable – during your content creation and editing process. With analytics and content insights always at hand, contributors can test, fix, and optimize their work continuously . Once the detected issues have been assessed, you can directly re-recheck the relevant page and see if further actions are needed. Delivering a superior digital experience has never been more efficient and convenient.
+The Siteimprove CMS Plugin bridges the gap between the WordPress content management system (CMS) and the Siteimprove Intelligence Platform. Now you can scan your website for errors as soon as a page is published, allowing you to fix mistakes, optimize content, and manage your site more efficiently.
+The plugin also provides you access with Prepublishing, an add-on which allows you to complete accessibility checks and conduct SEO diagnostics before you publish a page.
 
 
 == Installation ==
 
-Siteimprove Plugin can be installed like any other Wordpress module.
+There are two ways to install the Siteimprove plugin on Wordpress.  
 
-1. Place it in the plugins directory for your site and enable it on the `wp-admin/plugins.php` page.
-1. Visit the Siteimprove Plugin settings page and regenerate auth token if you need it.
+To install the plugin via the listing page, type ‘Siteimprove’ in the search box on the Wordpress plugin listing page and click on ‘install’.  
+
+OR 
+
+Upload the Siteimprove plugin zip file using Wordpress’ ‘Upload Plugin’ feature. The plugin can be activated immediately after upload.  
+
+
+= Configuration =
+
+After installing and activating the plugin, you should now see a Siteimprove icon on the right sidebar of the admin page.  
+
+Click on ‘Login’ and enter your Siteimprove username and password to access the features.  
+
+A new Siteimprove menu option will also appear on the left menu bar. Click on this menu option to continue configuring the plugin once you’ve logged in.  
+
+The token field is automatically filled and should not be changed unless a new token is required. In such cases, please click on “Request new token” to generate a new token. 
+
+API Username (Email) and API Key are API credentials that should be filled in if you have purchased the ‘Prepublish’ add-on feature. When provided correctly, you should be able to begin utilizing Prepublish.  
+
+Click on ‘Save’ once you have filled out the relevant fields.  
+
+
+= Usage =
+
+Once you have completed configuring the Siteimprove plugin, clicking on the Siteimprove icon on the right sidebar will open the Siteimprove plugin, which will provide you with a full overview of your global site status and your current Digital Certainty Index (DCI) score.  
+
+You will also be able to review QA errors across pages in your website in the ‘Site overview’ tab.  
+
+While editing a published page, the plugin will also provide you with a page-level DCI score alongside an assessment of the readability and quality level of the page. You can also evaluate what the impact of unpublishing the specific page may have on your overall DCI score and website quality.  
+
+
+= Prepublish =
+
+If you have purchased the prepublish add-on, you should see a Prepublish feature on the top of any unpublished page in preview mode.  
+
+Clicking on this button will trigger the Prepublish check, which provides live results of the accessibility and quality of the page. 
+
+Once the check is complete, you can click on the ‘See results’ button, which will give you a full breakdown of issues identified within the page.  
+
+You can expand each category to review the issues that need to be fixed, make the necessary edits, and then rerun the Prepublish check to ensure that a page is optimized and error-free before final publication. 
 
 
 == Frequently Asked Questions ==
 
 = Who can use this plugin? =
 
-The plugin requires a Siteimprove subscription to be used. Sign up for a [FreeTrial](https://siteimprove.com/account/create “Free trial”) to test it out.
+The plugin requires a Siteimprove subscription to be used.
 
 = Where can I see the overlay? =
 
