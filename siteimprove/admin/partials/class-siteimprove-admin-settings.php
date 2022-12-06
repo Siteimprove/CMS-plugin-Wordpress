@@ -88,13 +88,21 @@ class Siteimprove_Admin_Settings {
 			'siteimprove_api_credentials'
 		);
 
+		// Register a new section in the siteimprove page.
+		add_settings_section(
+			'siteimprove_dev_mode_section',
+			__( 'Dev Mode', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
+			'siteimprove'
+		);
+
 		// register a new field Development_mode, inside the siteimprove_api_credentials section of the settings page.
 		add_settings_field(
 			'siteimprove_dev_mode',
 			__( 'Development mode - use beta javascript', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_dev_mode_field',
 			'siteimprove',
-			'siteimprove_api_credentials'
+			'siteimprove_dev_mode_section'
 		);
 
 		// register a new field Overlayjs_file, inside the siteimprove_api_credentials section of the settings page.
@@ -103,7 +111,7 @@ class Siteimprove_Admin_Settings {
 			__( 'Overlay JS File', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_overlayjs_file_field',
 			'siteimprove',
-			'siteimprove_api_credentials'
+			'siteimprove_dev_mode_section'
 		);
 
 		// Register a new section in the siteimprove page.

@@ -74,6 +74,14 @@
 				}
 			);
 
+			// .
+			$( '#siteimprove_dev_mode_field' ).on(
+				'click',
+				function () {
+					$(this).closest('tr').next('tr')[this.checked? 'show' : 'hide']()
+				}
+			);
+
 		}
 	);
 
