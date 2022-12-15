@@ -365,17 +365,28 @@ class Siteimprove_Admin_Settings {
 	public static function validate_siteimprove_overlayjs_file( $value ) {
 		if ( ! empty( $value ) ) {
 			$old_value = get_option( 'siteimprove_overlayjs_file' );
+			$dev_mode_enabled = false;
+			if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+				$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
+				if ( '' !== trim( $checkbox_value ) ) {
+					$dev_mode_enabled = true;
+				}
+			}
 			if ( ! preg_match( '/.+\..{2,}/', $value ) ) {
 				add_settings_error( 'siteimprove_messages', 'siteimprove_api_key_error', __( 'Overlay file not saved - Invalid format (please verify if name and extention are correct).', 'siteimprove' ) );
 				if ( ! empty( $old_value ) ) {
 					return $old_value;
 				}
 			} else {
-				if (
-				isset( $_POST['siteimprove_overlayjs_file'], $_REQUEST['_wpnonce'] )
-				&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
-				) {
-					return $value;
+				if ( $dev_mode_enabled ) {
+					if (
+					isset( $_POST['siteimprove_overlayjs_file'], $_REQUEST['_wpnonce'] )
+					&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
+					) {
+						return $value;
+					}
+				} else {
+					return 'overlay.js';
 				}
 			}
 		}
