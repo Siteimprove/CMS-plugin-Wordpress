@@ -51,12 +51,7 @@
         return;
       }
 
-      //Adaptation carried out to comply with the CMS-plugin-v2 documentation
-      if( this.method === "domain" ){
-        _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
-      } else {
-        _si.push([this.method, this.url, this.token]);
-      }      
+      _si.push([this.method, this.url, this.token]);      
     },
     events: {
       recheck: function () {
