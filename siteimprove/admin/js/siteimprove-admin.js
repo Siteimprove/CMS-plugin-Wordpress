@@ -82,6 +82,15 @@
 				}
 			);
 
+			$( document ).ready(
+				function () {						
+						if($("#siteimprove_dev_mode_field").is(":checked"))   
+							$('#siteimprove_dev_mode_field').closest('tr').next('tr').show();
+				        else
+							$('#siteimprove_dev_mode_field').closest('tr').next('tr').hide();
+				        }
+			);			
+
 		}
 	);
 
