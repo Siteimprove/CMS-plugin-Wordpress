@@ -622,12 +622,4 @@ class Siteimprove_Admin_Settings {
 		echo esc_html( SiteimproveUtils::request_token() );
 		wp_die();
 	}
-
-	/**
-	 * Retrieve the correct value to the checkbox.
-	 */
-	public static function get_development_value() {
-		$stored_value = get_option( 'siteimprove_dev_mode' );
-		return $stored_value ? $stored_value : 0;
-	}
 }
