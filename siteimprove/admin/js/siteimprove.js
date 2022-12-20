@@ -56,7 +56,17 @@
         _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
       } else {
         _si.push([this.method, this.url, this.token]);
-      }      
+      }
+
+      //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
+      const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
+      if (this.url.match(pattern)) {
+        setTimeout(() => {
+          _si.push(['clear', function() { console.log('Cleared'); }]); 
+        }, 500);
+      }
+      
+           
     },
     events: {
       recheck: function () {
