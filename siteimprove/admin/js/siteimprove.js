@@ -39,7 +39,28 @@
       this.common();
     },
     common: function () {
-      var _si = window._si || [];
+      var _si = window._si || [];  
+
+      var getDomCallback = async function () {
+      	var pageWindow = window.open(
+      		this.url,
+      		"Page Preview",
+      		"width=400,height=500"
+      	);
+      	var promise = new Promise(function (resolve, reject) {
+      		pageWindow.addEventListener(
+      			"load",
+      			() => { resolve(pageWindow.document); },
+      			{ once: true }
+      		);
+      	});
+      
+      	var document = await promise;
+      	return [document, () => { pageWindow.close(); }];
+      };
+
+      _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
           this.method,
@@ -65,8 +86,7 @@
           _si.push(['clear', function() { console.log('Cleared'); }]); 
         }, 500);
       }
-      
-           
+                 
     },
     events: {
       recheck: function () {
