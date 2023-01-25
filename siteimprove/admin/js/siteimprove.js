@@ -51,7 +51,7 @@
         return;
       }
 
-      _si.push([this.method, this.url, this.token]);
+      _si.push([this.method, this.url, this.token]);      
     },
     events: {
       recheck: function () {
