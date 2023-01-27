@@ -263,7 +263,7 @@ class Siteimprove_Admin_Settings {
 	 */
 	public static function siteimprove_public_url_field( $args ) {
 		?>
-		<input type="text" id="siteimprove_public_url_field" name="siteimprove_public_url" value="<?php echo esc_attr( get_option( 'siteimprove_public_url' ) ); ?>" maxlength="50" size="50" />
+		<input type="text" id="siteimprove_public_url_field" name="siteimprove_public_url" value="<?php echo esc_attr( get_option( 'siteimprove_public_url' ) ); ?>"  size="50" />
 		<?php
 	}
 
@@ -319,7 +319,7 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_overlayjs_file_field( $args ) {
 		?>
 
-		<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>" maxlength="50" size="60" />
+		<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>" maxlength="50" size="50" />
 		<?php
 	}
 
@@ -492,8 +492,7 @@ class Siteimprove_Admin_Settings {
 	public static function validate_public_url( $value ) {
 		if ( ! empty( $value ) ) {
 			$old_value = get_option( 'siteimprove_public_url' );
-			// new API key inserted, let's check if it's a valid one.
-			if ( ! preg_match( '%^(?:(?:(?:https?):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\x{00a1}-\x{ffff}][a-z0-9\x{00a1}-\x{ffff}_-]{0,62})?[a-z0-9\x{00a1}-\x{ffff}]\.)+(?:[a-z\x{00a1}-\x{ffff}]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$%iu', $value ) ) {
+			if ( filter_var( $value, FILTER_VALIDATE_URL ) === false ) {
 				add_settings_error( 'siteimprove_messages', 'siteimprove_public_url_error', __( 'Invalid format for Public URL field', 'siteimprove' ) );
 				return $old_value;
 			}
