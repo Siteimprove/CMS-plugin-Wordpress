@@ -409,7 +409,7 @@ class Siteimprove_Admin_Settings {
 	 */
 	public static function validate_siteimprove_overlayjs_file( $value ) {
 		if ( ! empty( $value ) ) {
-			$old_value = get_option( 'siteimprove_overlayjs_file' );
+			$old_value        = get_option( 'siteimprove_overlayjs_file' );
 			$dev_mode_enabled = false;
 			if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
 				$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
