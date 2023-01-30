@@ -72,14 +72,27 @@
         return;
       }
 
-      _si.push(['onHighlight', function(highlightInfo) { 
-        /* 1. Reset highlight */
-        jQuery(".si-highlight").removeClass("si-highlight");
-        /* 2. Do highlight */
-        highlightInfo.highlights.forEach((highlight) => {
-          jQuery(highlight.selector).addClass("si-highlight");
-        })
-        /* TODO: Make the jQuery add a span tag that starts at X (where X is equal to start property in highlight) and ends after y (where y is equal to length property in highlight) */
+      _si.push(['onHighlight', function(highlightInfo) {
+        // Remove highlight tag wrapper
+        $(".si-highlight").contents().unwrap();
+        // Create an span tag for every highlight
+        $.each(highlightInfo.highlights, function(index, highlight) {
+          var $element = $(highlight.selector);
+          var text = $element.text();
+          
+          if (highlight.offset) {
+            var start = highlight.offset.start;
+            var length = highlight.offset.length;
+            
+            var before = text.substr(0, start);
+            var highlighted = text.substr(start, length);
+            var after = text.substr(start + length);
+            
+            $element.html(before + "<span class='si-highlight'>" + highlighted + "</span>" + after);
+          } else {
+            $element.html("<span class='si-highlight'>" + text + "</span>");
+          }
+        });
       }]);
 
       //Adaptation carried out to comply with the CMS-plugin-v2 documentation
