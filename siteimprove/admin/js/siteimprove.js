@@ -72,6 +72,16 @@
         return;
       }
 
+      _si.push(['onHighlight', function(highlightInfo) { 
+        /* 1. Reset highlight */
+        jQuery(".si-highlight").removeClass("si-highlight");
+        /* 2. Do highlight */
+        highlightInfo.highlights.forEach((highlight) => {
+          jQuery(highlight.selector).addClass("si-highlight");
+        })
+        /* TODO: Make the jQuery add a span tag that starts at X (where X is equal to start property in highlight) and ends after y (where y is equal to length property in highlight) */
+      }]);
+
       //Adaptation carried out to comply with the CMS-plugin-v2 documentation
       if( this.method === "domain" ){
         _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
