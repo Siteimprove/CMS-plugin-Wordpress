@@ -10,7 +10,7 @@
       this.url = url;
       this.token = token;
       this.method = "input";
-      this.common();
+      this.common(url);
     },
     domain: function (url, token) {
       this.url = url;
@@ -38,12 +38,12 @@
       this.callback = callback;
       this.common();
     },
-    common: function () {
+    common: function (url) {
       var _si = window._si || [];  
 
       var getDomCallback = async function () {
       	var pageWindow = window.open(
-      		this.url,
+      		url,
       		"Page Preview",
       		"width=400,height=500"
       	);
