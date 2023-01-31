@@ -10,6 +10,22 @@
   padding-left: 30px;
 }
 
+@keyframes highlight-blink {
+  50% {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0);
+  }
+}
+
+.si-highlight {
+	background-color: rgba(221, 10, 27, 0.2);
+	border: 2px solid #dd0a1b;
+	animation-name: highlight-blink;
+	animation-duration: 0.4s;
+	animation-iteration-count: 4;
+	animation-timing-function: ease;
+}
+
 .si-overlay {
   position:absolute;
   top:0;
