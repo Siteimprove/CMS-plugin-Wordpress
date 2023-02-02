@@ -165,14 +165,22 @@ class Siteimprove_Admin {
 	private function siteimprove_add_js( $url, $type ) {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL . get_option( 'siteimprove_overlayjs_file', 'overlay.js' ), array(), $this->version, true );
+		$public_url = get_option( 'siteimprove_public_url' );
+
+		if ( ! empty( $public_url ) ) {
+			$parsed_url = wp_parse_url( $url );
+			$url        = "$public_url$parsed_url[path]" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
+		}
+
+		$si_js_args = array(
+			'token' => get_option( 'siteimprove_token' ),
+			'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
+			'url'   => $url,
+		);
 		wp_localize_script(
 			$this->plugin_name,
 			esc_js( $type ),
-			array(
-				'token' => get_option( 'siteimprove_token' ),
-				'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
-				'url'   => $url,
-			)
+			$si_js_args
 		);
 
 		// Adding translation strings.
