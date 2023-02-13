@@ -164,7 +164,10 @@ class Siteimprove_Admin {
 	 */
 	private function siteimprove_add_js( $url, $type ) {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL . get_option( 'siteimprove_overlayjs_file', 'overlay.js' ), array(), $this->version, true );
+		$overlay_file = get_option( 'siteimprove_overlayjs_file', 'overlay.js' );
+		$pattern = "/https?:\/\/localhost(?::\d+)?(?:\/\w{1,})*\/\w{1,}.js/i";
+		$path = ( preg_match($pattern, $overlay_file) == 1 ) ? $overlay_file : Siteimprove::JS_LIBRARY_URL . $overlay_file;
+		wp_enqueue_script( 'siteimprove_overlay', $path, array(), $this->version, true );
 		$public_url = get_option( 'siteimprove_public_url' );
 
 		if ( ! empty( $public_url ) ) {
