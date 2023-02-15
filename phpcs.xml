@@ -11,9 +11,9 @@
 		<exclude name="Squiz.Commenting.FileComment.SpacingAfterComment"/>
 	</rule>
 	
-	<!--For Windows users that may have problems with EOL-->
-	<!-- <rule ref="Generic.Files.LineEndings">
+	<!--For Windows users that may have problems with EOL. If you are not using windows please coment the code bellow-->
+	<rule ref="Generic.Files.LineEndings">
         <exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
-    </rule> -->
+    </rule>
 
 </ruleset>
