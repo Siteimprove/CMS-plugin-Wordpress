@@ -40,26 +40,38 @@
     },
     common: function (url) {
       var _si = window._si || [];  
-
-      var getDomCallback = async function () {
-      	var pageWindow = window.open(
-      		url,
-      		"Page Preview",
-      		"width=400,height=500"
-      	);
+    
+      var getDomCallback = async function (document) {
+        const newDiv = document.createElement("div");
+        newDiv.setAttribute("id","div_iframe"); 
+        document.body.appendChild(newDiv);
+        let	string_test = "<iframe id='domIframe' src="+ url.concat("&hide_admin_bar=1") +" style='height:100vh; width:100%'></iframe>";
+        document.getElementById("div_iframe").innerHTML = string_test.replace(/&amp;/g , "&");
+      	
       	var promise = new Promise(function (resolve, reject) {
-      		pageWindow.addEventListener(
+          const iframe = document.getElementById("domIframe");
+      		iframe.addEventListener(
       			"load",
-      			() => { resolve(pageWindow.document); },
+      			() => { 
+              const newDocument = iframe.contentWindow.document.cloneNode(true);
+              document.getElementById("div_iframe").innerHTML = "";
+              document.body.removeChild(newDiv); 
+              resolve(newDocument); 
+            },
       			{ once: true }
       		);
       	});
       
       	var document = await promise;
-      	return [document, () => { pageWindow.close(); }];
+      	return [
+          document, 
+          () => { 
+            $(".si-overlay").remove();
+          }
+        ];
       };
 
-      _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+      _si.push(['registerPrepublishCallback', getDomCallback(document), this.token]);
 
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
