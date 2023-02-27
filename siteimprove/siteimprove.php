@@ -25,12 +25,12 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**  Hide the WordPress admin bar when the `si_preview` parameter is present. */
-function custom_preview_si_preview() {
+function si_preview() {
 	if ( isset( $_GET['si_preview'] ) && '1' === $_GET['si_preview'] ) {
 		add_filter( 'show_admin_bar', '__return_false' );
 	}
 }
-add_action( 'parse_query', 'custom_preview_si_preview' );
+add_action( 'parse_query', 'si_preview' );
 
 /**
  * Include SiteimproveUtils class.
