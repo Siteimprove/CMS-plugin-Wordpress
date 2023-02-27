@@ -10,7 +10,7 @@
       this.url = url;
       this.token = token;
       this.method = "input";
-      this.common();
+      this.common(url);
     },
     domain: function (url, token) {
       this.url = url;
@@ -38,8 +38,29 @@
       this.callback = callback;
       this.common();
     },
-    common: function () {
-      var _si = window._si || [];
+    common: function (url) {
+      var _si = window._si || [];  
+
+      var getDomCallback = async function () {
+      	var pageWindow = window.open(
+      		url,
+      		"Page Preview",
+      		"width=400,height=500"
+      	);
+      	var promise = new Promise(function (resolve, reject) {
+      		pageWindow.addEventListener(
+      			"load",
+      			() => { resolve(pageWindow.document); },
+      			{ once: true }
+      		);
+      	});
+      
+      	var document = await promise;
+      	return [document, () => { pageWindow.close(); }];
+      };
+
+      _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
           this.method,
@@ -51,7 +72,44 @@
         return;
       }
 
-      _si.push([this.method, this.url, this.token]);      
+      _si.push(['onHighlight', function(highlightInfo) {
+        // Remove highlight tag wrapper
+        $(".si-highlight").contents().unwrap();
+        // Create an span tag for every highlight
+        $.each(highlightInfo.highlights, function(index, highlight) {
+          var $element = $(highlight.selector);
+          var text = $element.text();
+          
+          if (highlight.offset) {
+            var start = highlight.offset.start;
+            var length = highlight.offset.length;
+            
+            var before = text.substr(0, start);
+            var highlighted = text.substr(start, length);
+            var after = text.substr(start + length);
+            
+            $element.html(before + "<span class='si-highlight'>" + highlighted + "</span>" + after);
+          } else {
+            $element.html("<span class='si-highlight'>" + text + "</span>");
+          }
+        });
+      }]);
+
+      //Adaptation carried out to comply with the CMS-plugin-v2 documentation
+      if( this.method === "domain" ){
+        _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
+      } else {
+        _si.push([this.method, this.url, this.token]);
+      }
+
+      //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
+      const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
+      if (this.url.match(pattern)) {
+        setTimeout(() => {
+          _si.push(['clear', function() { console.log('Cleared'); }]); 
+        }, 500);
+      }
+                 
     },
     events: {
       recheck: function () {
