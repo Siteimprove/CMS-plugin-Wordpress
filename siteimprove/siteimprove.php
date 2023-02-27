@@ -24,13 +24,13 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**  Hide the WordPress admin bar when the `hide_admin_bar` parameter is present. */
-function custom_preview_hide_admin_bar() {
-	if ( isset( $_GET['hide_admin_bar'] ) && '1' === $_GET['hide_admin_bar'] ) {
+/**  Hide the WordPress admin bar when the `si_preview` parameter is present. */
+function custom_preview_si_preview() {
+	if ( isset( $_GET['si_preview'] ) && '1' === $_GET['si_preview'] ) {
 		add_filter( 'show_admin_bar', '__return_false' );
 	}
 }
-add_action( 'parse_query', 'custom_preview_hide_admin_bar' );
+add_action( 'parse_query', 'custom_preview_si_preview' );
 
 /**
  * Include SiteimproveUtils class.
