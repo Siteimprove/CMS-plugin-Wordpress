@@ -39,16 +39,16 @@
       this.common();
     },
     common: function (url) {
-      var _si = window._si || [];  
+      const _si = window._si || [];  
     
-      var getDomCallback = async function (document) {
+      const getDomCallback = async function () {
         const newDiv = document.createElement("div");
         newDiv.setAttribute("id","div_iframe"); 
         document.body.appendChild(newDiv);
         let	string_test = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
         document.getElementById("div_iframe").innerHTML = string_test.replace(/&amp;/g , "&");
       	
-      	var promise = new Promise(function (resolve, reject) {
+      	const promise = new Promise(function (resolve, reject) {
           const iframe = document.getElementById("domIframe");
       		iframe.addEventListener(
       			"load",
@@ -62,16 +62,16 @@
       		);
       	});
       
-      	var document = await promise;
+      	const documentReturned = await promise;
       	return [
-          document, 
+          documentReturned, 
           () => { 
             $(".si-overlay").remove();
           }
         ];
       };
 
-      _si.push(['registerPrepublishCallback', getDomCallback(document), this.token]);
+      _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
 
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
