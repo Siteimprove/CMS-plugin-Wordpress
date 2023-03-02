@@ -46,22 +46,22 @@
         newDiv.setAttribute("id","div_iframe"); 
         document.body.appendChild(newDiv);
         newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
-      	
-      	const promise = new Promise(function (resolve, reject) {
+
+        const promise = new Promise(function (resolve, reject) {
           const iframe = document.getElementById("domIframe");
-      		iframe.addEventListener(
-      			"load",
-      			() => {
+          iframe.addEventListener(
+            "load",
+            () => {
                 const newDocument = iframe.contentWindow.document.cloneNode(true);
                 document.body.removeChild(newDiv);
                 resolve(newDocument);
             },
-      			{ once: true }
-      		);
-      	});
+            { once: true }
+          );
+        });
       
-      	const documentReturned = await promise;
-      	return [
+        const documentReturned = await promise;
+        return [
           documentReturned, 
           () => { 
             $(".si-overlay").remove();
