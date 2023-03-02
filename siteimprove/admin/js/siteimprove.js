@@ -52,9 +52,9 @@
       		iframe.addEventListener(
       			"load",
       			() => {
-              const newDocument = iframe.contentWindow.document.cloneNode(true);
-              document.body.removeChild(newDiv);
-              resolve(newDocument);
+                const newDocument = iframe.contentWindow.document.cloneNode(true);
+                document.body.removeChild(newDiv);
+                resolve(newDocument);
             },
       			{ once: true }
       		);
