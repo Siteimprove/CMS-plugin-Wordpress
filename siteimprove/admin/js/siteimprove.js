@@ -45,8 +45,7 @@
         const newDiv = document.createElement("div");
         newDiv.setAttribute("id","div_iframe"); 
         document.body.appendChild(newDiv);
-        let	iframeString = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
-        document.getElementById("div_iframe").innerHTML = iframeString.replace(/&amp;/g , "&");
+        document.getElementById("div_iframe").innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";;
       	
       	const promise = new Promise(function (resolve, reject) {
           const iframe = document.getElementById("domIframe");
