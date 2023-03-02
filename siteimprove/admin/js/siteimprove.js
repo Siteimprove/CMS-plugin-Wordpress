@@ -45,8 +45,8 @@
         const newDiv = document.createElement("div");
         newDiv.setAttribute("id","div_iframe"); 
         document.body.appendChild(newDiv);
-        let	string_test = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
-        document.getElementById("div_iframe").innerHTML = string_test.replace(/&amp;/g , "&");
+        let	iframeString = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
+        document.getElementById("div_iframe").innerHTML = iframeString.replace(/&amp;/g , "&");
       	
       	const promise = new Promise(function (resolve, reject) {
           const iframe = document.getElementById("domIframe");
@@ -55,8 +55,8 @@
       			() => { 
               const newDocument = iframe.contentWindow.document.cloneNode(true);
               document.getElementById("div_iframe").innerHTML = "";
-              document.body.removeChild(newDiv); 
-              resolve(newDocument); 
+              document.body.removeChild(newDiv);
+              resolve(newDocument);
             },
       			{ once: true }
       		);
