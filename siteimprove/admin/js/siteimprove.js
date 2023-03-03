@@ -16,19 +16,19 @@
       this.url = url;
       this.token = token;
       this.method = "domain";
-      this.common();
+      this.common(url);
     },
     recheck: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "recheck";
-      this.common();
+      this.common(url);
     },
     recrawl: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "recrawl";
-      this.common();
+      this.common(url);
     },
     contentcheck_flatdom: function (domReference, url, token, callback) {
       this.url = url;
@@ -36,7 +36,7 @@
       this.domReference = domReference;
       this.method = "contentcheck-flat-dom";
       this.callback = callback;
-      this.common();
+      this.common(url);
     },
     common: function (url) {
       const _si = window._si || [];  
