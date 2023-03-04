@@ -174,7 +174,7 @@
     const newDiv = document.createElement("div"); 
     newDiv.setAttribute("id","div_iframe"); 
     document.body.appendChild(newDiv);
-    newDiv.innerHTML = "<iframe id='domIframe' src="+ si_prepublish_data.url.concat("&hide_admin_bar=1") +" style='height:"+getDocumentHeight()+"px;width:100%'></iframe>";
+    newDiv.innerHTML = "<iframe id='domIframe' src="+ si_prepublish_data.url.concat("&si_preview=1") +" style='height:"+getDocumentHeight()+"px;width:100%'></iframe>";
     const domIframe = document.getElementById("domIframe");
     domIframe.addEventListener( "load" , () => {
     const newDocument = domIframe.contentWindow.document;
