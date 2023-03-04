@@ -24,8 +24,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**  
- * Hide the WordPress admin bar when the `si_preview` parameter is present. 
+/**
+ * Hide the WordPress admin bar when the `si_preview` parameter is present.
  */
 function si_preview() {
 	if ( isset( $_GET['si_preview'] ) && '1' === $_GET['si_preview'] ) {
