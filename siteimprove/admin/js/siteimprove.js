@@ -75,6 +75,11 @@
           } else {
             $element.html("<span class='si-highlight'>" + text + "</span>");
           }
+          
+          //Scroll to the target element
+          $([document.documentElement, document.body]).animate({
+            scrollTop: $(".si-highlight").offset().top
+          }, 1500);
         });
       }]);
 
