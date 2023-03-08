@@ -165,21 +165,12 @@
       return result;
     };
 
-  function getDocumentHeight() {
-    const body = document.body,
-    html = document.documentElement;
-
-    const height = Math.max( body.scrollHeight, body.offsetHeight, 
-    html.clientHeight, html.scrollHeight, html.offsetHeight );
-
-    return height;
-  }
-
-  function getCorrectDocument (si_prepublish_data) {
+  //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
+  function getCleanDocument(si_prepublish_data) {
     const newDiv = document.createElement("div"); 
     newDiv.setAttribute("id","div_iframe"); 
     document.body.appendChild(newDiv);
-    newDiv.innerHTML = "<iframe id='domIframe' src="+ si_prepublish_data.url.concat("&si_preview=1") +" style='height:"+getDocumentHeight()+"px;width:100%'></iframe>";
+    newDiv.innerHTML = "<iframe id='domIframe' src="+ si_prepublish_data.url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
     const domIframe = document.getElementById("domIframe");
     domIframe.addEventListener( "load" , () => {
     const newDocument = domIframe.contentWindow.document;
@@ -199,7 +190,7 @@
       .find("a")
       .on("click", function (evt) {
         var si_prepublish_data = siGetCurrentUrlAndToken();
-        getCorrectDocument(si_prepublish_data);
+        getCleanDocument(si_prepublish_data);
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
       });
