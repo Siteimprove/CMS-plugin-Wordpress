@@ -73,7 +73,13 @@
 
             $element.html(before + "<span class='si-highlight'>" + highlighted + "</span>" + after);
           } else {
-            $element.html("<span class='si-highlight'>" + text + "</span>");
+            //Dealing in a different way if the element or it's children came as an image.
+            if( $element.is('img') || $( $element[0] ).children().is( "img" ) ){
+              //Adding an inline padding was needed to put in evidence the div borders
+              $( $element[0] ).wrap( "<div class='si-highlight' style='padding: 5px;'></div>" );
+            }else{
+              $element.html( "<span class='si-highlight'>" + text + "</span>" );
+            }
           }
           
           //Scroll to the target element
