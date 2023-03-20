@@ -111,7 +111,7 @@
           }
           
           //Scroll to the target element
-          $([document.documentElement, document.body]).animate({
+          $([document.documentElement, document.body]).stop().animate({
             scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
           }, 1500);
         });
