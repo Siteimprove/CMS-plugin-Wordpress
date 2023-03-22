@@ -16,19 +16,19 @@
       this.url = url;
       this.token = token;
       this.method = "domain";
-      this.common();
+      this.common(url);
     },
     recheck: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "recheck";
-      this.common();
+      this.common(url);
     },
     recrawl: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "recrawl";
-      this.common();
+      this.common(url);
     },
     contentcheck_flatdom: function (domReference, url, token, callback) {
       this.url = url;
@@ -36,27 +36,38 @@
       this.domReference = domReference;
       this.method = "contentcheck-flat-dom";
       this.callback = callback;
-      this.common();
+      this.common(url);
     },
     common: function (url) {
-      var _si = window._si || [];  
+      const _si = window._si || [];  
+    
+      const getDomCallback = async function () {
+        const newDiv = document.createElement("div");
+        newDiv.setAttribute("id","div_iframe"); 
+        document.body.appendChild(newDiv);
+        //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
+        newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
 
-      var getDomCallback = async function () {
-      	var pageWindow = window.open(
-      		url,
-      		"Page Preview",
-      		"width=400,height=500"
-      	);
-      	var promise = new Promise(function (resolve, reject) {
-      		pageWindow.addEventListener(
-      			"load",
-      			() => { resolve(pageWindow.document); },
-      			{ once: true }
-      		);
-      	});
+        const promise = new Promise(function (resolve, reject) {
+          const iframe = document.getElementById("domIframe");
+          iframe.addEventListener(
+            "load",
+            () => {
+                const newDocument = iframe.contentWindow.document.cloneNode(true);
+                document.body.removeChild(newDiv);
+                resolve(newDocument);
+            },
+            { once: true }
+          );
+        });
       
-      	var document = await promise;
-      	return [document, () => { pageWindow.close(); }];
+        const documentReturned = await promise;
+        return [
+          documentReturned, 
+          () => { 
+            $(".si-overlay").remove();
+          }
+        ];
       };
 
       _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
@@ -74,13 +85,13 @@
 
       _si.push(['onHighlight', function(highlightInfo) {
         // Remove highlight tag wrapper
-        $(".si-highlight").contents().unwrap();
+        $( ".si-highlight" ).contents().unwrap();
         // Create an span tag for every highlight
-        $.each(highlightInfo.highlights, function(index, highlight) {
+        $.each( highlightInfo.highlights, function( index, highlight ) {
           var $element = $(highlight.selector);
           var text = $element.text();
           
-          if (highlight.offset) {
+          if ( highlight.offset ) {
             var start = highlight.offset.start;
             var length = highlight.offset.length;
             
@@ -90,8 +101,19 @@
             
             $element.html(before + "<span class='si-highlight'>" + highlighted + "</span>" + after);
           } else {
-            $element.html("<span class='si-highlight'>" + text + "</span>");
+            //Dealing in a different way if the element or it's children came as an image.
+            if( $element.is('img') || $( $element[0] ).children().is( "img" ) ){
+              //Adding an inline padding was needed to put in evidence the div borders
+              $( $element[0] ).wrap( "<div class='si-highlight' style='padding: 5px;'></div>" );
+            }else{
+              $element.html( "<span class='si-highlight'>" + text + "</span>" );
+            }
           }
+          
+          //Scroll to the target element
+          $([document.documentElement, document.body]).stop().animate({
+            scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
+          }, 1500);
         });
       }]);
 
