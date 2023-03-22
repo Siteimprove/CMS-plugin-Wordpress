@@ -30,6 +30,11 @@
       this.method = "recrawl";
       this.common();
     },
+	  highlight: function (callback) {
+      this.method = "onHighlight";
+      this.callback = callback;
+      this.common();
+    },
     contentcheck_flatdom: function (domReference, url, token, callback) {
       this.url = url;
       this.token = token;
@@ -50,6 +55,39 @@
         ]);
         return;
       }
+      _si.push(['onHighlight', function(highlightInfo) {
+        // Remove highlight tag wrapper
+        $(".si-highlight").contents().unwrap();
+        // Create an span tag for every highlight
+        $.each(highlightInfo.highlights, function(index, highlight) {
+          var $element = $(highlight.selector);
+          var text = $element.text();
+
+          if (highlight.offset) {
+            var start = highlight.offset.start;
+            var length = highlight.offset.length;
+
+            var before = text.substr(0, start);
+            var highlighted = text.substr(start, length);
+            var after = text.substr(start + length);
+
+            $element.html(before + "<span class='si-highlight'>" + highlighted + "</span>" + after);
+          } else {
+            //Dealing in a different way if the element or it's children came as an image.
+            if( $element.is('img') || $( $element[0] ).children().is( "img" ) ){
+              //Adding an inline padding was needed to put in evidence the div borders
+              $( $element[0] ).wrap( "<div class='si-highlight' style='padding: 5px;'></div>" );
+            }else{
+              $element.html( "<span class='si-highlight'>" + text + "</span>" );
+            }
+          }
+          
+          //Scroll to the target element
+          $([document.documentElement, document.body]).stop().animate({
+            scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
+          }, 1500);
+        });
+      }]);
 
       _si.push([this.method, this.url, this.token]);
     },
@@ -133,20 +171,34 @@
       return result;
     };
 
+  //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
+  function getCleanDocument(si_prepublish_data) {
+    const newDiv = document.createElement("div"); 
+    newDiv.setAttribute("id","div_iframe"); 
+    document.body.appendChild(newDiv);
+    newDiv.innerHTML = "<iframe id='domIframe' src="+ si_prepublish_data.url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
+    const domIframe = document.getElementById("domIframe");
+    domIframe.addEventListener( "load" , () => {
+    const newDocument = domIframe.contentWindow.document;
+    siteimprove.contentcheck_flatdom(
+        newDocument,
+        si_prepublish_data.url,
+        si_prepublish_data.token,
+        function () {
+          $(".si-overlay").remove();
+          document.body.removeChild(newDiv);
+        }
+      );
+    });
+  }
+
     $(".siteimprove-trigger-contentcheck")
       .find("a")
       .on("click", function (evt) {
         var si_prepublish_data = siGetCurrentUrlAndToken();
+        getCleanDocument(si_prepublish_data);
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
-        siteimprove.contentcheck_flatdom(
-          document,
-          si_prepublish_data.url,
-          si_prepublish_data.token,
-          function () {
-            $(".si-overlay").remove();
-          }
-        );
       });
   });
 })(jQuery);
