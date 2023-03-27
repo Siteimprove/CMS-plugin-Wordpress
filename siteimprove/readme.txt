@@ -2,7 +2,7 @@
 Contributors: siteimprove
 Tags: woocommerce, accessibility, analytics, insights, readability, spelling, seo
 Requires at least: 4.7.2
-Tested up to: 6.0
+Tested up to: 6.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -79,7 +79,7 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 == Changelog ==
 
 = 1.3.1 =
-* Added Highlighting feature to the plugin
+* Bufgix - Fixed Highlighting content issues for prepublish checks.
 
 = 1.3.0 =
 * Added Prepublish feature to the plugin

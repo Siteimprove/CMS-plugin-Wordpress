@@ -9,7 +9,7 @@ Every pull request will be checked against WPCS trough github actions.
 ## Version History
 
 ### 1.3.1
-* Added Highlighting feature to the plugin
+* Bufgix - Fixed Highlighting content issues for prepublish checks.
 
 ### 1.3.0
 * Added Prepublish feature to the plugin
