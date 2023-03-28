@@ -1,23 +1,23 @@
 === Siteimprove ===
 Contributors: siteimprove
-Tags: woocommerce, accessibility, analytics, insights, readability, spelling, seo
+Tags: accessibility, analytics, insights, readability, spelling, seo
 Requires at least: 4.7.2
 Tested up to: 6.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Siteimprove allows users to continuously test, fix and optimize their work through actionable content and analytics insights. Works with WooCommerce.
+Turn your most complex website challenges into manageable tasks—all from a single platform. Siteimprove is a comprehensive solution for every element of your marketing strategy—complete with three solution packages: Inclusivity, Content Experience, Marketing Performance.
 
 == Description ==
 
 The Siteimprove CMS Plugin bridges the gap between the WordPress content management system (CMS) and the Siteimprove Intelligence Platform. Now you can scan your website for errors as soon as a page is published, allowing you to fix mistakes, optimize content, and manage your site more efficiently.
-The plugin also provides you access with Prepublishing, an add-on which allows you to complete accessibility checks and conduct SEO diagnostics before you publish a page.
+The plugin also provides you access to Prepublish, an add-on which allows you to complete accessibility checks and SEO diagnostics before you publish a page.
 
 
 == Installation ==
 
-There are two ways to install the Siteimprove plugin on Wordpress.  
+There are two ways to install the Siteimprove plugin on WordPress.  
 
 To install the plugin via the listing page, type ‘Siteimprove’ in the search box on the Wordpress plugin listing page and click on ‘install’.  
 
@@ -52,7 +52,7 @@ While editing a published page, the plugin will also provide you with a page-lev
 
 = Prepublish =
 
-If you have purchased the prepublish add-on, you should see a Prepublish feature on the top of any unpublished page in preview mode.  
+If you have purchased the Prepublish add-on, you should see a Prepublish feature on the top of any unpublished page in preview mode.  
 
 Clicking on this button will trigger the Prepublish check, which provides live results of the accessibility and quality of the page. 
 
@@ -79,19 +79,19 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 == Changelog ==
 
 = 1.3.1 =
-* Bufgix - Fixed Highlighting content issues for prepublish checks.
+* Bufgix - Fix Highlighting content issues for prepublish checks.
 
 = 1.3.0 =
-* Added Prepublish feature to the plugin
+* Added - Add Prepublish feature to the plugin
 
 = 1.2.2 =
-* Bufgix - added CSS naming prefixes to avoid collision with other plugins
+* Bufgix - Add CSS naming prefixes to avoid collision with other plugins
 
 = 1.2.1 =
-* Bugfix - added check on nonce variable
+* Bugfix - Add check on nonce variable
 
 = 1.2.0 =
-* Security fixes according to WordPress Coding Standards and PHPCompatibility rulesets
+* Bugfix - Security fixes according to WordPress Coding Standards and PHPCompatibility rulesets
 
 = 1.1.0 =
 * Avoid PHP warnings/errors when saving posts
