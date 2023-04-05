@@ -164,9 +164,9 @@ class Siteimprove_Admin {
 	 */
 	private function siteimprove_add_js( $url, $type ) {
 		$file_name = get_option( 'siteimprove_overlayjs_file', 'overlay.js' );
-		$pattern = "/^[a-zA-Z_\d-]+.js/gm";
+		$pattern = '/^[a-zA-Z_\d-]+.js/gm';
 
-		if( preg_match($pattern, $file_name) ){
+		if ( preg_match( $pattern, $file_name ) ) {
 			$adjusted_name = Siteimprove::JS_LIBRARY_URL . $file_name;
 		} else {
 			$adjusted_name = $file_name;
