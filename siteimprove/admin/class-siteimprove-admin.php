@@ -163,8 +163,17 @@ class Siteimprove_Admin {
 	 * @return void
 	 */
 	private function siteimprove_add_js( $url, $type ) {
+		$file_name = get_option( 'siteimprove_overlayjs_file', 'overlay.js' );
+		$pattern = "/^[a-zA-Z_\d-]+.js/gm";
+
+		if( preg_match($pattern, $file_name) ){
+			$adjusted_name = Siteimprove::JS_LIBRARY_URL . $file_name;
+		} else {
+			$adjusted_name = $file_name;
+		}
+
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL . get_option( 'siteimprove_overlayjs_file', 'overlay.js' ), array(), $this->version, true );
+		wp_enqueue_script( 'siteimprove_overlay', $adjusted_name, array(), $this->version, true );
 		$public_url = get_option( 'siteimprove_public_url' );
 
 		if ( ! empty( $public_url ) ) {
