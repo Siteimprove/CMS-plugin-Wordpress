@@ -167,13 +167,13 @@ class Siteimprove_Admin {
 		$pattern = '/^[a-zA-Z_\d-]+.js/gm';
 
 		if ( preg_match( $pattern, $file_name ) ) {
-			$smallbox_path = Siteimprove::JS_LIBRARY_URL . $file_name;
+			$overlay_path = Siteimprove::JS_LIBRARY_URL . $file_name;
 		} else {
-			$smallbox_path = $file_name;
+			$overlay_path = $file_name;
 		}
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'siteimprove_overlay', $smallbox_path, array(), $this->version, true );
+		wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
 		$public_url = get_option( 'siteimprove_public_url' );
 
 		if ( ! empty( $public_url ) ) {
