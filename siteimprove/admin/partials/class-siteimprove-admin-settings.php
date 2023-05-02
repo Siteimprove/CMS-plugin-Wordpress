@@ -326,7 +326,7 @@ class Siteimprove_Admin_Settings {
 
 		<label class="switch">
 			<input type="checkbox" id="siteimprove_disable_new_version_field" name="siteimprove_disable_new_version"  value='1' <?php echo esc_attr( $is_checked ); ?> />
-			<span class="slider round"></span>
+			<span class="slider round" id="siteimprove_disable_new_version_toggle"></span>
 		</label>
 		<?php
 	}
