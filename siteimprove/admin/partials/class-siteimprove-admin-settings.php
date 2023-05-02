@@ -41,8 +41,11 @@ class Siteimprove_Admin_Settings {
 		// Register settings for siteimprove plugin settings page.
 		register_setting( 'siteimprove', 'siteimprove_token' );
 		register_setting( 'siteimprove', 'siteimprove_disable_new_version', 'Siteimprove_Admin_Settings::validate_siteimprove_disable_new_version');
+		register_setting( 'siteimprove', 'siteimprove_public_url', 'Siteimprove_Admin_Settings::validate_public_url' );
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
+		register_setting( 'siteimprove', 'siteimprove_dev_mode', 'Siteimprove_Admin_Settings::validate_siteimprove_dev_mode' );
+		register_setting( 'siteimprove', 'siteimprove_overlayjs_file', 'Siteimprove_Admin_Settings::validate_siteimprove_overlayjs_file' );
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
@@ -63,13 +66,21 @@ class Siteimprove_Admin_Settings {
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
+			'siteimprove_public_url',
+			__( 'Public URL', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
+			'siteimprove'
+		);
+
+		// Register a new section in the siteimprove page.
+		add_settings_section(
 			'siteimprove_version_section',
 			__( 'Version', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
 			'siteimprove'
 		);
-		
-		// register a new field siteimprove_token_field, inside the siteimprove_token section of the settings page.
+
+		// register a new field siteimprove_disable_new_version_field, inside the siteimprove_version_section section of the settings page.
 		add_settings_field(
 			'siteimprove_disable_new_version',
 			__( 'Disable new version', 'siteimprove' ),
@@ -77,7 +88,15 @@ class Siteimprove_Admin_Settings {
 			'siteimprove',
 			'siteimprove_version_section'
 		);
-		
+
+		// register a new field siteimprove_token_field, inside the siteimprove_token section of the settings page.
+		add_settings_field(
+			'siteimprove_public_url',
+			__( 'Public URL', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_public_url_field',
+			'siteimprove',
+			'siteimprove_public_url'
+		);
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
@@ -86,6 +105,34 @@ class Siteimprove_Admin_Settings {
 			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
 			'siteimprove'
 		);
+
+		// Register a new section in the siteimprove page.
+		if ( isset( $_GET['devmode'] ) ) {
+			add_settings_section(
+				'siteimprove_dev_mode_section',
+				__( 'Dev Mode', 'siteimprove' ),
+				'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
+				'siteimprove'
+			);
+
+			// register a new field Development_mode, inside the siteimprove_api_credentials section of the settings page.
+			add_settings_field(
+				'siteimprove_dev_mode',
+				__( 'Development mode - use beta javascript', 'siteimprove' ),
+				'Siteimprove_Admin_Settings::siteimprove_dev_mode_field',
+				'siteimprove',
+				'siteimprove_dev_mode_section'
+			);
+
+			// register a new field Overlayjs_file, inside the siteimprove_api_credentials section of the settings page.
+			add_settings_field(
+				'siteimprove_overlayjs_file',
+				__( 'Overlay JS File', 'siteimprove' ),
+				'Siteimprove_Admin_Settings::siteimprove_overlayjs_file_field',
+				'siteimprove',
+				'siteimprove_dev_mode_section'
+			);
+		}
 
 		// register a new field siteimprove_api_username_field, inside the siteimprove_api_credentials section of the settings page.
 		add_settings_field(
@@ -197,20 +244,21 @@ class Siteimprove_Admin_Settings {
 				<?php
 			}
 		}
-	}
-
-	/**
-	 * Form fields
-	 *
-	 * @param mixed $args Field Arguments.
-	 * @return void
-	 */
-	public static function siteimprove_token_field( $args ) {
-		?>
-
-		<input type="text" id="siteimprove_token_field" name="siteimprove_token" value="<?php echo esc_attr( get_option( 'siteimprove_token' ) ); ?>" maxlength="50" size="50" />
-		<input class="button" id="siteimprove_token_request" type="button" value="<?php echo esc_attr( __( 'Request new token', 'siteimprove' ) ); ?>" />
-		<?php
+		
+		if ( 'siteimprove_public_url' === $args['id'] ) {
+			?>
+			<p>
+			<?php
+					esc_html_e( 'Please provide the Public URL for the current site if for any reasons it\'s not the same as the Admin Panel URL. Otherwise you can leave this field empty.' );
+			?>
+			</p>
+			<p>
+			<?php
+					esc_html_e( 'Example: Website Admin Panel is hosted at: http://stg-thewebsite.com but the final Public URL will be http://thewebsite.com', 'siteimprove' );
+			?>
+			</p>
+			<?php
+		}
 	}
 
 	/**
@@ -239,6 +287,32 @@ class Siteimprove_Admin_Settings {
 	 * @param mixed $args Field Arguments.
 	 * @return void
 	 */
+	public static function siteimprove_token_field( $args ) {
+		?>
+
+		<input type="text" id="siteimprove_token_field" name="siteimprove_token" value="<?php echo esc_attr( get_option( 'siteimprove_token' ) ); ?>" maxlength="50" size="50" />
+		<input class="button" id="siteimprove_token_request" type="button" value="<?php echo esc_attr( __( 'Request new token', 'siteimprove' ) ); ?>" />
+		<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
+	public static function siteimprove_public_url_field( $args ) {
+		?>
+		<input type="text" id="siteimprove_public_url_field" name="siteimprove_public_url" value="<?php echo esc_attr( get_option( 'siteimprove_public_url' ) ); ?>"  size="50" />
+		<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
 	public static function siteimprove_api_username_field( $args ) {
 		?>
 
@@ -256,6 +330,36 @@ class Siteimprove_Admin_Settings {
 		?>
 
 		<input type="text" id="siteimprove_api_key_field" name="siteimprove_api_key" value="<?php echo esc_attr( get_option( 'siteimprove_api_key' ) ); ?>" maxlength="50" size="50" />
+		<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
+	public static function siteimprove_dev_mode_field( $args ) {
+		$is_checked = '';
+		if ( 1 === intval( get_option( 'siteimprove_dev_mode' ) ) ) {
+			$is_checked = 'checked';
+		}
+		?>
+
+		<input type="checkbox" id="siteimprove_dev_mode_field" name="siteimprove_dev_mode"  value='1' <?php echo esc_attr( $is_checked ); ?> />
+		<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
+	public static function siteimprove_overlayjs_file_field( $args ) {
+		?>
+
+		<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>" maxlength="50" size="50" />
 		<?php
 	}
 
@@ -338,6 +442,62 @@ class Siteimprove_Admin_Settings {
 	}
 
 	/**
+	 * Field Update
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return bool
+	 */
+	public static function validate_siteimprove_dev_mode( $value ) {
+		if ( ! empty( $value ) ) {
+			return $value;
+		}
+		if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+			$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
+			if ( '' !== trim( $checkbox_value ) ) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Field Update
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return bool
+	 */
+	public static function validate_siteimprove_overlayjs_file( $value ) {
+		if ( ! empty( $value ) ) {
+			$old_value        = get_option( 'siteimprove_overlayjs_file' );
+			$dev_mode_enabled = false;
+			if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+				$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
+				if ( '' !== trim( $checkbox_value ) ) {
+					$dev_mode_enabled = true;
+				}
+			}
+			if ( ! preg_match( '/.+\..{2,}/', $value ) ) {
+				add_settings_error( 'siteimprove_messages', 'siteimprove_api_key_error', __( 'Overlay file not saved - Invalid format (please verify if name and extention are correct).', 'siteimprove' ) );
+				if ( ! empty( $old_value ) ) {
+					return $old_value;
+				}
+			} else {
+				if ( $dev_mode_enabled ) {
+					if (
+					isset( $_POST['siteimprove_overlayjs_file'], $_REQUEST['_wpnonce'] )
+					&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
+					) {
+						return $value;
+					}
+				} else {
+					return 'overlay.js';
+				}
+			}
+		}
+		return $value;
+	}
+
+	/**
 	 * Field Validation
 	 *
 	 * @param string $value Original value posted in settings page.
@@ -379,6 +539,24 @@ class Siteimprove_Admin_Settings {
 				}
 			}
 		}
+		return $value;
+	}
+
+	/**
+	 * Field Validation
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return string
+	 */
+	public static function validate_public_url( $value ) {
+		if ( ! empty( $value ) ) {
+			$old_value = get_option( 'siteimprove_public_url' );
+			if ( filter_var( $value, FILTER_VALIDATE_URL ) === false ) {
+				add_settings_error( 'siteimprove_messages', 'siteimprove_public_url_error', __( 'Invalid format for Public URL field', 'siteimprove' ) );
+				return $old_value;
+			}
+		}
+
 		return $value;
 	}
 
@@ -447,7 +625,15 @@ class Siteimprove_Admin_Settings {
 			$results       = json_decode( $request['body'] );
 			$account_sites = $results->items;
 
-			$domain     = wp_parse_url( get_site_url(), PHP_URL_HOST );
+			$public_url = get_option( 'siteimprove_public_url' );
+
+			if ( ! empty( $public_url ) ) {
+				$site_url = $public_url;
+			} else {
+				$site_url = get_site_url();
+			}
+
+			$domain     = wp_parse_url( $site_url, PHP_URL_HOST );
 			$site_found = false;
 
 			foreach ( $account_sites as $site_key => $site_data ) {

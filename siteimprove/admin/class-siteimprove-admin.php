@@ -163,22 +163,45 @@ class Siteimprove_Admin {
 	 * @return void
 	 */
 	private function siteimprove_add_js( $url, $type ) {
-		if( 1 === intval( get_option( 'siteimprove_disable_new_version' ) ) ){
-			$js_library_url = Siteimprove::JS_LIBRARY_URL . "overlay-v1.js";
-		} else {
-			$js_library_url = Siteimprove::JS_LIBRARY_URL . "overlay-latest.js";
-		}
+		$file_name = get_option( 'siteimprove_overlayjs_file', 'overlay-v2-dev.js' );
+		$disabled_new_version = get_option( 'siteimprove_disable_new_version' );
+		$pattern = '/^[a-zA-Z_\d-]+.js/';
 		
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'siteimprove_overlay', $js_library_url, array(), $this->version, true );
+		if ( ! empty( $file_name ) && preg_match( $pattern, $file_name ) ) {
+			$overlay_path = Siteimprove::JS_LIBRARY_URL . $file_name;
+		} else {
+			if ( $disabled_new_version ) {
+				$overlay_path = Siteimprove::JS_LIBRARY_URL . "overlay-v1.js";
+			} else {
+				$overlay_path = Siteimprove::JS_LIBRARY_URL . "overlay-latest.js";
+			}
+		}
+
+		if ($disabled_new_version) {
+			$si_wp_script = "js/siteimprove-v1.js";
+		} else {
+			$si_wp_script = "js/siteimprove-latest.js";
+		}
+
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . $si_wp_script, array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
+		$public_url = get_option( 'siteimprove_public_url' );
+
+		if ( ! empty( $public_url ) ) {
+			$parsed_url = wp_parse_url( $url );
+			$url        = "$public_url$parsed_url[path]" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
+		}
+
+		$si_js_args = array(
+			'token' => get_option( 'siteimprove_token' ),
+			'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
+			'url'   => $url,
+		);
+
 		wp_localize_script(
 			$this->plugin_name,
 			esc_js( $type ),
-			array(
-				'token' => get_option( 'siteimprove_token' ),
-				'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
-				'url'   => $url,
-			)
+			$si_js_args
 		);
 
 		// Adding translation strings.
@@ -382,7 +405,7 @@ class Siteimprove_Admin {
 					'meta'  => array(
 						'title' => __( 'Siteimprove Prepublish', 'siteimprove' ),
 						'class' => 'siteimprove-trigger-contentcheck',
-					),
+					)
 				)
 			);
 		}
