@@ -163,8 +163,14 @@ class Siteimprove_Admin {
 	 * @return void
 	 */
 	private function siteimprove_add_js( $url, $type ) {
+		if( 1 === intval( get_option( 'siteimprove_disable_new_version' ) ) ){
+			$js_library_url = Siteimprove::JS_LIBRARY_URL . "overlay-v1.js";
+		} else {
+			$js_library_url = Siteimprove::JS_LIBRARY_URL . "overlay-latest.js";
+		}
+		
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'siteimprove_overlay', Siteimprove::JS_LIBRARY_URL, array(), $this->version, true );
+		wp_enqueue_script( 'siteimprove_overlay', $js_library_url, array(), $this->version, true );
 		wp_localize_script(
 			$this->plugin_name,
 			esc_js( $type ),
@@ -366,7 +372,7 @@ class Siteimprove_Admin {
 		$prepublish_enabled = intval( get_option( 'siteimprove_prepublish_enabled', 0 ) );
 
 		if ( is_preview() && 1 === $prepublish_allowed && 1 === $prepublish_enabled ) {
-			$prepublish_button = '<svg xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" viewBox="0 0 80 80"><path d="M40 0C18 0 0 18 0 40.1 0 62.1 18 80 40 80 62 80 80 62.1 80 40.1 80 18 62.1 0 40 0Zm0 67C25.2 67 13.1 54.9 13.1 40.1 13.1 25.2 25.2 13.2 40 13.2c14.4 0 26.2 11.4 26.9 25.6-16.7 12-30.5-10.9-46.5-2.6 18.7-5.6 25.1 22.3 43.7 16C59.6 60.9 50.5 67 40 67Z" fill="#F0F6FC" fill-opacity="0.6"/></svg>';
+			$prepublish_button = '<svg xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" viewBox="0 0 24 24" focusable="false" aria-hidden="true" fill="currentColor"><path fill="#141155" d="M12.015625.113281C5.433594.113281.113281 5.433594.113281 12.015625c0 6.578125 5.320313 11.886719 11.902344 11.886719 6.578125 0 11.886719-5.324219 11.886719-11.886719 0-6.566406-5.324219-11.902344-11.886719-11.902344Zm0 0"></path><path fill="#fff" d="m6.097656 14.796875 1.695313-1.003906c.367187.945312 1.074219 1.539062 2.328125 1.539062 1.257812 0 1.625-.507812 1.625-1.074219 0-.746093-.679688-1.042968-2.1875-1.480468-1.539063-.4375-3.050782-1.074219-3.050782-3.007813 0-1.933593 1.609376-2.992187 3.332032-2.992187s2.9375.847656 3.613281 2.257812l-1.664063.960938c-.367187-.777344-.917968-1.300782-1.949218-1.300782-.832032 0-1.328125.4375-1.328125 1.019532 0 .621094.382812.945312 1.921875 1.410156 1.609375.523438 3.316406 1.058594 3.316406 3.121094 0 1.890625-1.523438 3.046875-3.671875 3.046875-2.058594.015625-3.441406-.972657-3.980469-2.496094m8.667969-6.917969c0-.621094.507813-1.160156 1.144531-1.160156.636719 0 1.15625.539062 1.15625 1.160156 0 .621094-.507812 1.140625-1.15625 1.140625-.648437 0-1.144531-.519531-1.144531-1.140625m.214844 1.988282h1.863281v7.230468h-1.863281Zm0 0"></path></svg>';
 			$admin_bar->add_menu(
 				array(
 					'id'    => 'siteimprove-trigger-contentcheck',

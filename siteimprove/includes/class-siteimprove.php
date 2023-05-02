@@ -48,7 +48,7 @@ class Siteimprove {
 	 */
 	protected $version;
 
-	const JS_LIBRARY_URL = 'https://cdn.siteimprove.net/cms/overlay.js';
+	const JS_LIBRARY_URL = 'https://cdn.siteimprove.net/cms/';
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -60,7 +60,7 @@ class Siteimprove {
 	public function __construct() {
 
 		$this->plugin_name = 'siteimprove';
-		$this->version     = '1.3.1';
+		$this->version     = '2.0.0';
 
 		$this->load_dependencies();
 		$this->set_locale();

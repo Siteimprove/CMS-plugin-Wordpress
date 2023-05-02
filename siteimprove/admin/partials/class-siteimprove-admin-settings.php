@@ -40,6 +40,7 @@ class Siteimprove_Admin_Settings {
 	public function register_section() {
 		// Register settings for siteimprove plugin settings page.
 		register_setting( 'siteimprove', 'siteimprove_token' );
+		register_setting( 'siteimprove', 'siteimprove_disable_new_version', 'Siteimprove_Admin_Settings::validate_siteimprove_disable_new_version');
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
 
@@ -59,6 +60,24 @@ class Siteimprove_Admin_Settings {
 			'siteimprove',
 			'siteimprove_token'
 		);
+
+		// Register a new section in the siteimprove page.
+		add_settings_section(
+			'siteimprove_version_section',
+			__( 'Version', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
+			'siteimprove'
+		);
+		
+		// register a new field siteimprove_token_field, inside the siteimprove_token section of the settings page.
+		add_settings_field(
+			'siteimprove_disable_new_version',
+			__( 'Disable new version', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_disable_new_version_field',
+			'siteimprove',
+			'siteimprove_version_section'
+		);
+		
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
@@ -200,6 +219,26 @@ class Siteimprove_Admin_Settings {
 	 * @param mixed $args Field Arguments.
 	 * @return void
 	 */
+	public static function siteimprove_disable_new_version_field( $args ) {
+		$is_checked = '';
+		if ( 1 === intval( get_option( 'siteimprove_disable_new_version' ) ) ) {
+			$is_checked = 'checked';
+			echo "Path used: overlay-v1.js <br />";
+		} else {
+			echo "Path used: overlay-latest.js <br />";
+		}
+		?>
+
+		<input type="checkbox" id="siteimprove_disable_new_version_field" name="siteimprove_disable_new_version"  value='1' <?php echo esc_attr( $is_checked ); ?> />
+		<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
 	public static function siteimprove_api_username_field( $args ) {
 		?>
 
@@ -244,6 +283,25 @@ class Siteimprove_Admin_Settings {
 			</form>
 		</div>
 			<?php
+	}
+
+	/**
+	 * Field Update
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return bool
+	 */
+	public static function validate_siteimprove_disable_new_version( $value ) {
+		if ( ! empty( $value ) ) {
+			return $value;
+		}
+		if ( isset( $_POST['siteimprove_disable_new_version'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+			$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_disable_new_version'] ) );
+			if ( '' !== trim( $checkbox_value ) ) {
+				return 1;
+			}
+		}
+		return 0;
 	}
 
 	/**
