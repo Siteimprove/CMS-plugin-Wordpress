@@ -108,6 +108,23 @@ class Siteimprove_Admin_Settings {
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
+			'siteimprove_disable_latest_section',
+			__( 'New Version', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
+			'siteimprove'
+		);
+
+		// register a new field Development_mode, inside the siteimprove_api_credentials section of the settings page.
+		add_settings_field(
+			'siteimprove_disable_latest',
+			__( 'Disable new version', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_disable_new_version_field',
+			'siteimprove',
+			'siteimprove_disable_latest_section'
+		);
+
+		// Register a new section in the siteimprove page.
+		add_settings_section(
 			'siteimprove_dev_mode_section',
 			__( 'Dev Mode', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
@@ -290,6 +307,26 @@ class Siteimprove_Admin_Settings {
 		?>
 
 		<input type="text" id="siteimprove_api_key_field" name="siteimprove_api_key" value="<?php echo esc_attr( get_option( 'siteimprove_api_key' ) ); ?>" maxlength="50" size="50" />
+		<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
+	public static function siteimprove_disable_new_version_field( $args ) {
+		$is_checked = '';
+		if ( 1 === intval( get_option( 'siteimprove_disable_new_version' ) ) ) {
+			$is_checked = 'checked';
+		}
+		?>
+
+		<label class="switch">
+			<input type="checkbox" id="siteimprove_disable_new_version_field" name="siteimprove_disable_new_version"  value='1' <?php echo esc_attr( $is_checked ); ?> />
+			<span class="slider round"></span>
+		</label>
 		<?php
 	}
 
