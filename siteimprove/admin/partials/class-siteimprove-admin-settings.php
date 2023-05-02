@@ -43,6 +43,7 @@ class Siteimprove_Admin_Settings {
 		register_setting( 'siteimprove', 'siteimprove_public_url', 'Siteimprove_Admin_Settings::validate_public_url' );
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
+		register_setting( 'siteimprove', 'siteimprove_disable_new_version', 'Siteimprove_Admin_Settings::validate_siteimprove_disable_new_version' );
 		register_setting( 'siteimprove', 'siteimprove_dev_mode', 'Siteimprove_Admin_Settings::validate_siteimprove_dev_mode' );
 		register_setting( 'siteimprove', 'siteimprove_overlayjs_file', 'Siteimprove_Admin_Settings::validate_siteimprove_overlayjs_file' );
 
@@ -108,7 +109,7 @@ class Siteimprove_Admin_Settings {
 
 		// Register a new section in the siteimprove page.
 		add_settings_section(
-			'siteimprove_disable_latest_section',
+			'siteimprove_disable_new_version_section',
 			__( 'New Version', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
 			'siteimprove'
@@ -116,11 +117,11 @@ class Siteimprove_Admin_Settings {
 
 		// register a new field Development_mode, inside the siteimprove_api_credentials section of the settings page.
 		add_settings_field(
-			'siteimprove_disable_latest',
+			'siteimprove_disable_new_version',
 			__( 'Disable new version', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_disable_new_version_field',
 			'siteimprove',
-			'siteimprove_disable_latest_section'
+			'siteimprove_disable_new_version_section'
 		);
 
 		// Register a new section in the siteimprove page.
@@ -431,6 +432,25 @@ class Siteimprove_Admin_Settings {
 		}
 		if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
 			$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
+			if ( '' !== trim( $checkbox_value ) ) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Field Update
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return bool
+	 */
+	public static function validate_siteimprove_disable_new_version( $value ) {
+		if ( ! empty( $value ) ) {
+			return $value;
+		}
+		if ( isset( $_POST['siteimprove_disable_new_version'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+			$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_disable_new_version'] ) );
 			if ( '' !== trim( $checkbox_value ) ) {
 				return 1;
 			}
