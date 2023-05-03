@@ -89,6 +89,28 @@
 						$('#siteimprove_dev_mode_field').closest('tr').next('tr').hide();
 				}
 			);
+
+			$( '#siteimprove_disable_new_version_field' ).on(
+				'click',
+				function () {
+					const table = $(this).closest('table').next('h2');
+					table.next('table')[this.checked? 'hide' : 'show']();
+					table[this.checked? 'hide' : 'show']();
+				}
+			);
+
+			$( document ).ready(
+				function () {
+							//const table = $(this).closest('table').next('h2');
+							if($("#siteimprove_disable_new_version_field").is(":checked")){
+								$("#siteimprove_disable_new_version_field").closest('table').next('h2').next('table').hide();
+								$("#siteimprove_disable_new_version_field").closest('table').next('h2').hide();
+							}else{
+								$("#siteimprove_disable_new_version_field").closest('table').next('h2').show();
+								$("#siteimprove_disable_new_version_field").closest('table').next('h2').next('table').show();
+							}
+				        }
+			);
 		}
 	);
 
