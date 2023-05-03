@@ -6,11 +6,12 @@
   "use strict";
 
   var siteimprove = {
-    input: function (url, token, version) {
+    input: function (url, token, version, preview) {
       this.url = url;
       this.token = token;
       this.method = "input";
       this.version = version;
+      this.preview = preview;
       this.common(url);
     },
     domain: function (url, token) {
@@ -122,7 +123,7 @@
       } else {
         // 0 = overlay-latest.js
         // 1 = overlay-v1.js
-        if(this.version == 0) {
+        if(this.version == 0 && this.preview) {
           _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
         }
         _si.push([this.method, this.url, this.token]);
@@ -178,7 +179,7 @@
 
     // If exist siteimprove_input, call input Siteimprove method.
     if (typeof siteimprove_input !== "undefined") {
-      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version);
+      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.preview);
     }
 
     // If exist siteimprove_domain, call domain Siteimprove method.

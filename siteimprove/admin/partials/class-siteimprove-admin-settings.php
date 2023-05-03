@@ -115,15 +115,6 @@ class Siteimprove_Admin_Settings {
 				'siteimprove'
 			);
 
-			// register a new field Development_mode, inside the siteimprove_api_credentials section of the settings page.
-			add_settings_field(
-				'siteimprove_dev_mode',
-				__( 'Development mode - use beta javascript', 'siteimprove' ),
-				'Siteimprove_Admin_Settings::siteimprove_dev_mode_field',
-				'siteimprove',
-				'siteimprove_dev_mode_section'
-			);
-
 			// register a new field Overlayjs_file, inside the siteimprove_api_credentials section of the settings page.
 			add_settings_field(
 				'siteimprove_overlayjs_file',
@@ -336,23 +327,6 @@ class Siteimprove_Admin_Settings {
 	 * @param mixed $args Field Arguments.
 	 * @return void
 	 */
-	public static function siteimprove_dev_mode_field( $args ) {
-		$is_checked = '';
-		if ( 1 === intval( get_option( 'siteimprove_dev_mode' ) ) ) {
-			$is_checked = 'checked';
-		}
-		?>
-
-		<input type="checkbox" id="siteimprove_dev_mode_field" name="siteimprove_dev_mode"  value='1' <?php echo esc_attr( $is_checked ); ?> />
-		<?php
-	}
-
-	/**
-	 * Form fields
-	 *
-	 * @param mixed $args Field Arguments.
-	 * @return void
-	 */
 	public static function siteimprove_overlayjs_file_field( $args ) {
 		?>
 
@@ -444,51 +418,21 @@ class Siteimprove_Admin_Settings {
 	 * @param string $value Original value posted in settings page.
 	 * @return bool
 	 */
-	public static function validate_siteimprove_dev_mode( $value ) {
-		if ( ! empty( $value ) ) {
-			return $value;
-		}
-		if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
-			$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
-			if ( '' !== trim( $checkbox_value ) ) {
-				return 1;
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 * Field Update
-	 *
-	 * @param string $value Original value posted in settings page.
-	 * @return bool
-	 */
 	public static function validate_siteimprove_overlayjs_file( $value ) {
 		if ( ! empty( $value ) ) {
 			$old_value        = get_option( 'siteimprove_overlayjs_file' );
-			$dev_mode_enabled = false;
-			if ( isset( $_POST['siteimprove_dev_mode'], $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
-				$checkbox_value = sanitize_text_field( wp_unslash( $_POST['siteimprove_dev_mode'] ) );
-				if ( '' !== trim( $checkbox_value ) ) {
-					$dev_mode_enabled = true;
-				}
-			}
 			if ( ! preg_match( '/.+\..{2,}/', $value ) ) {
 				add_settings_error( 'siteimprove_messages', 'siteimprove_api_key_error', __( 'Overlay file not saved - Invalid format (please verify if name and extention are correct).', 'siteimprove' ) );
 				if ( ! empty( $old_value ) ) {
 					return $old_value;
 				}
 			} else {
-				if ( $dev_mode_enabled ) {
-					if (
+				if (
 					isset( $_POST['siteimprove_overlayjs_file'], $_REQUEST['_wpnonce'] )
 					&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
 					) {
 						return $value;
 					}
-				} else {
-					return 'overlay.js';
-				}
 			}
 		}
 		return $value;
