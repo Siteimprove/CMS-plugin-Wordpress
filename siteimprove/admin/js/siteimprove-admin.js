@@ -73,6 +73,7 @@
 					);
 				}
 			);
+			/*
 			
 			$( '#siteimprove_dev_mode_field' ).on(
 				'click',

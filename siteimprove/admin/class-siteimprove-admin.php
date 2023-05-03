@@ -190,6 +190,7 @@ class Siteimprove_Admin {
 			'token' => get_option( 'siteimprove_token' ),
 			'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
 			'url'   => $url,
+			'version' => $disabled_new_version
 		);
 
 		wp_localize_script(

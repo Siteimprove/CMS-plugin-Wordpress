@@ -6,10 +6,11 @@
   "use strict";
 
   var siteimprove = {
-    input: function (url, token) {
+    input: function (url, token, version) {
       this.url = url;
       this.token = token;
       this.method = "input";
+      this.version = version;
       this.common(url);
     },
     domain: function (url, token) {
@@ -119,7 +120,11 @@
       if( this.method === "domain" ){
         _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
       } else {
-        _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+        // 0 = overlay-latest.js
+        // 1 = overlay-v1.js
+        if(this.version == 0) {
+          _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+        }
         _si.push([this.method, this.url, this.token]);
       }
 
@@ -138,6 +143,7 @@
           '<input type="button" class="siteimprove_ui recheck-button button button-large" value="' +
           siteimprove_recheck_button.txt +
           '" />';
+        console.log($("#publishing-action"));
         if ($("#publishing-action").length > 0) {
           $(
             '<div class="clear"></div><div class="siteimprove_ui recheck-button-wrapper">' +
@@ -172,7 +178,7 @@
 
     // If exist siteimprove_input, call input Siteimprove method.
     if (typeof siteimprove_input !== "undefined") {
-      siteimprove.input(siteimprove_input.url, siteimprove_input.token);
+      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version);
     }
 
     // If exist siteimprove_domain, call domain Siteimprove method.
