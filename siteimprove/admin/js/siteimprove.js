@@ -144,7 +144,6 @@
           '<input type="button" class="siteimprove_ui recheck-button button button-large" value="' +
           siteimprove_recheck_button.txt +
           '" />';
-        console.log($("#publishing-action"));
         if ($("#publishing-action").length > 0) {
           $(
             '<div class="clear"></div><div class="siteimprove_ui recheck-button-wrapper">' +
