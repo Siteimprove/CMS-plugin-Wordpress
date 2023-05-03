@@ -70,8 +70,6 @@
         ];
       };
 
-      _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
-
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
           this.method,
@@ -121,6 +119,7 @@
       if( this.method === "domain" ){
         _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
       } else {
+        _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
         _si.push([this.method, this.url, this.token]);
       }
 

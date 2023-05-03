@@ -271,9 +271,6 @@ class Siteimprove_Admin_Settings {
 		$is_checked = '';
 		if ( 1 === intval( get_option( 'siteimprove_disable_new_version' ) ) ) {
 			$is_checked = 'checked';
-			echo "Path used: overlay-v1.js <br />";
-		} else {
-			echo "Path used: overlay-latest.js <br />";
 		}
 		?>
 

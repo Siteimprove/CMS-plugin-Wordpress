@@ -142,7 +142,7 @@ class Siteimprove_Admin {
 				$taxonomy = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
 
 				if ( 'term.php' === $pagenow || ( 'edit-tags.php' === $pagenow && wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['action'] ) && 'edit' === $_GET['action'] ) ) {
-					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );
+					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );				
 					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_recheck_button' );
 				}
 				break;
@@ -177,13 +177,7 @@ class Siteimprove_Admin {
 			}
 		}
 
-		if ($disabled_new_version) {
-			$si_wp_script = "js/siteimprove-v1.js";
-		} else {
-			$si_wp_script = "js/siteimprove-latest.js";
-		}
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . $si_wp_script, array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
 		$public_url = get_option( 'siteimprove_public_url' );
 

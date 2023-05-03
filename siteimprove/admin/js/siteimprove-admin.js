@@ -90,6 +90,8 @@
 				}
 			);
 
+			/*
+
 			$( '#siteimprove_disable_new_version_field' ).on(
 				'click',
 				function () {
@@ -98,7 +100,6 @@
 					table[this.checked? 'hide' : 'show']();
 				}
 			);
-
 			$( document ).ready(
 				function () {
 							//const table = $(this).closest('table').next('h2');
@@ -111,6 +112,7 @@
 							}
 				        }
 			);
+			*/
 		}
 	);
 
