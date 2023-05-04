@@ -40,7 +40,7 @@ class Siteimprove_Admin_Settings {
 	public function register_section() {
 		// Register settings for siteimprove plugin settings page.
 		register_setting( 'siteimprove', 'siteimprove_token' );
-		register_setting( 'siteimprove', 'siteimprove_disable_new_version', 'Siteimprove_Admin_Settings::validate_siteimprove_disable_new_version');
+		register_setting( 'siteimprove', 'siteimprove_disable_new_version', 'Siteimprove_Admin_Settings::validate_siteimprove_disable_new_version' );
 		register_setting( 'siteimprove', 'siteimprove_public_url', 'Siteimprove_Admin_Settings::validate_public_url' );
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
@@ -235,7 +235,7 @@ class Siteimprove_Admin_Settings {
 				<?php
 			}
 		}
-		
+
 		if ( 'siteimprove_public_url' === $args['id'] ) {
 			?>
 			<p>
@@ -432,7 +432,7 @@ class Siteimprove_Admin_Settings {
 					&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
 					) {
 						return $value;
-					}
+				}
 			}
 		}
 		return $value;
