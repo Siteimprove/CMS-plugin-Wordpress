@@ -81,8 +81,6 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 = 2.0.0 =
 * Added - Support for new version
 * Added - Checkbox for disabling new version
-
-= 1.3.2= 
 * Added Public URL field to the plugin
 * Added Custom Overlay field.
 
