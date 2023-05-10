@@ -142,7 +142,7 @@ class Siteimprove_Admin {
 				$taxonomy = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
 
 				if ( 'term.php' === $pagenow || ( 'edit-tags.php' === $pagenow && wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['action'] ) && 'edit' === $_GET['action'] ) ) {
-					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );
+					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );				
 					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_recheck_button' );
 				}
 				break;
@@ -164,16 +164,16 @@ class Siteimprove_Admin {
 	 */
 	private function siteimprove_add_js( $url, $type ) {
 		$file_name = get_option( 'siteimprove_overlayjs_file', 'overlay-v2-dev.js' );
-		$disabled_new_version = get_option( 'siteimprove_disable_new_version' );
+		$newest_version = get_option( 'siteimprove_newest_version' );
 		$pattern = '/^[a-zA-Z_\d-]+.js/';
-
+		
 		if ( ! empty( $file_name ) && preg_match( $pattern, $file_name ) ) {
 			$overlay_path = Siteimprove::JS_LIBRARY_URL . $file_name;
 		} else {
-			if ( $disabled_new_version ) {
-				$overlay_path = Siteimprove::JS_LIBRARY_URL . 'overlay-v1.js';
+			if ( $newest_version ) {
+				$overlay_path = Siteimprove::JS_LIBRARY_URL . "overlay-latest.js";
 			} else {
-				$overlay_path = Siteimprove::JS_LIBRARY_URL . 'overlay-latest.js';
+				$overlay_path = Siteimprove::JS_LIBRARY_URL . "overlay-v1.js";
 			}
 		}
 
@@ -193,7 +193,7 @@ class Siteimprove_Admin {
 			'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
 			'url'   => $url,
 			'version' => $disabled_new_version,
-			'preview' => $preview,
+			'preview' => $preview
 		);
 
 		wp_localize_script(
@@ -403,7 +403,7 @@ class Siteimprove_Admin {
 					'meta'  => array(
 						'title' => __( 'Siteimprove Prepublish', 'siteimprove' ),
 						'class' => 'siteimprove-trigger-contentcheck',
-					),
+					)
 				)
 			);
 		}
