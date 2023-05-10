@@ -82,7 +82,6 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 * Added - Support for new version
 * Added - Checkbox for disabling new version
 * Added Public URL field to the plugin
-* Added Custom Overlay field.
 
 = 1.3.1 =
 * Bugfix - Fix Highlighting content issues for prepublish checks.
