@@ -184,7 +184,7 @@
     // If exist siteimprove_domain, call domain Siteimprove method.
     if (typeof siteimprove_domain !== "undefined") {
       //It will call domain only on v1
-      if( 1 === siteimprove_domain.version ){
+      if( "1" === siteimprove_domain.version ){
         siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
       }
     }
