@@ -75,7 +75,7 @@ class Siteimprove_Admin_Settings {
 		// Register a new section in the siteimprove page.
 		add_settings_section(
 			'siteimprove_version_section',
-			__( 'Version', 'siteimprove' ),
+			__( 'Plugin Experience', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
 			'siteimprove'
 		);
@@ -83,7 +83,7 @@ class Siteimprove_Admin_Settings {
 		// register a new field siteimprove_disable_new_version_field, inside the siteimprove_version_section section of the settings page.
 		add_settings_field(
 			'siteimprove_disable_new_version',
-			__( 'Disable new version', 'siteimprove' ),
+			__( 'Use latest experience', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_disable_new_version_field',
 			'siteimprove',
 			'siteimprove_version_section'

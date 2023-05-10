@@ -170,7 +170,7 @@ class Siteimprove_Admin {
 		if ( ! empty( $file_name ) && preg_match( $pattern, $file_name ) ) {
 			$overlay_path = Siteimprove::JS_LIBRARY_URL . $file_name;
 		} else {
-			if ( $newest_version ) {
+			if ( $disabled_new_version ) {
 				$overlay_path = Siteimprove::JS_LIBRARY_URL . 'overlay-latest.js';
 			} else {
 				$overlay_path = Siteimprove::JS_LIBRARY_URL . 'overlay-v1.js';
