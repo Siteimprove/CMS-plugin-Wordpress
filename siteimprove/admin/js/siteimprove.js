@@ -26,12 +26,8 @@
     });
   
     const documentReturned = await promise;
-    return [
-      documentReturned, 
-      () => { 
-        $(".si-overlay").remove();
-      }
-    ];
+    $(".si-overlay").remove();
+    return documentReturned;
   };
 
   var siteimprove = {
@@ -225,12 +221,13 @@
 
     $(".siteimprove-trigger-contentcheck")
       .find("a")
-      .on("click", function (evt) {
+      .on("click", async function (evt) {
         var si_prepublish_data = siGetCurrentUrlAndToken();
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
+        var dom = await getDom(si_prepublish_data.url);
         siteimprove.contentcheck_flatdom(
-          getDom(si_prepublish_data.url),
+          dom,
           si_prepublish_data.url,
           si_prepublish_data.token,
           function () {
