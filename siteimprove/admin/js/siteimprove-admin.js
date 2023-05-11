@@ -14,7 +14,6 @@
 			function (response) {
 				if (response.result === false) {
 					if ('undefined' === typeof window.activation_poll_handle) {
-						console.log( 'creating poll' );
 						window.activation_poll_handle = setInterval( siteimprove_check_if_activated, 2000 );
 					}
 				} else {

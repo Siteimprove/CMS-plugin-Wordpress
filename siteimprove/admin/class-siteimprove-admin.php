@@ -164,7 +164,7 @@ class Siteimprove_Admin {
 	 */
 	private function siteimprove_add_js( $url, $type ) {
 		$file_name = get_option( 'siteimprove_overlayjs_file', 'overlay-v2-dev.js' );
-		$newest_version = get_option( 'siteimprove_newest_version' );
+		$disabled_new_version = get_option( 'siteimprove_newest_version' );
 		$pattern = '/^[a-zA-Z_\d-]+.js/';
 
 		if ( ! empty( $file_name ) && preg_match( $pattern, $file_name ) ) {

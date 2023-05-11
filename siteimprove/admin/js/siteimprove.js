@@ -119,7 +119,7 @@
 
       //Adaptation carried out to comply with the CMS-plugin-v2 documentation
       if( this.method === "domain" ){
-        _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
+        _si.push(['input', this.url, this.token, function() { } ]); 
       } else {
         // 0 = overlay-latest.js
         // 1 = overlay-v1.js
@@ -133,7 +133,7 @@
       const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
       if (this.url.match(pattern)) {
         setTimeout(() => {
-          _si.push(['clear', function() { console.log('Cleared'); }]); 
+          _si.push(['clear', function() { }]); 
         }, 500);
       }
                  
@@ -183,7 +183,7 @@
 
     // If exist siteimprove_domain, call domain Siteimprove method.
     if (typeof siteimprove_domain !== "undefined") {
-      //It will call domain only on v1
+      //It will call domain only for v1
       if( "1" === siteimprove_domain.version ){
         siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
       }
@@ -191,7 +191,10 @@
 
     // If exist siteimprove_recrawl, call recrawl Siteimprove method.
     if (typeof siteimprove_recrawl !== "undefined") {
-      siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
+      //It will call domain only for v1
+      if( "1" === siteimprove_recrawl.version ){
+        siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
+      }
     }
 
     // If exist siteimprove_recheck_button, create recheck button.

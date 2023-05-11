@@ -260,7 +260,10 @@ class Siteimprove_Admin_Settings {
 	 */
 	public static function siteimprove_disable_new_version_field( $args ) {
 		$is_checked = '';
-		if ( 1 === intval( get_option( 'siteimprove_disable_new_version' ) ) ) {
+		// If the option still not exists, the checkbox will start as marked by default.
+		if ( !get_option( 'siteimprove_disable_new_version' ) && 0 !== intval( get_option( 'siteimprove_disable_new_version' ) ) ) {
+			$is_checked = 'checked';
+		} else if ( 1 === intval( get_option( 'siteimprove_disable_new_version' ) ) ) {
 			$is_checked = 'checked';
 		}
 		?>
