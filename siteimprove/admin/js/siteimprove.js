@@ -121,9 +121,9 @@
       if( this.method === "domain" ){
         _si.push(['input', this.url, this.token, function() { } ]); 
       } else {
-        // 0 = overlay-latest.js
-        // 1 = overlay-v1.js
-        if(this.version == 0 && this.preview) {
+        // 0 = overlay-v1.js
+        // 1 = overlay-latest.js
+        if(this.version == 1 && this.preview) {
           _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
         }
         _si.push([this.method, this.url, this.token]);
