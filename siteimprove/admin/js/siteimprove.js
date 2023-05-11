@@ -125,11 +125,14 @@
       _si.push([this.method, this.url, this.token]);
 
       //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
-      const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
-      if (this.url.match(pattern)) {
-        setTimeout(() => {
-          _si.push(['clear']); 
-        }, 500);
+      // Do not do this for domain, so we can still see site-view of the plugin
+      if(this.method !== "domain") {
+        const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
+        if (this.url.match(pattern)) {
+          setTimeout(() => {
+            _si.push(['clear']); 
+          }, 500);
+        }
       }
                  
     },
@@ -178,8 +181,8 @@
 
     // If exist siteimprove_domain, call domain Siteimprove method.
     if (typeof siteimprove_domain !== "undefined") {
-      //It will call domain only for v1
-      if( "1" === siteimprove_domain.version ){
+      // It will call domain only for v1
+      if( "0" === siteimprove_domain.version ){
         siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
       }
     }
@@ -187,7 +190,7 @@
     // If exist siteimprove_recrawl, call recrawl Siteimprove method.
     if (typeof siteimprove_recrawl !== "undefined") {
       //It will call domain only for v1
-      if( "1" === siteimprove_recrawl.version ){
+      if( "0" === siteimprove_recrawl.version ){
         siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
       }
     }
