@@ -5,6 +5,35 @@
 (function ($) {
   "use strict";
 
+  const getDom = async function (url) {
+    const newDiv = document.createElement("div");
+    newDiv.setAttribute("id","div_iframe"); 
+    document.body.appendChild(newDiv);
+    //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
+    newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
+
+    const promise = new Promise(function (resolve, reject) {
+      const iframe = document.getElementById("domIframe");
+      iframe.addEventListener(
+        "load",
+        () => {
+            const newDocument = iframe.contentWindow.document.cloneNode(true);
+            document.body.removeChild(newDiv);
+            resolve(newDocument);
+        },
+        { once: true }
+      );
+    });
+  
+    const documentReturned = await promise;
+    return [
+      documentReturned, 
+      () => { 
+        $(".si-overlay").remove();
+      }
+    ];
+  };
+
   var siteimprove = {
     input: function (url, token, version, preview) {
       this.url = url;
@@ -41,37 +70,7 @@
       this.common(url);
     },
     common: function (url) {
-      const _si = window._si || [];  
-    
-      const getDomCallback = async function () {
-        const newDiv = document.createElement("div");
-        newDiv.setAttribute("id","div_iframe"); 
-        document.body.appendChild(newDiv);
-        //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
-        newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
-
-        const promise = new Promise(function (resolve, reject) {
-          const iframe = document.getElementById("domIframe");
-          iframe.addEventListener(
-            "load",
-            () => {
-                const newDocument = iframe.contentWindow.document.cloneNode(true);
-                document.body.removeChild(newDiv);
-                resolve(newDocument);
-            },
-            { once: true }
-          );
-        });
-      
-        const documentReturned = await promise;
-        return [
-          documentReturned, 
-          () => { 
-            $(".si-overlay").remove();
-          }
-        ];
-      };
-
+      const _si = window._si || [];
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
           this.method,
@@ -120,7 +119,7 @@
       // 0 = overlay-v1.js
       // 1 = overlay-latest.js
       if(this.version == 1 && this.preview) {
-        _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+        _si.push(['registerPrepublishCallback', getDom(url), this.token]);
       }
       _si.push([this.method, this.url, this.token]);
 
@@ -169,6 +168,8 @@
   };
 
   $(function () {
+
+
     // If exist siteimprove_recheck, call recheck Siteimprove method.
     if (typeof siteimprove_recheck !== "undefined") {
       siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token);
@@ -229,7 +230,7 @@
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
         siteimprove.contentcheck_flatdom(
-          document,
+          getDom(si_prepublish_data.url),
           si_prepublish_data.url,
           si_prepublish_data.token,
           function () {
