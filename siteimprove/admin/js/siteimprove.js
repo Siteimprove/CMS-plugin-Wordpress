@@ -116,24 +116,19 @@
           }, 1500);
         });
       }]);
-
-      //Adaptation carried out to comply with the CMS-plugin-v2 documentation
-      if( this.method === "domain" ){
-        _si.push(['input', this.url, this.token, function() { } ]); 
-      } else {
-        // 0 = overlay-v1.js
-        // 1 = overlay-latest.js
-        if(this.version == 1 && this.preview) {
-          _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
-        }
-        _si.push([this.method, this.url, this.token]);
+      
+      // 0 = overlay-v1.js
+      // 1 = overlay-latest.js
+      if(this.version == 1 && this.preview) {
+        _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
       }
+      _si.push([this.method, this.url, this.token]);
 
       //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
       const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
       if (this.url.match(pattern)) {
         setTimeout(() => {
-          _si.push(['clear', function() { }]); 
+          _si.push(['clear']); 
         }, 500);
       }
                  
