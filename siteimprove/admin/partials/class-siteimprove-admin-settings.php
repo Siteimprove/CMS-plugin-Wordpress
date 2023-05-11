@@ -250,6 +250,16 @@ class Siteimprove_Admin_Settings {
 			</p>
 			<?php
 		}
+
+		if ( 'siteimprove_version_section' === $args['id'] ) {
+			?>
+			<p>
+			<?php
+					esc_html_e( 'A new version of the plugin is now available. Please note it is a work in progress and may update over time.' );
+			?>
+			</p>
+			<?php
+		}
 	}
 
 	/**
