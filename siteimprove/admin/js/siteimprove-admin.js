@@ -14,7 +14,6 @@
 			function (response) {
 				if (response.result === false) {
 					if ('undefined' === typeof window.activation_poll_handle) {
-						console.log( 'creating poll' );
 						window.activation_poll_handle = setInterval( siteimprove_check_if_activated, 2000 );
 					}
 				} else {
@@ -73,24 +72,6 @@
 					);
 				}
 			);
-
-			// .
-			$( '#siteimprove_dev_mode_field' ).on(
-				'click',
-				function () {
-					$(this).closest('tr').next('tr')[this.checked? 'show' : 'hide']()
-				}
-			);
-
-			$( document ).ready(
-				function () {						
-						if($("#siteimprove_dev_mode_field").is(":checked"))   
-							$('#siteimprove_dev_mode_field').closest('tr').next('tr').show();
-				        else
-							$('#siteimprove_dev_mode_field').closest('tr').next('tr').hide();
-				        }
-			);			
-
 		}
 	);
 

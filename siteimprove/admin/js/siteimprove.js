@@ -5,11 +5,38 @@
 (function ($) {
   "use strict";
 
+  const getDom = async function (url) {
+    const newDiv = document.createElement("div");
+    newDiv.setAttribute("id","div_iframe"); 
+    document.body.appendChild(newDiv);
+    //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
+    newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
+
+    const promise = new Promise(function (resolve, reject) {
+      const iframe = document.getElementById("domIframe");
+      iframe.addEventListener(
+        "load",
+        () => {
+            const newDocument = iframe.contentWindow.document.cloneNode(true);
+            document.body.removeChild(newDiv);
+            resolve(newDocument);
+        },
+        { once: true }
+      );
+    });
+  
+    const documentReturned = await promise;
+    $(".si-overlay").remove();
+    return documentReturned;
+  };
+
   var siteimprove = {
-    input: function (url, token) {
+    input: function (url, token, version, preview) {
       this.url = url;
       this.token = token;
       this.method = "input";
+      this.version = version;
+      this.preview = preview;
       this.common(url);
     },
     domain: function (url, token) {
@@ -39,39 +66,7 @@
       this.common(url);
     },
     common: function (url) {
-      const _si = window._si || [];  
-    
-      const getDomCallback = async function () {
-        const newDiv = document.createElement("div");
-        newDiv.setAttribute("id","div_iframe"); 
-        document.body.appendChild(newDiv);
-        //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
-        newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
-
-        const promise = new Promise(function (resolve, reject) {
-          const iframe = document.getElementById("domIframe");
-          iframe.addEventListener(
-            "load",
-            () => {
-                const newDocument = iframe.contentWindow.document.cloneNode(true);
-                document.body.removeChild(newDiv);
-                resolve(newDocument);
-            },
-            { once: true }
-          );
-        });
-      
-        const documentReturned = await promise;
-        return [
-          documentReturned, 
-          () => { 
-            $(".si-overlay").remove();
-          }
-        ];
-      };
-
-      _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
-
+      const _si = window._si || [];
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
           this.method,
@@ -116,20 +111,23 @@
           }, 1500);
         });
       }]);
-
-      //Adaptation carried out to comply with the CMS-plugin-v2 documentation
-      if( this.method === "domain" ){
-        _si.push(['input', this.url, this.token, function() { console.log('Inputted new javascript overlay file'); } ]); 
-      } else {
-        _si.push([this.method, this.url, this.token]);
+      
+      // 0 = overlay-v1.js
+      // 1 = overlay-latest.js
+      if(this.version == 1 && this.preview) {
+        _si.push(['registerPrepublishCallback', getDom(url), this.token]);
       }
+      _si.push([this.method, this.url, this.token]);
 
       //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
-      const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
-      if (this.url.match(pattern)) {
-        setTimeout(() => {
-          _si.push(['clear', function() { console.log('Cleared'); }]); 
-        }, 500);
+      // Do not do this for domain, so we can still see site-view of the plugin
+      if(this.method !== "domain") {
+        const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
+        if (this.url.match(pattern)) {
+          setTimeout(() => {
+            _si.push(['clear']); 
+          }, 500);
+        }
       }
                  
     },
@@ -166,6 +164,8 @@
   };
 
   $(function () {
+
+
     // If exist siteimprove_recheck, call recheck Siteimprove method.
     if (typeof siteimprove_recheck !== "undefined") {
       siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token);
@@ -173,17 +173,23 @@
 
     // If exist siteimprove_input, call input Siteimprove method.
     if (typeof siteimprove_input !== "undefined") {
-      siteimprove.input(siteimprove_input.url, siteimprove_input.token);
+      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.preview);
     }
 
     // If exist siteimprove_domain, call domain Siteimprove method.
     if (typeof siteimprove_domain !== "undefined") {
-      siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
+      // It will call domain only for v1
+      if( "0" === siteimprove_domain.version ){
+        siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
+      }
     }
 
     // If exist siteimprove_recrawl, call recrawl Siteimprove method.
     if (typeof siteimprove_recrawl !== "undefined") {
-      siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
+      //It will call domain only for v1
+      if( "0" === siteimprove_recrawl.version ){
+        siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
+      }
     }
 
     // If exist siteimprove_recheck_button, create recheck button.
@@ -215,12 +221,13 @@
 
     $(".siteimprove-trigger-contentcheck")
       .find("a")
-      .on("click", function (evt) {
+      .on("click", async function (evt) {
         var si_prepublish_data = siGetCurrentUrlAndToken();
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
+        var dom = await getDom(si_prepublish_data.url);
         siteimprove.contentcheck_flatdom(
-          document,
+          dom,
           si_prepublish_data.url,
           si_prepublish_data.token,
           function () {

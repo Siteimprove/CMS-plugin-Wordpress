@@ -8,9 +8,13 @@ Every pull request will be checked against WPCS trough github actions.
 
 ## Version History
 
-### 1.3.1
+### 2.0.0
+* Added support for new version
+* Added a checkbox to disable new version
 * Added Public URL field to the plugin
-* Added Custom Overlay field.
+
+### 1.3.1
+* Bugfix - Fixed Highlighting content issues for prepublish checks.
 
 ### 1.3.0
 * Added Prepublish feature to the plugin
