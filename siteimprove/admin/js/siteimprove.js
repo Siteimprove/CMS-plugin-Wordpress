@@ -111,11 +111,17 @@
           }, 1500);
         });
       }]);
+
+
+      const getDomCallback = function () {
+        return getDom(url);
+      };
+    
       
       // 0 = overlay-v1.js
       // 1 = overlay-latest.js
       if(this.version == 1 && this.preview) {
-        _si.push(['registerPrepublishCallback', getDom(url), this.token]);
+        _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
       }
       _si.push([this.method, this.url, this.token]);
 
