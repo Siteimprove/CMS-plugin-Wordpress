@@ -123,7 +123,8 @@
         // Iterate over each line
         for (var i = 0; i < lines.length; i++) {
             // Find the start tag in this line
-            var tagStartIndex = lines[i].indexOf('<' + tag + '>');
+            var regex = new RegExp('<' + tag + '\[^>]*>', 'i');
+            var tagStartIndex = lines[i].search(regex);
             if (tagStartIndex !== -1) {
                 var startTop = rect.top + textarea.clientTop + i * lineHeight - window.pageYOffset;
                 // Find the end tag in the following lines
@@ -174,7 +175,11 @@
         switchToTextEditor();
 
         // TODO: Find a better way to figure out when the edit mode content starts
-        var selector = suggestionInfo.locationSelector.replace("#document > body > div > main > div:nth-child(2) > div > ", "");
+        var selector = suggestionInfo.locationSelector.replace("#document > body > div > main > div:nth-child(2) > ", "");
+        if(suggestionInfo.issueIdentifier != "sia-r76") {
+          selector = selector.replace("p:nth-child(2) >", "");
+        }
+        selector = selector.trim();
         var suggestedHtml = suggestionInfo.suggestedHtml;
       
         // Get the textarea element
