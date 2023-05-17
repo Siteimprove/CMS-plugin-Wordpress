@@ -22,4 +22,48 @@
 
 #adminmenu li.toplevel_page_siteimprove .wp-menu-image img {
 	padding: 6px 0 0;
+}#wpadminbar .siteimprove-trigger-contentcheck a svg {
+	max-height: 20px;
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	padding-right: 35px;
+  }
+  #wpadminbar .quicklinks>ul>li.siteimprove-trigger-contentcheck>a {
+	padding-left: 30px;
+  }
+  @keyframes highlight-blink {
+	50% {
+	  background-color: rgba(0, 0, 0, 0);
+	  border-color: rgba(0, 0, 0, 0);
+	}
+  }
+  .si-highlight {
+	  background-color: rgba(221, 10, 27, 0.2);
+	  border: 2px solid #DD0A1B;
+	  animation-name: highlight-blink;
+	  animation-duration: 0.4s;
+	  animation-iteration-count: 4;
+	  animation-timing-function: ease;
+	  animation-timing-function: ease;
+  }
+  
+  .si-overlay {
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background-color:rgba(0, 0, 0, 0.55);
+	background: url(data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNUmK/OAAAAATSURBVBhXY2RgYNgHxGAAYuwDAA78AjwwRoQYAAAAAElFTkSuQmCC) repeat scroll transparent\9; /* ie fallback png background image */
+	z-index:100000;
+	color:white;
+  }
+  
+  .overlay {
+    position: absolute;
+    border: 1px solid red;
+    background: rgba(255, 0, 0, 0.2); /* Red color with 20% opacity */
+    pointer-events: none; /* Let mouse events pass through the overlay */
+	margin-top: 10px;
 }
