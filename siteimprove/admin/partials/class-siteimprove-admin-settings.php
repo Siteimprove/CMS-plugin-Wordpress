@@ -343,7 +343,7 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_overlayjs_file_field( $args ) {
 		?>
 
-		<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>" maxlength="50" size="50" />
+		<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>"  size="50" />
 		<?php
 	}
 
