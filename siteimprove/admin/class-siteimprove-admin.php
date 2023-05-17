@@ -168,7 +168,7 @@ class Siteimprove_Admin {
 		$pattern = '/^[a-zA-Z_\d-]+.js/';
 
 		if ( ! empty( $file_name ) ) {
-			if ( preg_match( $pattern, $file_name ) ){
+			if ( preg_match( $pattern, $file_name ) ) {
 				$overlay_path = Siteimprove::JS_LIBRARY_URL . $file_name;
 			} else {
 				$overlay_path = $file_name;
