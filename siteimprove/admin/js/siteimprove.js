@@ -145,7 +145,7 @@
         }
       }
 
-      function undo(textarea) {
+      function undo() {
         var textarea = document.getElementById('content');
         if (stack.length > 0) {
             // Remove the last state from the stack and set it as the textarea value
@@ -165,7 +165,7 @@
             notice.parentNode.removeChild(notice);
           }
         }
-      }  
+      }
 
       var suggestionId = 0;
 
@@ -220,11 +220,21 @@
             $(infoBox).insertAfter('.wp-header-end');
           }
           var undoButton = document.getElementById('siteimprove-suggestion-undo');  
+          var removeHighlightsButton = document.getElementById('siteimprove-suggestion-remove-highlight');
           // Add overlay
           highlightTagInTextarea(textarea, selector, suggestionId);
+
+          // Hide overlays after 3 seconds
+          setTimeout(() => {
+            var overlays = document.querySelector(".overlay");
+            if(overlays) {
+              overlays.style.opacity = "0";
+            }
+          }, 5000);
           suggestionId++;
 
           undoButton.addEventListener('click', undo);
+          removeHighlightsButton.addEventListener('click', removeHighlights);
         }
       }]);
                 
