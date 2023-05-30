@@ -86,6 +86,9 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 == Changelog ==
 
+= 2.0.1 =
+* Bugfix - Fixed checkbox for "Use latest experience" was not properly checked on by default
+
 = 2.0.0 =
 * Added - Support for latest experience
 * Added - Setting to disable using latest experience
