@@ -8,6 +8,9 @@ Every pull request will be checked against WPCS trough github actions.
 
 ## Version History
 
+### 2.0.1
+* Bugfix - Fixed checkbox for "Use latest experience" was not properly checked on by default
+
 ### 2.0.0
 * Added support for new version
 * Added a checkbox to disable new version
