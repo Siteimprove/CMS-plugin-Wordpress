@@ -78,8 +78,13 @@ Did you remember to turn off your adblocker? Some adblockers does not like our i
 
 == Changelog ==
 
+= 2.0.0 =
+* Added - Support for new version
+* Added - Checkbox for disabling new version
+* Added Public URL field to the plugin
+
 = 1.3.1 =
-* Bufgix - Fix Highlighting content issues for prepublish checks.
+* Bugfix - Fix Highlighting content issues for prepublish checks.
 
 = 1.3.0 =
 * Added - Add Prepublish feature to the plugin

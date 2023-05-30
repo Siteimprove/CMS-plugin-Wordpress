@@ -5,35 +5,57 @@
 (function ($) {
   "use strict";
 
+  const getDom = async function (url) {
+    const newDiv = document.createElement("div");
+    newDiv.setAttribute("id","div_iframe"); 
+    document.body.appendChild(newDiv);
+    //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
+    newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
+
+    const promise = new Promise(function (resolve, reject) {
+      const iframe = document.getElementById("domIframe");
+      iframe.addEventListener(
+        "load",
+        () => {
+            const newDocument = iframe.contentWindow.document.cloneNode(true);
+            document.body.removeChild(newDiv);
+            resolve(newDocument);
+        },
+        { once: true }
+      );
+    });
+  
+    const documentReturned = await promise;
+    $(".si-overlay").remove();
+    return documentReturned;
+  };
+
   var siteimprove = {
-    input: function (url, token) {
+    input: function (url, token, version, preview) {
       this.url = url;
       this.token = token;
       this.method = "input";
-      this.common();
+      this.version = version;
+      this.preview = preview;
+      this.common(url);
     },
     domain: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "domain";
-      this.common();
+      this.common(url);
     },
     recheck: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "recheck";
-      this.common();
+      this.common(url);
     },
     recrawl: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "recrawl";
-      this.common();
-    },
-	  highlight: function (callback) {
-      this.method = "onHighlight";
-      this.callback = callback;
-      this.common();
+      this.common(url);
     },
     contentcheck_flatdom: function (domReference, url, token, callback) {
       this.url = url;
@@ -41,10 +63,10 @@
       this.domReference = domReference;
       this.method = "contentcheck-flat-dom";
       this.callback = callback;
-      this.common();
+      this.common(url);
     },
-    common: function () {
-      var _si = window._si || [];
+    common: function (url) {
+      const _si = window._si || [];
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
           this.method,
@@ -55,22 +77,23 @@
         ]);
         return;
       }
+
       _si.push(['onHighlight', function(highlightInfo) {
         // Remove highlight tag wrapper
-        $(".si-highlight").contents().unwrap();
+        $( ".si-highlight" ).contents().unwrap();
         // Create an span tag for every highlight
-        $.each(highlightInfo.highlights, function(index, highlight) {
+        $.each( highlightInfo.highlights, function( index, highlight ) {
           var $element = $(highlight.selector);
           var text = $element.text();
-
-          if (highlight.offset) {
+          
+          if ( highlight.offset ) {
             var start = highlight.offset.start;
             var length = highlight.offset.length;
-
+            
             var before = text.substr(0, start);
             var highlighted = text.substr(start, length);
             var after = text.substr(start + length);
-
+            
             $element.html(before + "<span class='si-highlight'>" + highlighted + "</span>" + after);
           } else {
             //Dealing in a different way if the element or it's children came as an image.
@@ -89,7 +112,30 @@
         });
       }]);
 
+
+      const getDomCallback = function () {
+        return getDom(url);
+      };
+    
+      
+      // 0 = overlay-v1.js
+      // 1 = overlay-latest.js
+      if(this.version == 1 && this.preview) {
+        _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+      }
       _si.push([this.method, this.url, this.token]);
+
+      //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
+      // Do not do this for domain, so we can still see site-view of the plugin
+      if(this.method !== "domain") {
+        const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
+        if (this.url.match(pattern)) {
+          setTimeout(() => {
+            _si.push(['clear']); 
+          }, 500);
+        }
+      }
+                 
     },
     events: {
       recheck: function () {
@@ -124,6 +170,8 @@
   };
 
   $(function () {
+
+
     // If exist siteimprove_recheck, call recheck Siteimprove method.
     if (typeof siteimprove_recheck !== "undefined") {
       siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token);
@@ -131,17 +179,23 @@
 
     // If exist siteimprove_input, call input Siteimprove method.
     if (typeof siteimprove_input !== "undefined") {
-      siteimprove.input(siteimprove_input.url, siteimprove_input.token);
+      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.preview);
     }
 
     // If exist siteimprove_domain, call domain Siteimprove method.
     if (typeof siteimprove_domain !== "undefined") {
-      siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
+      // It will call domain only for v1
+      if( "0" === siteimprove_domain.version ){
+        siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
+      }
     }
 
     // If exist siteimprove_recrawl, call recrawl Siteimprove method.
     if (typeof siteimprove_recrawl !== "undefined") {
-      siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
+      //It will call domain only for v1
+      if( "0" === siteimprove_recrawl.version ){
+        siteimprove.recrawl(siteimprove_recrawl.url, siteimprove_recrawl.token);
+      }
     }
 
     // If exist siteimprove_recheck_button, create recheck button.
@@ -171,34 +225,21 @@
       return result;
     };
 
-  //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
-  function getCleanDocument(si_prepublish_data) {
-    const newDiv = document.createElement("div"); 
-    newDiv.setAttribute("id","div_iframe"); 
-    document.body.appendChild(newDiv);
-    newDiv.innerHTML = "<iframe id='domIframe' src="+ si_prepublish_data.url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
-    const domIframe = document.getElementById("domIframe");
-    domIframe.addEventListener( "load" , () => {
-    const newDocument = domIframe.contentWindow.document;
-    siteimprove.contentcheck_flatdom(
-        newDocument,
-        si_prepublish_data.url,
-        si_prepublish_data.token,
-        function () {
-          $(".si-overlay").remove();
-          document.body.removeChild(newDiv);
-        }
-      );
-    });
-  }
-
     $(".siteimprove-trigger-contentcheck")
       .find("a")
-      .on("click", function (evt) {
+      .on("click", async function (evt) {
         var si_prepublish_data = siGetCurrentUrlAndToken();
-        getCleanDocument(si_prepublish_data);
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
+        var dom = await getDom(si_prepublish_data.url);
+        siteimprove.contentcheck_flatdom(
+          dom,
+          si_prepublish_data.url,
+          si_prepublish_data.token,
+          function () {
+            $(".si-overlay").remove();
+          }
+        );
       });
   });
 })(jQuery);

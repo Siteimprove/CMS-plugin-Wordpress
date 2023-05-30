@@ -22,6 +22,9 @@
 	animation-iteration-count: 4;
 	animation-timing-function: ease;
 }
+	animation-timing-function: ease;
+}
+
 .si-overlay {
   position:absolute;
   top:0;
