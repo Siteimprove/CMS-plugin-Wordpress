@@ -2,7 +2,7 @@
 Contributors: siteimprove
 Tags: accessibility, analytics, insights, readability, spelling, seo
 Requires at least: 4.7.2
-Tested up to: 6.1.1
+Tested up to: 6.2.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
