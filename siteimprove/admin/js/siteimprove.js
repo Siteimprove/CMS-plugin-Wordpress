@@ -31,12 +31,12 @@
   };
 
   var siteimprove = {
-    input: function (url, token, version, preview) {
+    input: function (url, token, version, is_content_page) {
       this.url = url;
       this.token = token;
       this.method = "input";
       this.version = version;
-      this.preview = preview;
+      this.is_content_page = is_content_page;
       this.common(url);
     },
     domain: function (url, token) {
@@ -126,7 +126,7 @@
       
       // 0 = overlay-v1.js
       // 1 = overlay-latest.js
-      if (this.version == 1 && this.preview) {
+      if (this.version == 1 && this.is_content_page) {
         _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
       }
       _si.push([this.method, this.url, this.token]);
@@ -185,7 +185,7 @@
 
     // If exist siteimprove_input, call input Siteimprove method.
     if (typeof siteimprove_input !== "undefined") {
-      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.preview);
+      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.is_content_page);
     }
 
     // If exist siteimprove_domain, call domain Siteimprove method.

@@ -190,14 +190,14 @@ class Siteimprove_Admin {
 			$url        = "$public_url$parsed_url[path]" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
 		}
 
-		$preview = is_preview();
+		$is_content_page = is_preview() || is_singular();
 
 		$si_js_args = array(
 			'token' => get_option( 'siteimprove_token' ),
 			'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
 			'url'   => $url,
 			'version' => $disabled_new_version,
-			'preview' => $preview,
+			'is_content_page' => $is_content_page,
 		);
 
 		wp_localize_script(
