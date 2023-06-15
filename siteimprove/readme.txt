@@ -86,6 +86,10 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 == Changelog ==
 
+= 2.0.2 =
+* Added - Calling "clear" on non-content pages in WordPress
+* Added - Prepublish can now be started from a published page
+
 = 2.0.1 =
 * Bugfix - Fixed checkbox for "Use latest experience" was not properly checked on by default
 
