@@ -4,9 +4,13 @@ This is the git repository for the official Siteimprove plugin for WordPress.
 
 The code on this repository has to match the WordPress Coding Standards in order to be maintainable and understandable in the future by anyone who contributes to the project.
 
-Every pull request will be checked against WPCS trough github actions.
+Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+
+### 2.0.2
+* Added Calling "clear" on non-content pages in WordPress
+* Added Prepublish can now be started from a published page
 
 ### 2.0.1
 * Bugfix - Fixed checkbox for "Use latest experience" was not properly checked on by default
