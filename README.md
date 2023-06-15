@@ -9,26 +9,26 @@ Every pull request will be checked against WPCS through GitHub Actions.
 ## Version History
 
 ### 2.0.2
-* Added Calling "clear" on non-content pages in WordPress
-* Added Prepublish can now be started from a published page
+* Added - Calling "clear" on non-content pages in WordPress
+* Added - Prepublish can now be started from a published page
 
 ### 2.0.1
 * Bugfix - Fixed checkbox for "Use latest experience" was not properly checked on by default
 
 ### 2.0.0
-* Added support for new version
-* Added a checkbox to disable new version
-* Added Public URL field to the plugin
+* Added - Support for new version
+* Added - A checkbox to disable new version
+* Added - Public URL field to the plugin
 
 ### 1.3.1
 * Bugfix - Fixed Highlighting content issues for prepublish checks.
 
 ### 1.3.0
-* Added Prepublish feature to the plugin
-* Added configuration page to set up an API key and API username
+* Added - Prepublish feature to the plugin
+* Added - Configuration page to set up an API key and API username
 
 ### 1.2.2
-* Bufgix - added CSS naming prefixes to avoid collision with other plugins
+* Bugfix - added CSS naming prefixes to avoid collision with other plugins
 
 ### 1.2.1
 * Bugfix - added check on nonce variable
