@@ -31,12 +31,12 @@
   };
 
   var siteimprove = {
-    input: function (url, token, version, preview) {
+    input: function (url, token, version, is_content_page) {
       this.url = url;
       this.token = token;
       this.method = "input";
       this.version = version;
-      this.preview = preview;
+      this.is_content_page = is_content_page;
       this.common(url);
     },
     domain: function (url, token) {
@@ -44,6 +44,12 @@
       this.token = token;
       this.method = "domain";
       this.common(url);
+    },
+    clear: function (callback, token) {
+      this.callback = callback;
+      this.token = token;
+      this.method = "clear";
+      this.common();
     },
     recheck: function (url, token) {
       this.url = url;
@@ -120,18 +126,18 @@
       
       // 0 = overlay-v1.js
       // 1 = overlay-latest.js
-      if(this.version == 1 && this.preview) {
+      if (this.version == 1 && this.is_content_page) {
         _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
       }
       _si.push([this.method, this.url, this.token]);
 
-      //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
+      // Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
       // Do not do this for domain, so we can still see site-view of the plugin
-      if(this.method !== "domain") {
+      if (this.version == 0 && this.method !== "domain") {
         const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
-        if (this.url.match(pattern)) {
+        if (this.url && this.url.match(pattern)) {
           setTimeout(() => {
-            _si.push(['clear']); 
+            _si.push(['clear', null, this.token]); 
           }, 500);
         }
       }
@@ -179,7 +185,7 @@
 
     // If exist siteimprove_input, call input Siteimprove method.
     if (typeof siteimprove_input !== "undefined") {
-      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.preview);
+      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.is_content_page);
     }
 
     // If exist siteimprove_domain, call domain Siteimprove method.
@@ -187,6 +193,8 @@
       // It will call domain only for v1
       if( "0" === siteimprove_domain.version ){
         siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
+      } else {
+        siteimprove.clear(null, siteimprove_domain.token);
       }
     }
 
