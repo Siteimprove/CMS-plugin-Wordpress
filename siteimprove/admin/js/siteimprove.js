@@ -131,13 +131,13 @@
       }
       _si.push([this.method, this.url, this.token]);
 
-      //Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
+      // Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
       // Do not do this for domain, so we can still see site-view of the plugin
-      if(this.method !== "domain") {
+      if (this.version == 0 && this.method !== "domain") {
         const pattern = /(?:\/wp-admin\/{1})[\D-\d]+.php/;
-        if (this.url.match(pattern)) {
+        if (this.url && this.url.match(pattern)) {
           setTimeout(() => {
-            _si.push(['clear']); 
+            _si.push(['clear', null, this.token]); 
           }, 500);
         }
       }
@@ -193,6 +193,8 @@
       // It will call domain only for v1
       if( "0" === siteimprove_domain.version ){
         siteimprove.domain(siteimprove_domain.url, siteimprove_domain.token);
+      } else {
+        siteimprove.clear(null, siteimprove_domain.token);
       }
     }
 
