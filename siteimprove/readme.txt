@@ -86,6 +86,9 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 == Changelog ==
 
+= 2.0.3 =
+* Bugfix - When doing prepublish, the si-preview empties the wp-admin-bar instead of removing it, which improves highlight selectors
+
 = 2.0.2 =
 * Added - Calling "clear" on non-content pages in WordPress
 * Added - Prepublish can now be started from a published page

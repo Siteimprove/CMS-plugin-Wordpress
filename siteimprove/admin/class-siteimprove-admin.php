@@ -102,6 +102,14 @@ class Siteimprove_Admin {
 		wp_enqueue_script( 'siteimprove_admin_js', plugin_dir_url( __FILE__ ) . 'js/siteimprove-admin.js', array( 'jquery' ), $this->version, false );
 	}
 
+
+	/**
+	 * Siteimprove Preview - Enqueue this script to empty #wp-admin-bar
+	 */
+	public function siteimprove_preview() {
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove-remove-adminbar.js', array( 'jquery' ), $this->version, false );
+	}
+
 	/**
 	 * Initial actions.
 	 */
@@ -180,9 +188,10 @@ class Siteimprove_Admin {
 				$overlay_path = Siteimprove::JS_LIBRARY_URL . 'overlay-v1.js';
 			}
 		}
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
+		if ( ! isset( $_GET['si_preview'] ) || '0' === $_GET['si_preview'] ) {
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
+		}
 		$public_url = get_option( 'siteimprove_public_url' );
 
 		if ( ! empty( $public_url ) ) {

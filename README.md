@@ -8,6 +8,9 @@ Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
 
+### 2.0.3
+* Bugfix - When doing prepublish, the si-preview empties the wp-admin-bar instead of removing it, which improves highlight selectors
+
 ### 2.0.2
 * Added - Calling "clear" on non-content pages in WordPress
 * Added - Prepublish can now be started from a published page

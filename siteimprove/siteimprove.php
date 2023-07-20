@@ -9,7 +9,7 @@
  * Plugin Name:         Siteimprove Plugin
  * Plugin URI:          https://www.siteimprove.com/integrations/cms-plugin/wordpress/
  * Description:         Integration with Siteimprove.
- * Version:             2.0.2
+ * Version:             2.0.3
  * Author:              Siteimprove
  * Author URI:          http://www.siteimprove.com/
  * Requires at least:   4.7.2
@@ -23,16 +23,6 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
-
-/**
- * Hide the WordPress admin bar when the `si_preview` parameter is present.
- */
-function si_preview() {
-	if ( isset( $_GET['si_preview'] ) && '1' === $_GET['si_preview'] ) {
-		add_filter( 'show_admin_bar', '__return_false' );
-	}
-}
-add_action( 'parse_query', 'si_preview' );
 
 /**
  * Include SiteimproveUtils class.
