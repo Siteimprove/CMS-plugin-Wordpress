@@ -115,12 +115,10 @@ class Siteimprove_Admin {
 		$si_js_args = array(
 			'token' => get_option( 'siteimprove_token' ),
 			'text' => __( 'Siteimprove Recheck', 'siteimprove' ),
-			'url' => get_permalink( $post_id )
+			'url' => get_permalink( $post_id ),
 		);
-		wp_localize_script('gutenberg-siteimprove-plugin', 'siteimprove_gutenberg_recheck', $si_js_args);		
+		wp_localize_script( 'gutenberg-siteimprove-plugin', 'siteimprove_gutenberg_recheck', $si_js_args );		
 	}
-	
-
 
 	/**
 	 * Siteimprove Preview - Enqueue this script to empty #wp-admin-bar
