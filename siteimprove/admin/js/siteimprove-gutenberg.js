@@ -25,7 +25,7 @@ var RecheckButton = function () {
         },
         onClick: function () {
             setClicked(true);
-            if (typeof window.siteimprove !== "undefined") {
+            if (typeof window.siteimprove.recheck !== "undefined") {
                 window.siteimprove.recheck(
                     siteimprove_gutenberg_recheck.url, 
                     siteimprove_gutenberg_recheck.token, 
