@@ -117,7 +117,11 @@ class Siteimprove_Admin {
 			'text' => __( 'Siteimprove Recheck', 'siteimprove' ),
 			'url' => get_permalink( $post_id ),
 		);
-		wp_localize_script( 'gutenberg-siteimprove-plugin', 'siteimprove_gutenberg_recheck', $si_js_args );		
+		wp_localize_script( 
+			'gutenberg-siteimprove-plugin', 
+			'siteimprove_gutenberg_recheck', 
+			$si_js_args 
+		);
 	}
 
 	/**
