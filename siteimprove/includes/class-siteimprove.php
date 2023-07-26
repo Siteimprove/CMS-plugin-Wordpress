@@ -135,6 +135,7 @@ class Siteimprove {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_preview_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'enqueue_block_editor_assets', $plugin_admin, 'gutenberg_siteimprove_plugin' );
 
 		// Settings form.
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_settings' );
@@ -145,7 +146,7 @@ class Siteimprove {
 		$this->loader->add_action( 'siteimprove_before_settings_form', $plugin_admin, 'siteimprove_before_settings_form' );
 
 		// Siteimprove Actions.
-		if ( isset( $_GET['si_preview'] ) || '1' === $_GET['si_preview'] ) {
+		if ( isset( $_GET['si_preview'] ) && '1' === $_GET['si_preview'] ) {
 			$this->loader->add_action( 'wp_head', $plugin_admin, 'siteimprove_preview' );
 		} else {
 			$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_init' );

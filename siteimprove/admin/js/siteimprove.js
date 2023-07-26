@@ -30,7 +30,7 @@
     return documentReturned;
   };
 
-  var siteimprove = {
+  window.siteimprove = {
     input: function (url, token, version, is_content_page) {
       this.url = url;
       this.token = token;
@@ -51,7 +51,8 @@
       this.method = "clear";
       this.common();
     },
-    recheck: function (url, token) {
+    recheck: function (url, token, callback) {
+      this.callback = callback;
       this.url = url;
       this.token = token;
       this.method = "recheck";
@@ -80,6 +81,16 @@
           this.url,
           this.token,
           this.callback,
+        ]);
+        return;
+      } 
+
+      if (this.method == "recheck") {
+        _si.push([
+          this.method,
+          this.url,
+          this.token,
+          this.callback
         ]);
         return;
       }
@@ -129,6 +140,8 @@
       if (this.version == 1 && this.is_content_page) {
         _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
       }
+
+
       _si.push([this.method, this.url, this.token]);
 
       // Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
@@ -164,11 +177,14 @@
         }
 
         $(".recheck-button").click(function () {
+          $(this).attr("disabled", true);
           siteimprove.recheck(
             siteimprove_recheck_button.url,
-            siteimprove_recheck_button.token
+            siteimprove_recheck_button.token,
+            function () {
+              $(".recheck-button").attr("disabled", false);
+            }
           );
-          $(this).attr("disabled", true);
           return false;
         });
       },
@@ -180,7 +196,7 @@
 
     // If exist siteimprove_recheck, call recheck Siteimprove method.
     if (typeof siteimprove_recheck !== "undefined") {
-      siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token);
+      siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token, siteimprove_recheck.callback);
     }
 
     // If exist siteimprove_input, call input Siteimprove method.
