@@ -25,8 +25,14 @@ var RecheckButton = function () {
         },
         onClick: function () {
             setClicked(true);
-            if (typeof window.siteimprove !== "undefined" && typeof window.siteimprove.recheck !== "undefined") {
-                window.siteimprove.recheck(siteimprove_gutenberg_recheck.url, siteimprove_gutenberg_recheck.token, function() { setClicked(false) });
+            if (typeof window.siteimprove !== "undefined") {
+                window.siteimprove.recheck(
+                    siteimprove_gutenberg_recheck.url, 
+                    siteimprove_gutenberg_recheck.token, 
+                    function() { 
+                        setClicked(false) 
+                    }
+                );
             } else {
                 console.error("Siteimprove has not been loaded");
             }

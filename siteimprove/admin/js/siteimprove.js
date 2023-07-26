@@ -9,7 +9,6 @@
     const iframeContainer = document.createElement("div");
     iframeContainer.setAttribute("id", "div_iframe");
     document.body.appendChild(iframeContainer);
-    //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
     const separator = url.includes("?") ? "&" : "?";
     iframeContainer.innerHTML = `<iframe id='domIframe' src=${url}${separator}si_preview=1 style='height:100vh; width:100%'></iframe>`;
     const iframe = document.getElementById("domIframe");
