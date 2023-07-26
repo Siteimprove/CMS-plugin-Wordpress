@@ -34,7 +34,7 @@ var RecheckButton = function () {
                     }
                 );
             } else {
-                console.error("Siteimprove has not been loaded");
+                console.error("Siteimprove Recheck: siteimprove.js has not been loaded");
             }
         } 
     }, siteimprove_gutenberg_recheck.text);
