@@ -196,7 +196,7 @@
 
     // If exist siteimprove_recheck, call recheck Siteimprove method.
     if (typeof siteimprove_recheck !== "undefined") {
-      siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token, siteimprove_recheck.callback);
+      siteimprove.recheck(siteimprove_recheck.url, siteimprove_recheck.token);
     }
 
     // If exist siteimprove_input, call input Siteimprove method.
