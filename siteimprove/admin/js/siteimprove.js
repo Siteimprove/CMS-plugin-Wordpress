@@ -17,6 +17,7 @@
       iframe.addEventListener(
         "load",
         () => {
+          // In order to preserve the DOM node hierarchy for highlights, we have chosen to empty the #wp-admin-bar from the new DOM instead of outright removing it.
           var adminBar = iframe.contentWindow.document.getElementById('wpadminbar');
           if (adminBar) {
             adminBar.innerHTML = '<div></div>';
