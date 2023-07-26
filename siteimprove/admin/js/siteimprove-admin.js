@@ -61,7 +61,6 @@
 							'action': 'siteimprove_prepublish_activation'
 						},
 						function (response) {
-							console.log( response.result );
 							if (response.result === true) {
 								$( '.siteimprove_prepublish_activation_messages' ).html( '<p>' + siteimprove_plugin_text.prepublish_activate_running + '</p>' );
 								siteimprove_check_if_activated();

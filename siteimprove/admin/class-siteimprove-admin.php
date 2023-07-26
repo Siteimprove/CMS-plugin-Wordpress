@@ -125,13 +125,6 @@ class Siteimprove_Admin {
 	}
 
 	/**
-	 * Siteimprove Preview - Enqueue this script to empty #wp-admin-bar
-	 */
-	public function siteimprove_preview() {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove-remove-adminbar.js', array( 'jquery' ), $this->version, false );
-	}
-
-	/**
 	 * Initial actions.
 	 */
 	public function siteimprove_init() {

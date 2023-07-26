@@ -146,9 +146,7 @@ class Siteimprove {
 		$this->loader->add_action( 'siteimprove_before_settings_form', $plugin_admin, 'siteimprove_before_settings_form' );
 
 		// Siteimprove Actions.
-		if ( isset( $_GET['si_preview'] ) && '1' === $_GET['si_preview'] ) {
-			$this->loader->add_action( 'wp_head', $plugin_admin, 'siteimprove_preview' );
-		} else {
+		if ( ! isset( $_GET['si_preview'] ) || '0' === $_GET['si_preview'] ) {
 			$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_init' );
 			$this->loader->add_action( 'publish_page', $plugin_admin, 'siteimprove_save_session_url_post' );
 			$this->loader->add_action( 'publish_post', $plugin_admin, 'siteimprove_save_session_url_post' );
