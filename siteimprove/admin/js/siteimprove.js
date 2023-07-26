@@ -6,20 +6,25 @@
   "use strict";
 
   const getDom = async function (url) {
-    const newDiv = document.createElement("div");
-    newDiv.setAttribute("id","div_iframe"); 
-    document.body.appendChild(newDiv);
-    //Opens an alternative version of this page without wp injected content such as the wp-admin bar and smallbox plugin itself as this is for the DOM we send to Siteimprove
-    newDiv.innerHTML = "<iframe id='domIframe' src="+ url.concat("&si_preview=1") +" style='height:100vh; width:100%'></iframe>";
-
+    const iframeContainer = document.createElement("div");
+    iframeContainer.setAttribute("id", "div_iframe");
+    document.body.appendChild(iframeContainer);
+    const separator = url.includes("?") ? "&" : "?";
+    iframeContainer.innerHTML = `<iframe id='domIframe' src=${url}${separator}si_preview=1 style='height:100vh; width:100%'></iframe>`;
+    const iframe = document.getElementById("domIframe");
     const promise = new Promise(function (resolve, reject) {
-      const iframe = document.getElementById("domIframe");
       iframe.addEventListener(
         "load",
         () => {
-            const newDocument = iframe.contentWindow.document.cloneNode(true);
-            document.body.removeChild(newDiv);
-            resolve(newDocument);
+          // In order to preserve the DOM node hierarchy for highlights, we have chosen to empty the #wp-admin-bar from the new DOM instead of outright removing it.
+          var adminBar = iframe.contentWindow.document.getElementById('wpadminbar');
+          if (adminBar) {
+            adminBar.innerHTML = '<div></div>';
+            adminBar.id = 'wpadminbar-disabled';
+          }
+          const cleanDom = iframe.contentWindow.document.cloneNode(true);
+          document.body.removeChild(iframeContainer);
+          resolve(cleanDom);
         },
         { once: true }
       );
@@ -28,9 +33,9 @@
     const documentReturned = await promise;
     $(".si-overlay").remove();
     return documentReturned;
-  };
+  };  
 
-  var siteimprove = {
+  window.siteimprove = {
     input: function (url, token, version, is_content_page) {
       this.url = url;
       this.token = token;
@@ -51,7 +56,8 @@
       this.method = "clear";
       this.common();
     },
-    recheck: function (url, token) {
+    recheck: function (url, token, callback) {
+      this.callback = callback;
       this.url = url;
       this.token = token;
       this.method = "recheck";
@@ -80,6 +86,16 @@
           this.url,
           this.token,
           this.callback,
+        ]);
+        return;
+      } 
+
+      if (this.method == "recheck") {
+        _si.push([
+          this.method,
+          this.url,
+          this.token,
+          this.callback
         ]);
         return;
       }
@@ -129,6 +145,8 @@
       if (this.version == 1 && this.is_content_page) {
         _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
       }
+
+
       _si.push([this.method, this.url, this.token]);
 
       // Calling the "clear" method to avoid smallbox showing a "Page not found" message when inside wp-admin panel
@@ -164,11 +182,14 @@
         }
 
         $(".recheck-button").click(function () {
+          $(this).attr("disabled", true);
           siteimprove.recheck(
             siteimprove_recheck_button.url,
-            siteimprove_recheck_button.token
+            siteimprove_recheck_button.token,
+            function () {
+              $(".recheck-button").attr("disabled", false);
+            }
           );
-          $(this).attr("disabled", true);
           return false;
         });
       },
