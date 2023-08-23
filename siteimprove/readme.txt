@@ -89,6 +89,7 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 * Added - Siteimprove Recheck to Gutenberg Editor
 * Added - When recheck is complete, the button will be re-enabled
 * Bugfix - Fixed an issue with si_preview returning undefined index
+* Bugfix - Fixed an issue with highlighting in which it didn't restore original HTML structure
 
 = 2.0.3 =
 * Bugfix - When doing prepublish, the si-preview empties the wp-admin-bar instead of removing it, which improves highlight selectors
