@@ -123,6 +123,7 @@
           var wrapTag = $("<span class='si-highlight'></span>");
     
           // Store the original content for all elements that are currently highlighted
+          // $this.data() is jQuery internal cache storage
           $(".si-highlight").each(function() {
               $(this).data('original-content', $(this).html());
           });
