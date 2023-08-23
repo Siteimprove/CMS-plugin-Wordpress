@@ -133,8 +133,8 @@
           });
 
           // We handle body tag highlight specificially, so we also need to remove it specificially from HTML element
-          if($("html").hasClass("si-full-highlight")) {
-            $("html").removeClass("si-full-highlight");
+          if($("body").hasClass("si-full-highlight")) {
+            $("body").removeClass("si-full-highlight");
           }
       
           // Apply new highlights based on the information received
@@ -145,7 +145,7 @@
               } else {
                   if ($element.is('body')) {
                     // Add the class to the HTML tag instead, so we can have full height of the highlight
-                    $element.parent().addClass("si-full-highlight");
+                    $element.addClass("si-full-highlight");
                   }
                   else if ($element.is('img') || $element.children().is("img")) {
                     $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");

@@ -23,11 +23,11 @@
 	animation-timing-function: ease;
 }
 
-html.si-full-highlight {
+body.si-full-highlight {
   position: relative;
 }
 
-html.si-full-highlight body:before {
+body.si-full-highlight:before {
   content: "";
   height: 100%;
   width: 100%;
