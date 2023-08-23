@@ -101,38 +101,55 @@
       }
 
       _si.push(['onHighlight', function(highlightInfo) {
-        // Remove highlight tag wrapper
-        $( ".si-highlight" ).contents().unwrap();
-        // Create an span tag for every highlight
-        $.each( highlightInfo.highlights, function( index, highlight ) {
-          var $element = $(highlight.selector);
-          var text = $element.text();
-          
-          if ( highlight.offset ) {
-            var start = highlight.offset.start;
-            var length = highlight.offset.length;
-            
-            var before = text.substr(0, start);
-            var highlighted = text.substr(start, length);
-            var after = text.substr(start + length);
-            
-            $element.html(before + "<span class='si-highlight'>" + highlighted + "</span>" + after);
-          } else {
-            //Dealing in a different way if the element or it's children came as an image.
-            if( $element.is('img') || $( $element[0] ).children().is( "img" ) ){
-              //Adding an inline padding was needed to put in evidence the div borders
-              $( $element[0] ).wrap( "<div class='si-highlight' style='padding: 5px;'></div>" );
-            }else{
-              $element.html( "<span class='si-highlight'>" + text + "</span>" );
-            }
-          }
-          
-          //Scroll to the target element
-          $([document.documentElement, document.body]).stop().animate({
-            scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
-          }, 1500);
+        // Function to wrap a specific text node within an element with a new element
+        function wrapTextNode(element, from, length, wrapTag) {
+            $(element).contents().each(function() {
+                // 3 = text node
+                if (this.nodeType === 3 && this.nodeValue) {  // Check if this is a text node
+                    if (from < this.nodeValue.length) {
+                        var before = this.nodeValue.substr(0, from);
+                        var middle = this.nodeValue.substr(from, length);
+                        var after = this.nodeValue.substr(from + length);
+                        $(this).before(before).before(wrapTag.clone().text(middle)).before(after).remove();
+                        return false;  // break out of each loop
+                    } else {
+                        from -= this.nodeValue.length;
+                    }
+                }
+            });
+        }
+    
+        var wrapTag = $("<span class='si-highlight'></span>");
+    
+        // Store the original content for all elements that are currently highlighted
+        $(".si-highlight").each(function() {
+            $(this).data('original-content', $(this).html());
         });
-      }]);
+    
+        // Restore the original content where the previous highlight span was applied
+        $(".si-highlight").each(function() {
+            $(this).replaceWith($(this).data('original-content'));
+        });
+      
+        // Apply new highlights based on the information received
+        $.each(highlightInfo.highlights, function(index, highlight) {
+            var $element = $(highlight.selector);
+            if (highlight.offset) {
+                wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
+            } else {
+                if ($element.is('img') || $element.children().is("img")) {
+                    $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
+                } else {
+                    $element.wrapInner("<span class='si-highlight'></span>");
+                }
+            }
+        });
+    
+        // Scroll to the target element
+        $([document.documentElement, document.body]).stop().animate({
+            scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
+        }, 1500);
+    }]);
 
 
       const getDomCallback = function () {
