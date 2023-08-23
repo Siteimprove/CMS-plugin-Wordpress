@@ -33,12 +33,12 @@ body.si-full-highlight:before {
   width: 100%;
   position: absolute;
   z-index: 9999;
-	background-color: rgba(221, 10, 27, 0.2);
-	border: 2px solid #DD0A1B;
-	animation-name: highlight-blink;
-	animation-duration: 0.4s;
-	animation-iteration-count: 4;
-	animation-timing-function: ease;
+  background-color: rgba(221, 10, 27, 0.2);
+  border: 2px solid #DD0A1B;
+  animation-name: highlight-blink;
+  animation-duration: 0.4s;
+  animation-iteration-count: 4;
+  animation-timing-function: ease;
 }
 
 .si-overlay {
