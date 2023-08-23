@@ -101,55 +101,56 @@
       }
 
       _si.push(['onHighlight', function(highlightInfo) {
-        // Function to wrap a specific text node within an element with a new element
-        function wrapTextNode(element, from, length, wrapTag) {
-            $(element).contents().each(function() {
-                // 3 = text node
-                if (this.nodeType === 3 && this.nodeValue) {  // Check if this is a text node
-                    if (from < this.nodeValue.length) {
-                        var before = this.nodeValue.substr(0, from);
-                        var middle = this.nodeValue.substr(from, length);
-                        var after = this.nodeValue.substr(from + length);
-                        $(this).before(before).before(wrapTag.clone().text(middle)).before(after).remove();
-                        return false;  // break out of each loop
-                    } else {
-                        from -= this.nodeValue.length;
-                    }
-                }
-            });
-        }
+          // Function to wrap a specific text node within an element with a new element
+          function wrapTextNode(element, from, length, wrapTag) {
+              $(element).contents().each(function() {
+                  // 3 = text node
+                  if (this.nodeType === 3 && this.nodeValue) {
+                      if (from < this.nodeValue.length) {
+                          var before = this.nodeValue.substr(0, from);
+                          var middle = this.nodeValue.substr(from, length);
+                          var after = this.nodeValue.substr(from + length);
+                          $(this).before(before).before(wrapTag.clone().text(middle)).before(after).remove();
+                          // Break out of the each loop
+                          return false;
+                      } else {
+                          from -= this.nodeValue.length;
+                      }
+                  }
+              });
+          }
     
-        var wrapTag = $("<span class='si-highlight'></span>");
+          var wrapTag = $("<span class='si-highlight'></span>");
     
-        // Store the original content for all elements that are currently highlighted
-        $(".si-highlight").each(function() {
-            $(this).data('original-content', $(this).html());
-        });
+          // Store the original content for all elements that are currently highlighted
+          $(".si-highlight").each(function() {
+              $(this).data('original-content', $(this).html());
+          });
     
-        // Restore the original content where the previous highlight span was applied
-        $(".si-highlight").each(function() {
-            $(this).replaceWith($(this).data('original-content'));
-        });
+          // Restore the original content where the previous highlight span was applied
+          $(".si-highlight").each(function() {
+              $(this).replaceWith($(this).data('original-content'));
+          });
       
-        // Apply new highlights based on the information received
-        $.each(highlightInfo.highlights, function(index, highlight) {
-            var $element = $(highlight.selector);
-            if (highlight.offset) {
-                wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
-            } else {
-                if ($element.is('img') || $element.children().is("img")) {
-                    $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
-                } else {
-                    $element.wrapInner("<span class='si-highlight'></span>");
-                }
-            }
-        });
+          // Apply new highlights based on the information received
+          $.each(highlightInfo.highlights, function(index, highlight) {
+              var $element = $(highlight.selector);
+              if (highlight.offset) {
+                  wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
+              } else {
+                  if ($element.is('img') || $element.children().is("img")) {
+                      $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
+                  } else {
+                      $element.wrapInner("<span class='si-highlight'></span>");
+                  }
+              }
+          });
     
-        // Scroll to the target element
-        $([document.documentElement, document.body]).stop().animate({
-            scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
-        }, 1500);
-    }]);
+          // Scroll to the target element
+          $([document.documentElement, document.body]).stop().animate({
+              scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
+          }, 1500);
+      }]);
 
 
       const getDomCallback = function () {
