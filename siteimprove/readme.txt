@@ -92,7 +92,6 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 * Bugfix - Fixed an highlighting issue in which it didn't restore original HTML structure
 * Bugfix - Fixed an highlighting issue with "BODY" tag
 
-
 = 2.0.3 =
 * Bugfix - When doing prepublish, the si-preview empties the wp-admin-bar instead of removing it, which improves highlight selectors
 
