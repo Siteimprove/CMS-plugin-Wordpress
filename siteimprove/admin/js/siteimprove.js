@@ -143,7 +143,7 @@
               if (highlight.offset) {
                   wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
               } else {
-                  if ($element.is('body') || $element.is('BODY')) {
+                  if ($element.is('body')) {
                     // Add the class to the HTML tag instead, so we can have full height of the highlight
                     $element.parent().addClass("si-full-highlight");
                   }
