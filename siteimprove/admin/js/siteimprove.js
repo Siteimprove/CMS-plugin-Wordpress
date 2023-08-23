@@ -131,6 +131,11 @@
           $(".si-highlight").each(function() {
               $(this).replaceWith($(this).data('original-content'));
           });
+
+          // We handle body tag highlight specificially, so we also need to remove it specificially from HTML element
+          if($("html").hasClass("si-full-highlight")) {
+            $("html").removeClass("si-full-highlight");
+          }
       
           // Apply new highlights based on the information received
           $.each(highlightInfo.highlights, function(index, highlight) {
@@ -138,10 +143,14 @@
               if (highlight.offset) {
                   wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
               } else {
-                  if ($element.is('img') || $element.children().is("img")) {
-                      $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
+                  if ($element.is('body') || $element.is('BODY')) {
+                    // Add the class to the HTML tag instead, so we can have full height of the highlight
+                    $element.parent().addClass("si-full-highlight");
+                  }
+                  else if ($element.is('img') || $element.children().is("img")) {
+                    $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
                   } else {
-                      $element.wrapInner("<span class='si-highlight'></span>");
+                    $element.wrapInner("<span class='si-highlight'></span>");
                   }
               }
           });
