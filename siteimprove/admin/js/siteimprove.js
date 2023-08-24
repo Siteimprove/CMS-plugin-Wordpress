@@ -119,43 +119,40 @@
                   }
               });
           }
-    
-          var wrapTag = $("<span class='si-highlight'></span>");
-    
-          // Store the original content for all elements that are currently highlighted
-          // $this.data() is jQuery internal cache storage
-          $(".si-highlight").each(function() {
-              $(this).data('original-content', $(this).html());
-          });
-    
-          // Restore the original content where the previous highlight span was applied
-          $(".si-highlight").each(function() {
-              $(this).replaceWith($(this).data('original-content'));
-          });
 
-          // We handle body tag highlight specificially, so we also need to remove it specificially from HTML element
-          if($("body").hasClass("si-full-highlight")) {
-            $("body").removeClass("si-full-highlight");
+          function resetHighlights() {
+            $(".si-highlight").each(function() {
+              $(this).replaceWith($(this).html());
+            });
+            // We handle body tag highlight specificially, so we also need to remove it specificially from HTML element
+            if($("body").hasClass("si-full-highlight")) {
+              $("body").removeClass("si-full-highlight");
+            }
           }
-      
-          // Apply new highlights based on the information received
-          $.each(highlightInfo.highlights, function(index, highlight) {
-              var $element = $(highlight.selector);
-              if (highlight.offset) {
-                  wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
-              } else {
-                  if ($element.is('body')) {
-                    // Add the class to the HTML tag instead, so we can have full height of the highlight
-                    $element.addClass("si-full-highlight");
-                  }
-                  else if ($element.is('img') || $element.children().is("img")) {
-                    $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
-                  } else {
-                    $element.wrapInner("<span class='si-highlight'></span>");
-                  }
-              }
-          });
-    
+          
+          function applyHighlights() {
+            var wrapTag = $("<span class='si-highlight'></span>");
+            // Apply new highlights based on the information received
+            $.each(highlightInfo.highlights, function(index, highlight) {
+                var $element = $(highlight.selector);
+                if (highlight.offset) {
+                    wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
+                } else {
+                    if ($element.is('body')) {
+                      // Add the class to the HTML tag instead, so we can have full height of the highlight
+                      $element.addClass("si-full-highlight");
+                    }
+                    else if ($element.is('img') || $element.children().is("img")) {
+                      $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
+                    } else {
+                      $element.wrapInner("<span class='si-highlight'></span>");
+                    }
+                }
+            });
+          }
+
+          resetHighlights();
+          applyHighlights();
           // Scroll to the target element
           $([document.documentElement, document.body]).stop().animate({
               scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
