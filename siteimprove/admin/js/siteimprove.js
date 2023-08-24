@@ -122,6 +122,7 @@
 
           function resetHighlights() {
             $(".si-highlight").each(function() {
+              // This takes the element of the .si-highlight inner HTML and replaces the element with it
               $(this).replaceWith($(this).html());
             });
             // We handle body tag highlight specificially, so we also need to remove it specificially from HTML element
