@@ -10,7 +10,7 @@ Every pull request will be checked against WPCS through GitHub Actions.
 
 ### 2.0.4
 * Added - Siteimprove Recheck to Gutenberg Editor
-* Added - When recheck is complete, the button will be re-enabled
+* Added – When recheck has been ordered, the button will be re-enabled
 * Bugfix - Fixed an issue with si_preview returning undefined index
 * Bugfix - Fixed an highlighting issue in which it didn't restore original HTML structure
 * Bugfix - Fixed an highlighting issue with "BODY" tag
