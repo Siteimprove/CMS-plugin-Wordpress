@@ -7,6 +7,8 @@ The code on this repository has to match the WordPress Coding Standards in order
 Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+### 2.0.5
+* Updated - Siteimprove logo
 
 ### 2.0.4
 * Added - Siteimprove Recheck to Gutenberg Editor
