@@ -575,32 +575,44 @@ class Siteimprove_Admin_Settings {
 		$request = self::make_api_request( $username, $key, '/sites' );
 
 		if ( isset( $request['response'] ) && 200 === $request['response']['code'] ) {
-			$results       = json_decode( $request['body'] );
-			$account_sites = $results->items;
+			$results            = json_decode( $request['body'] );
+			$total_pages_result = $results->total_pages;
+			$site_found         = false;
+			$public_url         = get_option( 'siteimprove_public_url' );
 
-			$public_url = get_option( 'siteimprove_public_url' );
+			for ( $i = 0; $i < $total_pages_result; $i++ ) {
+				if ( 1 < $total_pages_result && 1 < ( $i + 1 ) ) {
+					$request = self::make_api_request( $username, $key, '/sites?page=' . $i + 1 );
+				}
+				if ( isset( $request['response'] ) && 200 === $request['response']['code'] ) {
+					$results       = json_decode( $request['body'] );
+					$account_sites = $results->items;
 
-			if ( ! empty( $public_url ) ) {
-				$site_url = $public_url;
-			} else {
-				$site_url = get_site_url();
-			}
+					if ( ! empty( $public_url ) ) {
+						$site_url = $public_url;
+					} else {
+						$site_url = get_site_url();
+					}
 
-			$domain     = wp_parse_url( $site_url, PHP_URL_HOST );
-			$site_found = false;
+					$domain = wp_parse_url( $site_url, PHP_URL_HOST );
 
-			foreach ( $account_sites as $site_key => $site_data ) {
-				if ( false !== strpos( $site_data->url, $domain ) ) {
-					$site_found = true;
+					foreach ( $account_sites as $site_key => $site_data ) {
+						if ( false !== strpos( $site_data->url, $domain ) ) {
+							$site_found = true;
+
+							return array(
+								'status' => 'true',
+							);
+						}
+					}
+				} else {
+					$return['error'] = __( 'Unable to check website domain. Please try again later', 'siteimprove' );
+					return $return;
 				}
 			}
 
-			if ( true === $site_found ) {
-				$return = array(
-					'status' => 'true',
-				);
-			} else {
-				$return['error'] = __( 'Current domain/website not found for the provided credentials', 'siteimprove' );
+			if ( false === $site_found ) {
+				$return['error'] = __( 'Current domain/website not found for the provided credentials.', 'siteimprove' );
 			}
 		} else {
 			$return['error'] = __( 'Unable to check website domain. Please try again later', 'siteimprove' );
