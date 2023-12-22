@@ -85,6 +85,9 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 
 == Changelog ==
+= 2.0.6 =
+* Bugfix - Fixed an issue when some users tried saving their API credentials
+
 = 2.0.5 =
 * Updated - Siteimprove logo
 
