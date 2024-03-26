@@ -714,7 +714,15 @@ class Siteimprove_Admin_Settings {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		echo esc_html( SiteimproveUtils::request_token() );
+	
+		// Check if the nonce is set and is valid.
+		if ( isset( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+			// The nonce is valid, output the token.
+			echo esc_html( SiteimproveUtils::request_token() );
+		} else {
+			wp_die();
+		}
+	
 		wp_die();
 	}
 }

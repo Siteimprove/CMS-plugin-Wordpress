@@ -37,7 +37,8 @@
 					$.post(
 						ajaxurl,
 						{
-							'action': 'siteimprove_request_token'
+							'action': 'siteimprove_request_token',
+							'_wpnonce': $( '#_wpnonce' ).val(),
 						},
 						function (response) {
 							var el = $( '#siteimprove_token_request' );
