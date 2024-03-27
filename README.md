@@ -7,6 +7,9 @@ The code on this repository has to match the WordPress Coding Standards in order
 Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+### 2.0.7
+* Bugfix - Fixed a security issue with implementing nonce checking on request token
+
 ### 2.0.6
 * Bugfix - Fixed an issue when some users tried saving their API credentials
 

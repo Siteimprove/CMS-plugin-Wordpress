@@ -2,7 +2,7 @@
 Contributors: siteimprove
 Tags: accessibility, analytics, insights, readability, spelling, seo
 Requires at least: 4.7.2
-Tested up to: 6.2.2
+Tested up to: 6.4.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -85,6 +85,9 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 
 == Changelog ==
+= 2.0.7 =
+* Bugfix - Fixed a security issue with implementing nonce checking on request token
+
 = 2.0.6 =
 * Bugfix - Fixed an issue when some users tried saving their API credentials
 
