@@ -1,13 +1,13 @@
 === Siteimprove ===
 Contributors: siteimprove
-Tags: accessibility, analytics, insights, spelling, seo
+Tags: accessibility, analytics, insights, readability, spelling, seo
 Requires at least: 4.7.2
 Tested up to: 6.4.3
-Stable tag: 2.0.7
+Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Turn your most complex website challenges into manageable tasks—all from a single platform
+Turn your most complex website challenges into manageable tasks—all from a single platform. Siteimprove is a comprehensive solution for every element of your marketing strategy—complete with three solution packages: Inclusivity, Content Experience, Marketing Performance.
 
 == Description ==
 
@@ -86,7 +86,6 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 == Changelog ==
 = 2.0.7 =
-* Change - Changed name of the plugin from "Siteimprove Plugin" to "Siteimprove"
 * Bugfix - Fixed a security issue with implementing nonce checking on request token
 
 = 2.0.6 =
