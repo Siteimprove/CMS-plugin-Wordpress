@@ -110,7 +110,7 @@ class Siteimprove_Admin {
 			'gutenberg-siteimprove-plugin',
 			plugin_dir_url( __FILE__ ) . 'js/siteimprove-gutenberg.js',
 			array( 'wp-plugins', 'wp-edit-post', 'wp-element', 'siteimprove' ),
-			true
+			false
 		);
 		$si_js_args = array(
 			'token' => get_option( 'siteimprove_token' ),
