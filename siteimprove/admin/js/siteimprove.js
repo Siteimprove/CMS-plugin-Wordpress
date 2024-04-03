@@ -5,12 +5,13 @@
 (function ($) {
   "use strict";
 
-  const getDom = async function (url) {
+  const getDom = async function (url, nonce) {
+    console.log(nonce);
     const iframeContainer = document.createElement("div");
     iframeContainer.setAttribute("id", "div_iframe");
     document.body.appendChild(iframeContainer);
     const separator = url.includes("?") ? "&" : "?";
-    iframeContainer.innerHTML = `<iframe id='domIframe' src=${url}${separator}si_preview=1 style='height:100vh; width:100%'></iframe>`;
+    iframeContainer.innerHTML = `<iframe id='domIframe' src=${url}${separator}si_preview_nonce=${nonce} style='height:100vh; width:100%'></iframe>`;
     const iframe = document.getElementById("domIframe");
     const promise = new Promise(function (resolve, reject) {
       iframe.addEventListener(
@@ -36,12 +37,13 @@
   };  
 
   window.siteimprove = {
-    input: function (url, token, version, is_content_page) {
+    input: function (url, token, version, is_content_page, nonce) {
       this.url = url;
       this.token = token;
       this.method = "input";
       this.version = version;
       this.is_content_page = is_content_page;
+      this.nonce = nonce;
       this.common(url);
     },
     domain: function (url, token) {
@@ -232,7 +234,7 @@
 
     // If exist siteimprove_input, call input Siteimprove method.
     if (typeof siteimprove_input !== "undefined") {
-      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.is_content_page);
+      siteimprove.input(siteimprove_input.url, siteimprove_input.token, siteimprove_input.version, siteimprove_input.is_content_page, siteimprove_input.nonce);
     }
 
     // If exist siteimprove_domain, call domain Siteimprove method.
@@ -262,6 +264,7 @@
       var result = {
         url: window.location.href,
         token: "",
+        nonce: "",
       };
 
       if (typeof siteimprove_input !== "undefined") {
@@ -269,6 +272,7 @@
           result.url = siteimprove_input.url;
         }
         result.token = siteimprove_input.token;
+        result.nonce = siteimprove_input.nonce;
       }
 
       if (typeof siteimprove_domain !== "undefined") {
@@ -276,6 +280,7 @@
           result.url = siteimprove_domain.url;
         }
         result.token = siteimprove_domain.token;
+        result.nonce = siteimprove_domain.nonce;
       }
       return result;
     };
@@ -286,7 +291,8 @@
         var si_prepublish_data = siGetCurrentUrlAndToken();
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
-        var dom = await getDom(si_prepublish_data.url);
+        console.log(si_prepublish_data);
+        var dom = await getDom(si_prepublish_data.url, si_prepublish_data.nonce);
         siteimprove.contentcheck_flatdom(
           dom,
           si_prepublish_data.url,
