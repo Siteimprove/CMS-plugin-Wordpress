@@ -107,7 +107,7 @@ class Siteimprove_Admin_Settings {
 		);
 
 		// Register a new section in the siteimprove page.
-		if ( isset( $_GET['devmode'] ) ) {
+		if ( isset( $_GET['devmode'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
 			add_settings_section(
 				'siteimprove_dev_mode_section',
 				__( 'Dev Mode', 'siteimprove' ),

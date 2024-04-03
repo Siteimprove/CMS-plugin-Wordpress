@@ -110,6 +110,7 @@ class Siteimprove_Admin {
 			'gutenberg-siteimprove-plugin',
 			plugin_dir_url( __FILE__ ) . 'js/siteimprove-gutenberg.js',
 			array( 'wp-plugins', 'wp-edit-post', 'wp-element', 'siteimprove' ),
+			$this->version,
 			false
 		);
 		$si_js_args = array(
@@ -188,6 +189,7 @@ class Siteimprove_Admin {
 		$file_name = get_option( 'siteimprove_overlayjs_file', 'overlay-v2-dev.js' );
 		$disabled_new_version = get_option( 'siteimprove_disable_new_version' );
 		$pattern = '/^[a-zA-Z_\d-]+.js/';
+		$nonce = wp_create_nonce( 'siteimprove_nonce' );
 
 		if ( ! empty( $file_name ) ) {
 			if ( preg_match( $pattern, $file_name ) ) {
@@ -202,7 +204,11 @@ class Siteimprove_Admin {
 				$overlay_path = Siteimprove::JS_LIBRARY_URL . 'overlay-v1.js';
 			}
 		}
-		if ( ! isset( $_GET['si_preview'] ) || '0' === $_GET['si_preview'] ) {
+
+		if ( isset( $_GET['si_preview_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['si_preview_nonce'] ) ), 'siteimprove_nonce' ) ) {
+			return;
+		}
+		else {	
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
 			wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
 		}
@@ -221,6 +227,7 @@ class Siteimprove_Admin {
 			'url'   => $url,
 			'version' => $disabled_new_version,
 			'is_content_page' => $is_content_page,
+			'nonce' => $nonce,
 		);
 
 		wp_localize_script(
