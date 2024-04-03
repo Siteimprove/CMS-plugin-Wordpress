@@ -6,7 +6,7 @@
  */
 
 /**
- * Plugin Name:         Siteimprove Plugin
+ * Plugin Name:         Siteimprove
  * Plugin URI:          https://www.siteimprove.com/integrations/cms-plugin/wordpress/
  * Description:         Integration with Siteimprove.
  * Version:             2.0.7
