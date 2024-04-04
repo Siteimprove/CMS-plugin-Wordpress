@@ -60,7 +60,7 @@ class Siteimprove {
 	public function __construct() {
 
 		$this->plugin_name = 'siteimprove';
-		$this->version     = '2.0.0';
+		$this->version     = '2.0.7';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -146,7 +146,7 @@ class Siteimprove {
 		$this->loader->add_action( 'siteimprove_before_settings_form', $plugin_admin, 'siteimprove_before_settings_form' );
 
 		// Siteimprove Actions.
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_init', $nonce );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'siteimprove_init' );
 		$this->loader->add_action( 'publish_page', $plugin_admin, 'siteimprove_save_session_url_post' );
 		$this->loader->add_action( 'publish_post', $plugin_admin, 'siteimprove_save_session_url_post' );
 		$this->loader->add_action( 'edit_term', $plugin_admin, 'siteimprove_save_session_url_term', 10, 3 );

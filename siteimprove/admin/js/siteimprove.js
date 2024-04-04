@@ -6,7 +6,6 @@
   "use strict";
 
   const getDom = async function (url, nonce) {
-    console.log(nonce);
     const iframeContainer = document.createElement("div");
     iframeContainer.setAttribute("id", "div_iframe");
     document.body.appendChild(iframeContainer);
@@ -291,7 +290,6 @@
         var si_prepublish_data = siGetCurrentUrlAndToken();
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
-        console.log(si_prepublish_data);
         var dom = await getDom(si_prepublish_data.url, si_prepublish_data.nonce);
         siteimprove.contentcheck_flatdom(
           dom,
