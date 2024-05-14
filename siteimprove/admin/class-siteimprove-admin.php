@@ -210,6 +210,15 @@ class Siteimprove_Admin {
 		}
 		else {	
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
+
+			/*
+					Pass any server-side vars down to JS.  These will be exposed as
+					php_vars.variablename for example
+			*/
+			$jsarray = array(
+				'has_api_key'               => intval( strlen(get_option('siteimprove_api_key', 0)) > 0 )
+			);
+			wp_localize_script( $this->plugin_name, 'php_vars', $jsarray ); 
 			wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
 		}
 		$public_url = get_option( 'siteimprove_public_url' );
@@ -425,8 +434,8 @@ class Siteimprove_Admin {
 		global $pagenow;
 		$prepublish_allowed = intval( get_option( 'siteimprove_prepublish_allowed', 0 ) );
 		$prepublish_enabled = intval( get_option( 'siteimprove_prepublish_enabled', 0 ) );
-
-		if ( ( is_preview() || is_singular() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled ) {
+		$has_api_key = intval( strlen( get_option( 'siteimprove_api_key', 0 ) ) > 0 );
+		if ( ( is_preview() || is_singular() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled && 1 === $has_api_key ) {
 			$prepublish_button = 
 			'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
 				<circle fill="#0D4CD3" cx="150" cy="150" r="150"/>
