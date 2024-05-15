@@ -216,6 +216,8 @@ class Siteimprove_Admin {
 					php_vars.variablename for example
 			*/
 			$jsarray = array(
+				'prepublish_allowed'        => intval( get_option( 'siteimprove_prepublish_allowed', 0 ) ),
+				'prepublish_enabled'        => intval( get_option( 'siteimprove_prepublish_enabled', 0 ) ),
 				'has_api_key'               => intval( strlen(get_option('siteimprove_api_key', 0)) > 0 )
 			);
 			wp_localize_script( $this->plugin_name, 'php_vars', $jsarray ); 
