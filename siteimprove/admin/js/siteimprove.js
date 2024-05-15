@@ -170,9 +170,15 @@
       // 0 = overlay-v1.js
       // 1 = overlay-latest.js
       if (this.version == 1 && this.is_content_page) {
-        _si.push(['registerPrepublishCallback', getDomCallback, this.token]);
+        var { has_api_key, prepublish_allowed, prepublish_enabled } = php_vars;
+        var cb =
+          Boolean(+has_api_key) &&
+          Boolean(+prepublish_allowed) &&
+          Boolean(+prepublish_enabled)
+            ? getDomCallback
+            : null
+        _si.push(['registerPrepublishCallback', cb, this.token]);
       }
-
 
       _si.push([this.method, this.url, this.token]);
 

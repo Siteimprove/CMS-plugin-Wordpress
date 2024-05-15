@@ -49,7 +49,7 @@ class Siteimprove_Admin {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
+		$this->version = $version;
 
 		$this->load_dependencies();
 
@@ -135,10 +135,10 @@ class Siteimprove_Admin {
 
 		if ( ! wp_doing_ajax() && ! empty( $urls ) ) {
 			if ( is_array( $urls ) && count( $urls ) > 1 ) {
-				$url    = esc_url( home_url() );
+				$url = esc_url( home_url() );
 				$method = 'siteimprove_recrawl';
 			} else {
-				$url    = array_pop( $urls );
+				$url = array_pop( $urls );
 				$method = 'siteimprove_recheck';
 			}
 			delete_transient( 'siteimprove_url_' . get_current_user_id() );
@@ -147,7 +147,7 @@ class Siteimprove_Admin {
 
 		switch ( $pagenow ) {
 			case 'post.php':
-				$post_id   = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+				$post_id = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
 				$permalink = get_permalink( $post_id );
 
 				if ( $permalink ) {
@@ -161,7 +161,7 @@ class Siteimprove_Admin {
 
 			case 'term.php':
 			case 'edit-tags.php':
-				$tag_id   = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
+				$tag_id = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
 				$taxonomy = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
 
 				if ( 'term.php' === $pagenow || ( 'edit-tags.php' === $pagenow && wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['action'] ) && 'edit' === $_GET['action'] ) ) {
@@ -171,7 +171,7 @@ class Siteimprove_Admin {
 				break;
 
 			default:
-				$host    = isset( $_SERVER['HTTP_HOST'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
+				$host = isset( $_SERVER['HTTP_HOST'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
 				$request = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 				$this->siteimprove_add_js( $host . $request, 'siteimprove_domain' );
 		}
@@ -207,24 +207,34 @@ class Siteimprove_Admin {
 
 		if ( isset( $_GET['si_preview_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['si_preview_nonce'] ) ), 'siteimprove_nonce' ) ) {
 			return;
-		}
-		else {	
+		} else {
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
+
+			/*
+									 Pass any server-side vars down to JS.  These will be exposed as
+									 php_vars.variablename for example
+							 */
+			$jsarray = array(
+				'prepublish_allowed' => intval( get_option( 'siteimprove_prepublish_allowed', 0 ) ),
+				'prepublish_enabled' => intval( get_option( 'siteimprove_prepublish_enabled', 0 ) ),
+				'has_api_key' => intval( strlen( get_option( 'siteimprove_api_key', 0 ) ) > 0 ),
+			);
+			wp_localize_script( $this->plugin_name, 'php_vars', $jsarray );
 			wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
 		}
 		$public_url = get_option( 'siteimprove_public_url' );
 
 		if ( ! empty( $public_url ) ) {
 			$parsed_url = wp_parse_url( $url );
-			$url        = "$public_url$parsed_url[path]" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
+			$url = "$public_url$parsed_url[path]" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
 		}
 
 		$is_content_page = is_preview() || is_singular();
 
 		$si_js_args = array(
 			'token' => get_option( 'siteimprove_token' ),
-			'txt'   => __( 'Siteimprove Recheck', 'siteimprove' ),
-			'url'   => $url,
+			'txt' => __( 'Siteimprove Recheck', 'siteimprove' ),
+			'url' => $url,
 			'version' => $disabled_new_version,
 			'is_content_page' => $is_content_page,
 			'nonce' => $nonce,
@@ -241,9 +251,9 @@ class Siteimprove_Admin {
 			$this->plugin_name,
 			'siteimprove_plugin_text',
 			array(
-				'loading'                     => __( 'Loading... Please wait.', 'siteimprove' ),
+				'loading' => __( 'Loading... Please wait.', 'siteimprove' ),
 				'prepublish_activate_running' => __( 'We are now activating prepublish for your website... Please keep the current page open while the process is running.', 'siteimprove' ),
-				'prepublish_feature_ready'    => __( 'Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel.', 'siteimprove' ),
+				'prepublish_feature_ready' => __( 'Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel.', 'siteimprove' ),
 				'prepublish_activation_error' => __( 'Error activating prepublish. Please contact support team.', 'siteimprove' ),
 			)
 		);
@@ -297,7 +307,7 @@ class Siteimprove_Admin {
 	 */
 	public function siteimprove_save_session_url_post( $post_ID ) {
 		if ( ! wp_is_post_revision( $post_ID ) && ! wp_is_post_autosave( $post_ID ) ) {
-			$urls   = get_transient( 'siteimprove_url_' . get_current_user_id() );
+			$urls = get_transient( 'siteimprove_url_' . get_current_user_id() );
 			$urls[] = get_permalink( $post_ID );
 			set_transient( 'siteimprove_url_' . get_current_user_id(), $urls, 900 );
 		}
@@ -312,7 +322,7 @@ class Siteimprove_Admin {
 	 * @return void
 	 */
 	public function siteimprove_save_session_url_term( $term_id, $tt_id, $taxonomy ) {
-		$urls   = get_transient( 'siteimprove_url_' . get_current_user_id() );
+		$urls = get_transient( 'siteimprove_url_' . get_current_user_id() );
 		$urls[] = get_term_link( (int) $term_id, $taxonomy );
 		set_transient( 'siteimprove_url_' . get_current_user_id(), $urls, 900 );
 	}
@@ -335,7 +345,7 @@ class Siteimprove_Admin {
 				true
 			)
 		) {
-			$urls   = get_transient( 'siteimprove_url_' . get_current_user_id() );
+			$urls = get_transient( 'siteimprove_url_' . get_current_user_id() );
 			$urls[] = get_permalink( $post->ID );
 			set_transient( 'siteimprove_url_' . get_current_user_id(), $urls, 900 );
 		}
@@ -346,7 +356,7 @@ class Siteimprove_Admin {
 	 */
 	public function siteimprove_wp_head() {
 
-		$user          = wp_get_current_user();
+		$user = wp_get_current_user();
 		$allowed_roles = array(
 			'shop_manager',
 			'contributor',
@@ -367,7 +377,7 @@ class Siteimprove_Admin {
 					break;
 
 				default:
-					$host    = isset( $_SERVER['HTTP_HOST'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
+					$host = isset( $_SERVER['HTTP_HOST'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
 					$request = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 					$this->siteimprove_add_js( $host . $request, 'siteimprove_domain' );
 			}
@@ -425,10 +435,10 @@ class Siteimprove_Admin {
 		global $pagenow;
 		$prepublish_allowed = intval( get_option( 'siteimprove_prepublish_allowed', 0 ) );
 		$prepublish_enabled = intval( get_option( 'siteimprove_prepublish_enabled', 0 ) );
-
-		if ( ( is_preview() || is_singular() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled ) {
-			$prepublish_button = 
-			'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
+		$has_api_key = intval( strlen( get_option( 'siteimprove_api_key', 0 ) ) > 0 );
+		if ( ( is_preview() || is_singular() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled && 1 === $has_api_key ) {
+			$prepublish_button =
+				'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
 				<circle fill="#0D4CD3" cx="150" cy="150" r="150"/>
 				<g>
 					<path fill="#FFFFFF" d="M167.9,135.3l-14.3-4.2c-6.5-2-11.6-3.8-15.4-5.4c-3.8-1.6-6.5-3.4-8.1-5.2c-1.6-1.8-2.4-4.1-2.4-6.9   c0-3.4,1.1-6.3,3.2-8.7c2.1-2.5,5.1-4.4,9-5.7c3.8-1.3,8.3-2,13.5-2c5.2,0,10.4,0.7,15.6,2c5.2,1.3,9.9,3.2,14.3,5.5   c4.4,2.3,8,5.1,11,8.2l19-28.1c-6.5-6.3-15.1-11.2-25.7-14.8c-10.7-3.6-22.2-5.5-34.6-5.5c-9,0-17.3,1.3-24.9,3.8   c-7.6,2.5-14.2,6.1-19.9,10.7c-5.6,4.6-10,10-13.1,16.2c-3.1,6.2-4.7,13-4.7,20.3c0,11.4,3.7,21.2,11.1,29.3   c7.4,8.1,19.6,14.5,36.5,19.2l14.1,4c9.9,2.7,16.7,5.4,20.3,8.3c3.6,2.9,5.5,6.4,5.5,10.7c0,5.2-2.5,9.1-7.6,11.8   c-5,2.7-11.6,4-19.6,4c-5.7,0-11.6-0.7-17.6-2.2c-6.1-1.4-11.7-3.5-17.1-6.2c-5.3-2.7-9.7-5.8-13.1-9.5l-18.3,29.1   c8.1,7,18.1,12.3,29.8,15.9c11.7,3.7,23.8,5.5,36.2,5.5c13.4,0,24.9-2.2,34.6-6.7s17.2-10.6,22.6-18.6c5.3-7.9,8-17.1,8-27.5   c0-11.9-3.8-21.5-11.3-29C196.8,146.4,184.7,140.2,167.9,135.3z"/>
@@ -436,11 +446,11 @@ class Siteimprove_Admin {
 			</svg>';
 			$admin_bar->add_menu(
 				array(
-					'id'    => 'siteimprove-trigger-contentcheck',
+					'id' => 'siteimprove-trigger-contentcheck',
 					'title' => $prepublish_button . __( 'Prepublish', 'siteimprove' ),
 					'group' => null,
-					'href'  => '#',
-					'meta'  => array(
+					'href' => '#',
+					'meta' => array(
 						'title' => __( 'Siteimprove Prepublish', 'siteimprove' ),
 						'class' => 'siteimprove-trigger-contentcheck',
 					),
