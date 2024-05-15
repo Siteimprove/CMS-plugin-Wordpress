@@ -211,13 +211,13 @@ class Siteimprove_Admin {
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/siteimprove.js', array( 'jquery' ), $this->version, false );
 
 			/*
-								Pass any server-side vars down to JS.  These will be exposed as
-								php_vars.variablename for example
-						*/
+									 Pass any server-side vars down to JS.  These will be exposed as
+									 php_vars.variablename for example
+							 */
 			$jsarray = array(
 				'prepublish_allowed' => intval( get_option( 'siteimprove_prepublish_allowed', 0 ) ),
 				'prepublish_enabled' => intval( get_option( 'siteimprove_prepublish_enabled', 0 ) ),
-				'has_api_key' => intval( strlen( get_option( 'siteimprove_api_key', 0 ) ) > 0 )
+				'has_api_key' => intval( strlen( get_option( 'siteimprove_api_key', 0 ) ) > 0 ),
 			);
 			wp_localize_script( $this->plugin_name, 'php_vars', $jsarray );
 			wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );

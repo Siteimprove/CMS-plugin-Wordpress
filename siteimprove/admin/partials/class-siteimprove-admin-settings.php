@@ -107,7 +107,7 @@ class Siteimprove_Admin_Settings {
 		);
 
 		// Register a new section in the siteimprove page.
-		if ( isset( $_GET['devmode'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+		if ( isset( $_GET['devmode'] ) && ( isset( $_REQUEST['_wpnonce'] ) ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
 			add_settings_section(
 				'siteimprove_dev_mode_section',
 				__( 'Dev Mode', 'siteimprove' ),
@@ -183,82 +183,82 @@ class Siteimprove_Admin_Settings {
 			if ( ! empty( $siteimprove_api_key ) ) {
 				if ( 1 === $prepublish_allowed ) {
 					?>
-										<p>You can use Prepublish on your account.</p>
-										<?php
-										if ( 0 === $prepublish_enabled ) :
-											?>
-													<p class="siteimprove_prepublish_activation_messages">
-												<?php
-												echo wp_kses(
-													__( 'To enable prepublish for this website click <a href="#" id="siteimprove_enable_prepublish" class="button button-primary">here</a>', 'siteimprove' ),
-													array(
-														'a' => array(
-															'href' => array(),
-															'id' => array(),
-															'class' => array(),
-														),
-													)
-												);
-												?>
-													</p>
-													<?php
-										else :
-											?>
-												<p>
-													<?php
-													echo wp_kses(
-														__( 'Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel', 'siteimprove' ),
-														array(
-															'strong' => array(),
-														)
-													);
-													?>
-												</p>
-													<?php
-										endif;
+															<p>You can use Prepublish on your account.</p>
+															<?php
+															if ( 0 === $prepublish_enabled ) :
+																?>
+																			<p class="siteimprove_prepublish_activation_messages">
+																		<?php
+																		echo wp_kses(
+																			__( 'To enable prepublish for this website click <a href="#" id="siteimprove_enable_prepublish" class="button button-primary">here</a>', 'siteimprove' ),
+																			array(
+																				'a' => array(
+																					'href' => array(),
+																					'id' => array(),
+																					'class' => array(),
+																				),
+																			)
+																		);
+																		?>
+																			</p>
+																			<?php
+															else :
+																?>
+																		<p>
+																			<?php
+																			echo wp_kses(
+																				__( 'Prepublish feature is already enabled for the current website. To use it please go to the preview of any page/post or content that you want to check and click the button <strong>Siteimprove Prepublish Check</strong> located on the top bar of the admin panel', 'siteimprove' ),
+																				array(
+																					'strong' => array(),
+																				)
+																			);
+																			?>
+																		</p>
+																			<?php
+															endif;
 				} else {
 					?>
-										<p>
-										<?php
-										esc_html_e( 'You can\'t use Prepublish on your account. Please contact sales team to enable this feature for the current website', 'siteimprove' );
-										?>
-										</p>
-										<?php
+															<p>
+															<?php
+															esc_html_e( 'You can\'t use Prepublish on your account. Please contact sales team to enable this feature for the current website', 'siteimprove' );
+															?>
+															</p>
+															<?php
 				}
 			} else {
 				?>
-								<p>
-								<?php
-								esc_html_e( 'Please provide a valid API Username and API Key before using this feature.', 'siteimprove' );
-								?>
-								</p>
-								<?php
+												<p>
+												<?php
+												esc_html_e( 'Please provide a valid API Username and API Key before using this feature.', 'siteimprove' );
+												?>
+												</p>
+												<?php
 			}
 		}
 
 		if ( 'siteimprove_public_url' === $args['id'] ) {
 			?>
-						<p>
-						<?php
-						esc_html_e( 'Please provide the Public URL for the current site if for any reasons it\'s not the same as the Admin Panel URL. Otherwise you can leave this field empty.' );
-						?>
-						</p>
-						<p>
-						<?php
-						esc_html_e( 'Example: Website Admin Panel is hosted at: http://stg-thewebsite.com but the final Public URL will be http://thewebsite.com', 'siteimprove' );
-						?>
-						</p>
-						<?php
+									<p>
+									<?php
+									esc_html_e( 'Please provide the Public URL for the current site if for any reasons it\'s not the same as the Admin Panel URL. Otherwise you can leave this field empty.' );
+									?>
+									</p>
+									<p>
+									<?php
+									esc_html_e( 'Example: Website Admin Panel is hosted at: http://stg-thewebsite.com but the final Public URL will be http://thewebsite.com', 'siteimprove' );
+									?>
+									</p>
+									<?php
 		}
 
 		if ( 'siteimprove_version_section' === $args['id'] ) {
 			?>
-						<p>
-						<?php
-						esc_html_e( 'A new version of the plugin is now available. Please note it is a work in progress and may update over time.' );
-						?>
-						</p>
-						<?php
+									<p>
+									<?php
+									esc_html_e( 'A new version of the plugin is now available. Please note it is a work in progress and may update over time.' );
+									?>
+									</p>
+									<?php
 		}
 	}
 
@@ -277,8 +277,8 @@ class Siteimprove_Admin_Settings {
 			$is_checked = '';
 		}
 		?>
-				<input type="checkbox" id="siteimprove_disable_new_version_field" name="siteimprove_disable_new_version"  value='1' <?php echo esc_attr( $is_checked ); ?> />
-				<?php
+						<input type="checkbox" id="siteimprove_disable_new_version_field" name="siteimprove_disable_new_version"  value='1' <?php echo esc_attr( $is_checked ); ?> />
+						<?php
 	}
 
 	/**
@@ -290,9 +290,9 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_token_field( $args ) {
 		?>
 
-				<input type="text" id="siteimprove_token_field" name="siteimprove_token" value="<?php echo esc_attr( get_option( 'siteimprove_token' ) ); ?>" maxlength="50" size="50" />
-				<input class="button" id="siteimprove_token_request" type="button" value="<?php echo esc_attr( __( 'Request new token', 'siteimprove' ) ); ?>" />
-				<?php
+						<input type="text" id="siteimprove_token_field" name="siteimprove_token" value="<?php echo esc_attr( get_option( 'siteimprove_token' ) ); ?>" maxlength="50" size="50" />
+						<input class="button" id="siteimprove_token_request" type="button" value="<?php echo esc_attr( __( 'Request new token', 'siteimprove' ) ); ?>" />
+						<?php
 	}
 
 	/**
@@ -303,8 +303,8 @@ class Siteimprove_Admin_Settings {
 	 */
 	public static function siteimprove_public_url_field( $args ) {
 		?>
-				<input type="text" id="siteimprove_public_url_field" name="siteimprove_public_url" value="<?php echo esc_attr( get_option( 'siteimprove_public_url' ) ); ?>"  size="50" />
-				<?php
+						<input type="text" id="siteimprove_public_url_field" name="siteimprove_public_url" value="<?php echo esc_attr( get_option( 'siteimprove_public_url' ) ); ?>"  size="50" />
+						<?php
 	}
 
 	/**
@@ -316,8 +316,8 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_api_username_field( $args ) {
 		?>
 
-				<input type="text" id="siteimprove_api_username_field" name="siteimprove_api_username" value="<?php echo esc_attr( get_option( 'siteimprove_api_username' ) ); ?>" maxlength="50" size="50" />
-				<?php
+						<input type="text" id="siteimprove_api_username_field" name="siteimprove_api_username" value="<?php echo esc_attr( get_option( 'siteimprove_api_username' ) ); ?>" maxlength="50" size="50" />
+						<?php
 	}
 
 	/**
@@ -329,8 +329,8 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_api_key_field( $args ) {
 		?>
 
-				<input type="text" id="siteimprove_api_key_field" name="siteimprove_api_key" value="<?php echo esc_attr( get_option( 'siteimprove_api_key' ) ); ?>" maxlength="50" size="50" />
-				<?php
+						<input type="text" id="siteimprove_api_key_field" name="siteimprove_api_key" value="<?php echo esc_attr( get_option( 'siteimprove_api_key' ) ); ?>" maxlength="50" size="50" />
+						<?php
 	}
 
 	/**
@@ -342,8 +342,8 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_overlayjs_file_field( $args ) {
 		?>
 
-				<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>"  size="50" />
-				<?php
+						<input type="text" id="siteimprove_overlayjs_file_field" name="siteimprove_overlayjs_file" value="<?php echo esc_attr( get_option( 'siteimprove_overlayjs_file' ) ); ?>"  size="50" />
+						<?php
 	}
 
 	/**
@@ -357,19 +357,19 @@ class Siteimprove_Admin_Settings {
 
 		settings_errors( 'siteimprove_messages' );
 		?>
-				<div class="wrap">
-					<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-					<form action="options.php" method="post">
-					<?php
-					// Display settings fields.
-					settings_fields( 'siteimprove' );
-					do_settings_sections( 'siteimprove' );
-					// Submit button.
-					submit_button( __( 'Save Settings', 'siteimprove' ) );
-					?>
-					</form>
-				</div>
-					<?php
+						<div class="wrap">
+							<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+							<form action="options.php" method="post">
+							<?php
+							// Display settings fields.
+							settings_fields( 'siteimprove' );
+							do_settings_sections( 'siteimprove' );
+							// Submit button.
+							submit_button( __( 'Save Settings', 'siteimprove' ) );
+							?>
+							</form>
+						</div>
+							<?php
 	}
 
 	/**
@@ -468,10 +468,10 @@ class Siteimprove_Admin_Settings {
 				}
 			} else {
 				/*
-						Now if API username and key are set, it's time to test both
-						against the API endpoint to check if it's a valid user/key set
-						and also if the keys correspond to the current website
-						*/
+								Now if API username and key are set, it's time to test both
+								against the API endpoint to check if it's a valid user/key set
+								and also if the keys correspond to the current website
+								*/
 				if (
 					isset( $_POST['siteimprove_api_username'], $_POST['siteimprove_api_key'], $_REQUEST['_wpnonce'] )
 					&& wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' )
@@ -626,16 +626,16 @@ class Siteimprove_Admin_Settings {
 			}
 		} else {
 			/*
-				 TODO: Figure out how to find if the feature is allowed but not enabled yet. For now we
-				 are considering that if there are no errors, then we can keep going and suppose it's
-				 then possibly allowed to be enabled by the user whenever he wishes to do so.
-				 */
+						TODO: Figure out how to find if the feature is allowed but not enabled yet. For now we
+						are considering that if there are no errors, then we can keep going and suppose it's
+						then possibly allowed to be enabled by the user whenever he wishes to do so.
+						*/
 			update_option( 'siteimprove_prepublish_allowed', 1 );
 
 			/*
-				 Now we'll try to see if the prepublish feature is already enabled.
-				 If not, then we can show the user a button so he can enable it himself.
-				 */
+						Now we'll try to see if the prepublish feature is already enabled.
+						If not, then we can show the user a button so he can enable it himself.
+						*/
 			$results = json_decode( $request['body'] );
 			if ( isset( $results->is_ready ) && true === $results->is_ready ) {
 				update_option( 'siteimprove_prepublish_enabled', 1 );
