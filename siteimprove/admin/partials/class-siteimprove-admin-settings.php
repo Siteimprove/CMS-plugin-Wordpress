@@ -108,7 +108,7 @@ class Siteimprove_Admin_Settings {
 		);
 
 		// Register a new section in the siteimprove page.
-		if ( isset( $_GET['devmode'] )) {
+		if ( isset( $_GET['devmode'] ) ) {
 			add_settings_section(
 				'siteimprove_dev_mode_section',
 				__( 'Dev Mode', 'siteimprove' ),
