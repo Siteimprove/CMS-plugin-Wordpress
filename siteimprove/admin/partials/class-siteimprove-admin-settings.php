@@ -38,6 +38,7 @@ class Siteimprove_Admin_Settings {
 	 * Register section.
 	 */
 	public function register_section() {
+		$this->siteimprove_nonce = wp_create_nonce( 'siteimprove-options' );
 		// Register settings for siteimprove plugin settings page.
 		register_setting( 'siteimprove', 'siteimprove_token' );
 		register_setting( 'siteimprove', 'siteimprove_disable_new_version', 'Siteimprove_Admin_Settings::validate_siteimprove_disable_new_version' );
@@ -107,7 +108,7 @@ class Siteimprove_Admin_Settings {
 		);
 
 		// Register a new section in the siteimprove page.
-		if ( isset( $_GET['devmode'] ) && ( isset( $_REQUEST['_wpnonce'] ) ) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'siteimprove-options' ) ) {
+		if ( isset( $_GET['devmode'] )) {
 			add_settings_section(
 				'siteimprove_dev_mode_section',
 				__( 'Dev Mode', 'siteimprove' ),
@@ -150,8 +151,6 @@ class Siteimprove_Admin_Settings {
 			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
 			'siteimprove'
 		);
-
-		$this->siteimprove_nonce = wp_create_nonce( 'siteimprove_nonce' );
 	}
 
 	/**
