@@ -22,7 +22,7 @@
             adminBar.innerHTML = '<div></div>';
             adminBar.id = 'wpadminbar-disabled';
           }
-          const cleanDom = iframe.contentWindow.document.cloneNode(true);
+          const cleanDom = iframe.contentWindow.document;
           document.body.removeChild(iframeContainer);
           resolve(cleanDom);
         },
