@@ -102,63 +102,7 @@
       }
 
       _si.push(['onHighlight', function(highlightInfo) {
-          // Function to wrap a specific text node within an element with a new element
-          function wrapTextNode(element, from, length, wrapTag) {
-              $(element).contents().each(function() {
-                  // 3 = text node
-                  if (this.nodeType === 3 && this.nodeValue) {
-                      if (from < this.nodeValue.length) {
-                          var before = this.nodeValue.substr(0, from);
-                          var middle = this.nodeValue.substr(from, length);
-                          var after = this.nodeValue.substr(from + length);
-                          $(this).before(before).before(wrapTag.clone().text(middle)).before(after).remove();
-                          // Break out of the each loop
-                          return false;
-                      } else {
-                          from -= this.nodeValue.length;
-                      }
-                  }
-              });
-          }
-
-          function resetHighlights() {
-            $(".si-highlight").each(function() {
-              // This takes the element of the .si-highlight inner HTML and replaces the element with it
-              $(this).replaceWith($(this).html());
-            });
-            // We handle body tag highlight specificially, so we also need to remove it specificially from HTML element
-            if($("body").hasClass("si-full-highlight")) {
-              $("body").removeClass("si-full-highlight");
-            }
-          }
-          
-          function applyHighlights() {
-            var wrapTag = $("<span class='si-highlight'></span>");
-            // Apply new highlights based on the information received
-            $.each(highlightInfo.highlights, function(index, highlight) {
-                var $element = $(highlight.selector);
-                if (highlight.offset) {
-                    wrapTextNode($element[0], highlight.offset.start, highlight.offset.length, wrapTag);
-                } else {
-                    if ($element.is('body')) {
-                      // Add the class to the HTML tag instead, so we can have full height of the highlight
-                      $element.addClass("si-full-highlight");
-                    }
-                    else if ($element.is('img') || $element.children().is("img")) {
-                      $element.wrap("<div class='si-highlight' style='padding: 5px;'></div>");
-                    } else {
-                      $element.wrapInner("<span class='si-highlight'></span>");
-                    }
-                }
-            });
-          }
-
-          resetHighlights();
-          applyHighlights();
-          // Scroll to the target element
-          $([document.documentElement, document.body]).stop().animate({
-              scrollTop: $(".si-highlight").offset().top - $("#wpadminbar").height()
-          }, 1500);
+        _si.push(["applyDefaultHighlighting", highlightInfo, document, window]);
       }]);
 
 
