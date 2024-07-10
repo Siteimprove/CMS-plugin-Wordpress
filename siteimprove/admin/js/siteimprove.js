@@ -102,7 +102,7 @@
       }
 
       _si.push(['onHighlight', function(highlightInfo) {
-        _si.push(["applyDefaultHighlighting", highlightInfo]);
+        _si.push(["applyDefaultHighlighting", highlightInfo, document, window]);
       }]);
 
 
