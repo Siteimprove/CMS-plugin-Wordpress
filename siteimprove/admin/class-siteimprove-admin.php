@@ -107,19 +107,19 @@ class Siteimprove_Admin {
 	 */
 	public function gutenberg_siteimprove_plugin() {
 		global $post;
-		
+
 		if ( $post && $post->ID ) {
 			$permalink = get_permalink( $post->ID );
 			if ( $permalink ) {
 				$this->siteimprove_add_js( $permalink, 'siteimprove_input' );
-				
+
 				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 					error_log( 'Siteimprove Debug: Gutenberg - Post ID: ' . $post->ID );
 					error_log( 'Siteimprove Debug: Gutenberg - Permalink: ' . $permalink );
 				}
 			}
 		}
-		
+
 		wp_enqueue_script(
 			'gutenberg-siteimprove-plugin',
 			plugin_dir_url( __FILE__ ) . 'js/siteimprove-gutenberg.js',
@@ -127,10 +127,10 @@ class Siteimprove_Admin {
 			$this->version,
 			false
 		);
-		
+
 		$post_id = $post ? $post->ID : 0;
 		$url = $post_id ? get_permalink( $post_id ) : '';
-		
+
 		$si_js_args = array(
 			'token' => get_option( 'siteimprove_token' ),
 			'text' => __( 'Siteimprove Recheck', 'siteimprove' ),
@@ -149,7 +149,6 @@ class Siteimprove_Admin {
 	public function siteimprove_init() {
 		global $pagenow;
 
-		// Debug logging - you can check wp-content/debug.log if WP_DEBUG_LOG is enabled
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			error_log( 'Siteimprove Debug: Current page: ' . $pagenow );
 			error_log( 'Siteimprove Debug: GET params: ' . print_r( $_GET, true ) );
