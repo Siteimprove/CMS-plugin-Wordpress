@@ -106,6 +106,20 @@ class Siteimprove_Admin {
 	 * Gutenberg script for adding buttons to its editor such as Recheck
 	 */
 	public function gutenberg_siteimprove_plugin() {
+		global $post;
+
+		if ( $post && $post->ID ) {
+			$permalink = get_permalink( $post->ID );
+			if ( $permalink ) {
+				$this->siteimprove_add_js( $permalink, 'siteimprove_input' );
+
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					error_log( 'Siteimprove Debug: Gutenberg - Post ID: ' . $post->ID );
+					error_log( 'Siteimprove Debug: Gutenberg - Permalink: ' . $permalink );
+				}
+			}
+		}
+
 		wp_enqueue_script(
 			'gutenberg-siteimprove-plugin',
 			plugin_dir_url( __FILE__ ) . 'js/siteimprove-gutenberg.js',
@@ -113,10 +127,14 @@ class Siteimprove_Admin {
 			$this->version,
 			false
 		);
+
+		$post_id = $post ? $post->ID : 0;
+		$url = $post_id ? get_permalink( $post_id ) : '';
+
 		$si_js_args = array(
 			'token' => get_option( 'siteimprove_token' ),
 			'text' => __( 'Siteimprove Recheck', 'siteimprove' ),
-			'url' => get_permalink( $post_id ),
+			'url' => $url,
 		);
 		wp_localize_script(
 			'gutenberg-siteimprove-plugin',
@@ -130,6 +148,11 @@ class Siteimprove_Admin {
 	 */
 	public function siteimprove_init() {
 		global $pagenow;
+
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( 'Siteimprove Debug: Current page: ' . $pagenow );
+			error_log( 'Siteimprove Debug: GET params: ' . print_r( $_GET, true ) );
+		}
 
 		$urls = get_transient( 'siteimprove_url_' . get_current_user_id() );
 
@@ -147,10 +170,17 @@ class Siteimprove_Admin {
 
 		switch ( $pagenow ) {
 			case 'post.php':
-				$post_id = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
-				$permalink = get_permalink( $post_id );
+				$post_id = ! empty( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+				$permalink = $post_id ? get_permalink( $post_id ) : false;
 
-				if ( $permalink ) {
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					error_log( 'Siteimprove Debug: Post ID: ' . $post_id );
+					error_log( 'Siteimprove Debug: Permalink: ' . $permalink );
+					error_log( 'Siteimprove Debug: Token: ' . get_option( 'siteimprove_token', 'NOT_SET' ) );
+					error_log( 'Siteimprove Debug: User can edit posts: ' . ( current_user_can( 'edit_posts' ) ? 'yes' : 'no' ) );
+				}
+
+				if ( $permalink && current_user_can( 'edit_posts' ) ) {
 					$this->siteimprove_add_js( get_permalink( $post_id ), 'siteimprove_input' );
 					// Only display recheck button in published posts.
 					if ( get_post_status( $post_id ) === 'publish' ) {
@@ -161,12 +191,15 @@ class Siteimprove_Admin {
 
 			case 'term.php':
 			case 'edit-tags.php':
-				$tag_id = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
-				$taxonomy = wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
+				$tag_id = ! empty( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : 0;
+				$taxonomy = ! empty( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : '';
 
-				if ( 'term.php' === $pagenow || ( 'edit-tags.php' === $pagenow && wp_verify_nonce( $this->settings->request_siteimprove_nonce(), 'siteimprove_nonce' ) && ! empty( $_GET['action'] ) && 'edit' === $_GET['action'] ) ) {
-					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_input' );
-					$this->siteimprove_add_js( get_term_link( (int) $tag_id, $taxonomy ), 'siteimprove_recheck_button' );
+				if ( ( 'term.php' === $pagenow || ( 'edit-tags.php' === $pagenow && ! empty( $_GET['action'] ) && 'edit' === $_GET['action'] ) ) && current_user_can( 'manage_categories' ) ) {
+					$term_link = get_term_link( (int) $tag_id, $taxonomy );
+					if ( ! is_wp_error( $term_link ) ) {
+						$this->siteimprove_add_js( $term_link, 'siteimprove_input' );
+						$this->siteimprove_add_js( $term_link, 'siteimprove_recheck_button' );
+					}
 				}
 				break;
 
