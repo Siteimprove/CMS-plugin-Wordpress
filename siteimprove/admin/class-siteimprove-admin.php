@@ -90,7 +90,7 @@ class Siteimprove_Admin {
 		$prepublish_allowed = intval( get_option( 'siteimprove_prepublish_allowed', 0 ) );
 		$prepublish_enabled = intval( get_option( 'siteimprove_prepublish_enabled', 0 ) );
 
-		if ( ( $wp_query->is_preview() || $wp_query->is_singular() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled ) {
+		if ( ( $wp_query->is_preview() || $wp_query->is_singular() || is_front_page() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled ) {
 			wp_enqueue_style( 'siteimprove_preview_css', plugin_dir_url( __FILE__ ) . 'css/siteimprove-preview.css', array(), $this->version, 'all' );
 		}
 	}
@@ -262,7 +262,7 @@ class Siteimprove_Admin {
 			$url = "$public_url$parsed_url[path]" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
 		}
 
-		$is_content_page = is_preview() || is_singular();
+		$is_content_page = is_preview() || is_singular() || is_front_page();
 
 		$si_js_args = array(
 			'token' => get_option( 'siteimprove_token' ),
@@ -401,6 +401,8 @@ class Siteimprove_Admin {
 		if ( array_intersect( $allowed_roles, $user->roles ) ) {
 			$type = $this->get_current_page_type();
 			switch ( $type ) {
+				case 'front':
+				case 'home':
 				case 'page':
 				case 'single':
 				case 'category':
@@ -469,7 +471,7 @@ class Siteimprove_Admin {
 		$prepublish_allowed = intval( get_option( 'siteimprove_prepublish_allowed', 0 ) );
 		$prepublish_enabled = intval( get_option( 'siteimprove_prepublish_enabled', 0 ) );
 		$has_api_key = intval( strlen( get_option( 'siteimprove_api_key', 0 ) ) > 0 );
-		if ( ( is_preview() || is_singular() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled && 1 === $has_api_key ) {
+		if ( ( is_preview() || is_singular() || is_front_page() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled && 1 === $has_api_key ) {
 			$prepublish_button =
 				'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="28px" height="28px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
 				<circle fill="#0D4CD3" cx="150" cy="150" r="150"/>
