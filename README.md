@@ -9,8 +9,8 @@ Every pull request will be checked against WPCS through GitHub Actions.
 ## Version History
 ### 2.0.8
 * Updated - "Tested up to"
-* Bugfix - Fixed SmallBox live view not showing on home page
-* Bugfix - Fixed SmallBox not showing in editor pages
+* Bugfix - Fixed overlay live view not showing on home page
+* Bugfix - Fixed overlay not showing in editor pages
 
 ### 2.0.7
 * Bugfix - Fixed a security issue with implementing nonce checking on request token

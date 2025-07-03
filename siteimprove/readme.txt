@@ -87,8 +87,8 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 == Changelog ==
 = 2.0.8 =
 * Updated - "Tested up to"
-* Bugfix - Fixed SmallBox live view not showing on home page
-* Bugfix - Fixed SmallBox not showing in editor pages
+* Bugfix - Fixed overlay live view not showing on home page
+* Bugfix - Fixed overlay not showing in editor pages
 
 = 2.0.7 =
 * Change - Changed name of the plugin from "Siteimprove Plugin" to "Siteimprove"
