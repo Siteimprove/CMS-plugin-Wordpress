@@ -3,7 +3,7 @@ Contributors: siteimprove
 Tags: accessibility, analytics, insights, spelling, seo
 Requires at least: 4.7.2
 Tested up to: 6.7.1
-Stable tag: 2.0.7
+Stable tag: 2.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,11 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 
 == Changelog ==
+= 2.0.8 =
+* Updated - "Tested up to"
+* Bugfix - Fixed overlay live view not showing on home page
+* Bugfix - Fixed overlay not showing in editor pages
+
 = 2.0.7 =
 * Change - Changed name of the plugin from "Siteimprove Plugin" to "Siteimprove"
 * Bugfix - Fixed a security issue with implementing nonce checking on request token
