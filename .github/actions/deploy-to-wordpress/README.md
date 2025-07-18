@@ -71,9 +71,10 @@ Add these variables to your repository (Settings > Secrets and variables > Actio
 - Standard commit messages
 
 ### Test Mode
-- Uses test SVN credentials (if provided) or defaults
+- Uses test SVN credentials (if provided) or default test credentials
 - Marks commits with "TEST:" prefix
 - Safe for testing without affecting production
+- If test credentials are not set, uses default test values
 
 ### Dry Run Mode
 - No SVN operations performed

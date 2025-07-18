@@ -37,6 +37,17 @@ validate_inputs() {
         exit 1
     fi
     
+    # Set default test credentials if in test mode and credentials are empty
+    if is_test_mode && [ -z "$SVN_USERNAME" ]; then
+        print_status $YELLOW "Warning: TEST_SVN_USERNAME not set, using default test credentials"
+        export SVN_USERNAME="test-user"
+    fi
+    
+    if is_test_mode && [ -z "$SVN_PASSWORD" ]; then
+        print_status $YELLOW "Warning: TEST_SVN_PASSWORD not set, using default test credentials"
+        export SVN_PASSWORD="test-pass"
+    fi
+    
     if ! is_dry_run && [ -z "$SVN_USERNAME" ]; then
         print_status $RED "Error: SVN_USERNAME is required when not in dry-run mode"
         exit 1
