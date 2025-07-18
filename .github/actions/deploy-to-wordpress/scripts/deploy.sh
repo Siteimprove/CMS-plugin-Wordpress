@@ -73,6 +73,9 @@ setup_environment() {
             sudo apt-get update
             sudo apt-get install -y subversion
         fi
+        
+        # Check SVN version and capabilities
+        print_status $YELLOW "SVN version: $(svn --version --quiet)"
     fi
 }
 
@@ -156,19 +159,27 @@ handle_svn_operations() {
         cp -r "$ASSETS_DIR"/* svn-repo/assets/
     fi
     
-    # Create version tag
-    print_status $YELLOW "Creating version tag..."
-    svn copy svn-repo/trunk svn-repo/tags/$VERSION -m "Tagging version $VERSION"
-    
-    # Add new files to SVN
+    # Add new files to SVN first (before creating tag)
     print_status $YELLOW "Adding files to SVN..."
     cd svn-repo
-    svn add --force trunk/*
-    svn add --force tags/$VERSION/*
+    
+    # Add trunk files with error handling
+    print_status $YELLOW "Adding trunk files..."
+    svn add --force trunk/* 2>/dev/null || true
+    
+    # Add assets if they exist
     if [ -d "assets" ]; then
+        print_status $YELLOW "Adding assets..."
         svn add --force assets/* 2>/dev/null || true
     fi
     
+    # Create version tag (after adding files to trunk)
+    print_status $YELLOW "Creating version tag..."
+    svn copy trunk tags/$VERSION -m "Tagging version $VERSION"
+    
+    # Add files in the new tag
+    print_status $YELLOW "Adding tag files..."
+    svn add --force tags/$VERSION/* 2>/dev/null || true
     
     # Commit changes to SVN
     print_status $YELLOW "Committing changes to SVN..."
@@ -176,6 +187,11 @@ handle_svn_operations() {
     if is_test_mode; then
         commit_message="TEST: $commit_message"
     fi
+    
+    # Show status before commit
+    print_status $YELLOW "SVN status before commit:"
+    svn status
+    
     svn commit -m "$commit_message" --username "$SVN_USERNAME" --password "$SVN_PASSWORD" --non-interactive --trust-server-cert
     
     cd ..
