@@ -1,0 +1,70 @@
+name: 'Deploy to WordPress Marketplace'
+description: 'Deploy WordPress plugin to the WordPress.org SVN repository (supports test and production modes)'
+
+inputs:
+  version:
+    description: 'Plugin version to deploy (e.g., 2.0.8)'
+    required: true
+  plugin-slug:
+    description: 'WordPress.org plugin slug'
+    required: true
+    default: 'siteimprove'
+  svn-username:
+    description: 'SVN username for WordPress.org'
+    required: false
+  svn-password:
+    description: 'SVN password for WordPress.org'
+    required: false
+  svn-url:
+    description: 'SVN repository URL'
+    required: false
+    default: 'https://plugins.svn.wordpress.org/siteimprove/'
+  assets-dir:
+    description: 'Directory containing plugin assets (screenshots, readme, etc.)'
+    required: false
+    default: 'wordpress-assets'
+  dry-run:
+    description: 'Perform a dry run without committing to SVN'
+    required: false
+    default: 'false'
+  test-mode:
+    description: 'Run in test mode (uses test credentials and marks commits as TEST)'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      shell: bash
+
+    - name: Deploy to WordPress Marketplace
+      run: |
+        # Make scripts executable
+        chmod +x .github/actions/deploy-to-wordpress/scripts/deploy.sh
+        chmod +x .github/actions/deploy-to-wordpress/config/defaults.sh
+        
+        # Source configuration
+        source .github/actions/deploy-to-wordpress/config/defaults.sh
+        
+        # Set environment variables
+        export VERSION="${{ inputs.version }}"
+        export PLUGIN_SLUG="${{ inputs.plugin-slug }}"
+        export SVN_URL="${{ inputs.svn-url }}"
+        export ASSETS_DIR="${{ inputs.assets-dir }}"
+        export DRY_RUN="${{ inputs.dry-run }}"
+        export TEST_MODE="${{ inputs.test-mode }}"
+        
+        # Set SVN credentials based on mode
+        if [ "${{ inputs.test-mode }}" = "true" ]; then
+          export SVN_USERNAME="${{ secrets.TEST_SVN_USERNAME || 'test-user' }}"
+          export SVN_PASSWORD="${{ secrets.TEST_SVN_PASSWORD || 'test-pass' }}"
+        else
+          export SVN_USERNAME="${{ inputs.svn-username }}"
+          export SVN_PASSWORD="${{ inputs.svn-password }}"
+        fi
+        
+        # Run deployment script
+        .github/actions/deploy-to-wordpress/scripts/deploy.sh
+      shell: bash 
