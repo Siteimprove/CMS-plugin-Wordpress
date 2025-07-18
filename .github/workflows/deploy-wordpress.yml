@@ -5,7 +5,7 @@ on:
       version:
         description: 'Plugin version to deploy'
         required: true
-        default: '2.0.8'
+        default: ''
       dry-run:
         description: 'Perform dry run (no actual deployment)'
         required: false
@@ -37,8 +37,8 @@ jobs:
         with:
           version: ${{ github.event.inputs.version || github.ref_name }}
           plugin-slug: ${{ vars.WP_PLUGIN_SLUG || 'siteimprove' }}
-          svn-username: ${{ secrets.WP_SVN_USERNAME }}
-          svn-password: ${{ secrets.WP_SVN_PASSWORD }}
+          svn-username: ${{ github.event.inputs.test-mode && secrets.TEST_SVN_USERNAME || secrets.WP_SVN_USERNAME }}
+          svn-password: ${{ github.event.inputs.test-mode && secrets.TEST_SVN_PASSWORD || secrets.WP_SVN_PASSWORD }}
           svn-url: ${{ vars.WP_SVN_URL || 'https://plugins.svn.wordpress.org/siteimprove/' }}
           assets-dir: ${{ vars.WP_ASSETS_DIR || 'wordpress-assets' }}
           dry-run: ${{ github.event.inputs.dry-run || false }}

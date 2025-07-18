@@ -37,7 +37,6 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      shell: bash
 
     - name: Deploy to WordPress Marketplace
       run: |
@@ -56,14 +55,9 @@ runs:
         export DRY_RUN="${{ inputs.dry-run }}"
         export TEST_MODE="${{ inputs.test-mode }}"
         
-        # Set SVN credentials based on mode
-        if [ "${{ inputs.test-mode }}" = "true" ]; then
-          export SVN_USERNAME="${{ secrets.TEST_SVN_USERNAME || 'test-user' }}"
-          export SVN_PASSWORD="${{ secrets.TEST_SVN_PASSWORD || 'test-pass' }}"
-        else
-          export SVN_USERNAME="${{ inputs.svn-username }}"
-          export SVN_PASSWORD="${{ inputs.svn-password }}"
-        fi
+        # Set SVN credentials
+        export SVN_USERNAME="${{ inputs.svn-username }}"
+        export SVN_PASSWORD="${{ inputs.svn-password }}"
         
         # Run deployment script
         .github/actions/deploy-to-wordpress/scripts/deploy.sh
