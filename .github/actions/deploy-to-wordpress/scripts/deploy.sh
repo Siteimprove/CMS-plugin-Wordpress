@@ -175,7 +175,7 @@ handle_svn_operations() {
     
     # Create version tag (after adding files to trunk)
     print_status $YELLOW "Creating version tag..."
-    svn copy trunk tags/$VERSION -m "Tagging version $VERSION"
+    svn copy trunk tags/$VERSION
     
     # Add files in the new tag
     print_status $YELLOW "Adding tag files..."
