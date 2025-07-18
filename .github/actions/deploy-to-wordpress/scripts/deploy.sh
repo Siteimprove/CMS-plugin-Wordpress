@@ -25,6 +25,13 @@ is_test_mode() {
     [ "$TEST_MODE" = "true" ]
 }
 
+# Function to clean version string (remove 'v' prefix)
+clean_version() {
+    local version=$1
+    # Remove 'v' prefix if present
+    echo "$version" | sed 's/^v//'
+}
+
 # Function to validate inputs
 validate_inputs() {
     if [ -z "$VERSION" ]; then
@@ -36,6 +43,11 @@ validate_inputs() {
         print_status $RED "Error: PLUGIN_SLUG is required"
         exit 1
     fi
+    
+    # Clean version for SVN tag (remove 'v' prefix)
+    export SVN_VERSION=$(clean_version "$VERSION")
+    print_status $YELLOW "Original version: $VERSION"
+    print_status $YELLOW "SVN version (cleaned): $SVN_VERSION"
     
     # Set default test credentials if in test mode and credentials are empty
     if is_test_mode && [ -z "$SVN_USERNAME" ]; then
@@ -113,7 +125,8 @@ prepare_plugin_files() {
 # Function to display deployment preview
 show_deployment_preview() {
     print_status $BLUE "=== DEPLOYMENT PREVIEW ==="
-    echo "Version: $VERSION"
+    echo "Original Version: $VERSION"
+    echo "SVN Version: $SVN_VERSION"
     echo "Plugin Slug: $PLUGIN_SLUG"
     echo "SVN URL: $SVN_URL"
     echo "Assets Directory: $ASSETS_DIR"
@@ -174,16 +187,16 @@ handle_svn_operations() {
     fi
     
     # Create version tag (after adding files to trunk)
-    print_status $YELLOW "Creating version tag..."
-    svn copy trunk tags/$VERSION
+    print_status $YELLOW "Creating version tag: tags/$SVN_VERSION"
+    svn copy trunk tags/$SVN_VERSION
     
     # Add files in the new tag
     print_status $YELLOW "Adding tag files..."
-    svn add --force tags/$VERSION/* 2>/dev/null || true
+    svn add --force tags/$SVN_VERSION/* 2>/dev/null || true
     
     # Commit changes to SVN
     print_status $YELLOW "Committing changes to SVN..."
-    local commit_message="Deploy version $VERSION"
+    local commit_message="Deploy version $SVN_VERSION"
     if is_test_mode; then
         commit_message="TEST: $commit_message"
     fi
@@ -224,7 +237,8 @@ show_success() {
     if is_dry_run; then
         echo "🎯 Dry run completed - no changes were made"
     else
-        echo "🚀 Plugin version $VERSION has been deployed to WordPress marketplace"
+        echo "🚀 Plugin version $SVN_VERSION has been deployed to WordPress marketplace"
+        echo "📝 Original tag: $VERSION"
     fi
     echo ""
 }
