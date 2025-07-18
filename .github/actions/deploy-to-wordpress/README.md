@@ -20,6 +20,8 @@ This GitHub Action deploys a WordPress plugin to the WordPress.org marketplace v
     test-mode: false
 ```
 
+**Note**: For test mode, use `TEST_SVN_USERNAME` and `TEST_SVN_PASSWORD` secrets instead.
+
 ### Testing with dry-run
 
 ```yaml
@@ -39,6 +41,8 @@ Add these secrets to your repository:
 - `WP_SVN_PASSWORD`: Your WordPress.org SVN password
 - `TEST_SVN_USERNAME`: Your test SVN username (optional, for test mode)
 - `TEST_SVN_PASSWORD`: Your test SVN password (optional, for test mode)
+
+**Note**: The workflows handle credential selection automatically based on the `test-mode` input.
 
 ### Required GitHub Variables
 
