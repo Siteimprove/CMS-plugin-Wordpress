@@ -22,40 +22,56 @@ jobs:
           artifacts: 'siteimprove.zip'
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy:
+  deploy-dry-run:
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        include:
-          # Dry run mode
-          - tag_pattern: '-dry-run'
-            mode: 'dry-run'
-            dry_run: true
-            test_mode: false
-          # Test mode
-          - tag_pattern: '-test'
-            mode: 'test'
-            dry_run: false
-            test_mode: true
-          # Production mode
-          - tag_pattern: 'production'
-            mode: 'production'
-            dry_run: false
-            test_mode: false
-    if: |
-      (contains(github.ref_name, matrix.tag_pattern) && matrix.tag_pattern != 'production') ||
-      (!contains(github.ref_name, '-test') && !contains(github.ref_name, '-dry-run') && matrix.tag_pattern == 'production')
+    if: contains(github.ref_name, '-dry-run')
     steps:
       - uses: actions/checkout@master
-      - name: Deploy to WordPress Marketplace (${{ matrix.mode }})
+      - name: Deploy to WordPress Marketplace (Dry Run)
         uses: ./.github/actions/deploy-to-wordpress
         with:
           version: ${{ github.ref_name }}
           plugin-slug: ${{ vars.WP_PLUGIN_SLUG || 'siteimprove' }}
-          svn-username: ${{ matrix.mode == 'test' && secrets.TEST_SVN_USERNAME || secrets.WP_SVN_USERNAME }}
-          svn-password: ${{ matrix.mode == 'test' && secrets.TEST_SVN_PASSWORD || secrets.WP_SVN_PASSWORD }}
-          svn-url: ${{ matrix.mode == 'test' && vars.TEST_SVN_URL || vars.WP_SVN_URL || 'https://plugins.svn.wordpress.org/siteimprove/' }}
+          svn-username: ${{ secrets.WP_SVN_USERNAME }}
+          svn-password: ${{ secrets.WP_SVN_PASSWORD }}
+          svn-url: ${{ vars.WP_SVN_URL || 'https://plugins.svn.wordpress.org/siteimprove/' }}
           assets-dir: ${{ vars.WP_ASSETS_DIR || 'wordpress-assets' }}
-          dry-run: ${{ matrix.dry_run }}
-          test-mode: ${{ matrix.test_mode }}
+          dry-run: true
+          test-mode: false
+
+  deploy-test:
+    runs-on: ubuntu-latest
+    needs: build
+    if: contains(github.ref_name, '-test')
+    steps:
+      - uses: actions/checkout@master
+      - name: Deploy to WordPress Marketplace (Test)
+        uses: ./.github/actions/deploy-to-wordpress
+        with:
+          version: ${{ github.ref_name }}
+          plugin-slug: ${{ vars.WP_PLUGIN_SLUG || 'siteimprove' }}
+          svn-username: ${{ secrets.TEST_SVN_USERNAME }}
+          svn-password: ${{ secrets.TEST_SVN_PASSWORD }}
+          svn-url: ${{ vars.TEST_SVN_URL }}
+          assets-dir: ${{ vars.WP_ASSETS_DIR || 'wordpress-assets' }}
+          dry-run: false
+          test-mode: true
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: build
+    if: "!contains(github.ref_name, '-test') && !contains(github.ref_name, '-dry-run')"
+    steps:
+      - uses: actions/checkout@master
+      - name: Deploy to WordPress Marketplace (Production)
+        uses: ./.github/actions/deploy-to-wordpress
+        with:
+          version: ${{ github.ref_name }}
+          plugin-slug: ${{ vars.WP_PLUGIN_SLUG || 'siteimprove' }}
+          svn-username: ${{ secrets.WP_SVN_USERNAME }}
+          svn-password: ${{ secrets.WP_SVN_PASSWORD }}
+          svn-url: ${{ vars.WP_SVN_URL || 'https://plugins.svn.wordpress.org/siteimprove/' }}
+          assets-dir: ${{ vars.WP_ASSETS_DIR || 'wordpress-assets' }}
+          dry-run: false
+          test-mode: false
