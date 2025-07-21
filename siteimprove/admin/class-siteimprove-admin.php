@@ -266,10 +266,10 @@ class Siteimprove_Admin {
 		if ( ! empty( $ignore_segments ) && ! empty( $path ) ) {
 			// Split the ignore segments by comma and trim whitespace.
 			$segments_to_ignore = array_map( 'trim', explode( ',', $ignore_segments ) );
-			
+
 			// Split the path into segments.
 			$path_segments = array_filter( explode( '/', $path ) );
-			
+
 			// Remove segments that should be ignored.
 			$filtered_segments = array();
 			foreach ( $path_segments as $segment ) {
@@ -277,7 +277,7 @@ class Siteimprove_Admin {
 					$filtered_segments[] = $segment;
 				}
 			}
-			
+
 			// Reconstruct the path.
 			$path = '/' . implode( '/', $filtered_segments );
 		}
@@ -292,7 +292,7 @@ class Siteimprove_Admin {
 			$port = isset( $parsed_url['port'] ) ? ':' . $parsed_url['port'] : '';
 			$query = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
 			$fragment = isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '';
-			
+
 			$url = $scheme . $host . $port . $path . $query . $fragment;
 		}
 
