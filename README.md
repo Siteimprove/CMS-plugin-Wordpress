@@ -7,6 +7,10 @@ The code on this repository has to match the WordPress Coding Standards in order
 Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+### 2.1.0
+* Added - Ignore Path Segments setting to remove specific path segments when building public URLs
+* Enhanced - Public URL functionality to handle complex URL transformations
+
 ### 2.0.8
 * Updated - "Tested up to"
 * Bugfix - Fixed overlay live view not showing on home page

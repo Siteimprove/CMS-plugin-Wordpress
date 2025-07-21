@@ -34,9 +34,11 @@ Click on ‘Login’ and enter your Siteimprove username and password to access 
 
 A new Siteimprove menu option will also appear on the left menu bar. Click on this menu option to continue configuring the plugin once you’ve logged in.  
 
-The token field is automatically filled and should not be changed unless a new token is required. In such cases, please click on “Request new token” to generate a new token. 
+The token field is automatically filled and should not be changed unless a new token is required. In such cases, please click on "Request new token" to generate a new token. 
 
 Public URL is optional to fill in if, for any reason, your published pages are not on the same URL as your configuration panel.
+
+Ignore Path Segments is optional and allows you to specify path segments that should be removed when building the public URL. This is useful when your admin panel has additional path segments that shouldn't be included in the public URL (e.g., "wp-admin,staging"). Use comma-separated values.
 
 When you download the plugin, you automatically will be using the latest experience. If for some reason, you want to use the previous experience of the Siteimprove plugin, uncheck "Use latest experience" in the configuration panel.
 
@@ -85,6 +87,10 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 
 == Changelog ==
+= 2.1.0 =
+* Added - Ignore Path Segments setting to remove specific path segments when building public URLs
+* Enhanced - Public URL functionality to handle complex URL transformations
+
 = 2.0.8 =
 * Updated - "Tested up to"
 * Bugfix - Fixed overlay live view not showing on home page

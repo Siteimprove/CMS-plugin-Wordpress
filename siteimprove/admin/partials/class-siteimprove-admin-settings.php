@@ -43,6 +43,7 @@ class Siteimprove_Admin_Settings {
 		register_setting( 'siteimprove', 'siteimprove_token' );
 		register_setting( 'siteimprove', 'siteimprove_disable_new_version', 'Siteimprove_Admin_Settings::validate_siteimprove_disable_new_version' );
 		register_setting( 'siteimprove', 'siteimprove_public_url', 'Siteimprove_Admin_Settings::validate_public_url' );
+		register_setting( 'siteimprove', 'siteimprove_ignore_path_segments', 'Siteimprove_Admin_Settings::validate_ignore_path_segments' );
 		register_setting( 'siteimprove', 'siteimprove_api_username', 'Siteimprove_Admin_Settings::validate_api_username' );
 		register_setting( 'siteimprove', 'siteimprove_api_key', 'Siteimprove_Admin_Settings::validate_api_key' );
 		register_setting( 'siteimprove', 'siteimprove_dev_mode', 'Siteimprove_Admin_Settings::validate_siteimprove_dev_mode' );
@@ -71,6 +72,24 @@ class Siteimprove_Admin_Settings {
 			__( 'Public URL', 'siteimprove' ),
 			'Siteimprove_Admin_Settings::siteimprove_settings_section_title',
 			'siteimprove'
+		);
+
+		// register a new field siteimprove_public_url_field, inside the siteimprove_token section of the settings page.
+		add_settings_field(
+			'siteimprove_public_url',
+			__( 'Public URL', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_public_url_field',
+			'siteimprove',
+			'siteimprove_public_url'
+		);
+
+		// register a new field siteimprove_ignore_path_segments_field, inside the siteimprove_public_url section of the settings page.
+		add_settings_field(
+			'siteimprove_ignore_path_segments',
+			__( 'Ignore Path Segments', 'siteimprove' ),
+			'Siteimprove_Admin_Settings::siteimprove_ignore_path_segments_field',
+			'siteimprove',
+			'siteimprove_public_url'
 		);
 
 		// Register a new section in the siteimprove page.
@@ -239,12 +258,7 @@ class Siteimprove_Admin_Settings {
 			?>
 									<p>
 									<?php
-									esc_html_e( 'Please provide the Public URL for the current site if for any reasons it\'s not the same as the Admin Panel URL. Otherwise you can leave this field empty.' );
-									?>
-									</p>
-									<p>
-									<?php
-									esc_html_e( 'Example: Website Admin Panel is hosted at: http://stg-thewebsite.com but the final Public URL will be http://thewebsite.com', 'siteimprove' );
+									esc_html_e( 'Configure URL transformation settings. Public URL changes the domain/host of the URL. Ignore Path Segments removes specific path segments from the URL. These settings can be used independently or together.', 'siteimprove' );
 									?>
 									</p>
 									<?php
@@ -303,6 +317,38 @@ class Siteimprove_Admin_Settings {
 	public static function siteimprove_public_url_field( $args ) {
 		?>
 						<input type="text" id="siteimprove_public_url_field" name="siteimprove_public_url" value="<?php echo esc_attr( get_option( 'siteimprove_public_url' ) ); ?>"  size="50" />
+						<p>
+						<?php
+						esc_html_e( 'Please provide the Public URL for the current site if for any reasons it\'s not the same as the Admin Panel URL. This changes the domain/host of the URL and works independently of the Ignore Path Segments setting.', 'siteimprove' );
+						?>
+						</p>
+						<p>
+						<?php
+						esc_html_e( 'Example: Website Admin Panel is hosted at: http://stg-thewebsite.com but the final Public URL will be http://thewebsite.com', 'siteimprove' );
+						?>
+						</p>
+						<?php
+	}
+
+	/**
+	 * Form fields
+	 *
+	 * @param mixed $args Field Arguments.
+	 * @return void
+	 */
+	public static function siteimprove_ignore_path_segments_field( $args ) {
+		?>
+						<input type="text" id="siteimprove_ignore_path_segments_field" name="siteimprove_ignore_path_segments" value="<?php echo esc_attr( get_option( 'siteimprove_ignore_path_segments' ) ); ?>"  size="50" />
+						<p>
+						<?php
+						esc_html_e( '(optional) Specify path segments to remove from the URL path. Use comma-separated values (e.g. "wp-admin,staging"). This doe not remove anything from the Public URL set. This can be used to clean up path segments from the CMS URLs to better match the end published URLs scanned in the Siteimprove platform in the plugin requests.', 'siteimprove' );
+						?>
+						</p>
+						<p>
+						<?php
+						esc_html_e( 'Example: If your URL is https://staging.mysite.com/wp-admin/blog/staging/mypost and you set the Ignore Path Segments to "wp-admin,staging", the result will be https://staging.mysite.com/blog/mypost.', 'siteimprove' );
+						?>
+						</p>
 						<?php
 	}
 
@@ -510,6 +556,25 @@ class Siteimprove_Admin_Settings {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Field Validation for Ignore Path Segments
+	 *
+	 * @param string $value Original value posted in settings page.
+	 * @return string
+	 */
+	public static function validate_ignore_path_segments( $value ) {
+		if ( ! empty( $value ) ) {
+			$old_value = get_option( 'siteimprove_ignore_path_segments' );
+			// Validate that the value contains only alphanumeric characters, hyphens, underscores, and commas
+			if ( ! preg_match( '/^[a-zA-Z0-9\-\_,\s]+$/', $value ) ) {
+				add_settings_error( 'siteimprove_messages', 'siteimprove_ignore_path_segments_error', __( 'Invalid format for Ignore Path Segments field. Only alphanumeric characters, hyphens, underscores, and commas are allowed.', 'siteimprove' ) );
+				return $old_value;
+			}
+		}
+
+		return sanitize_text_field( $value );
 	}
 
 	/**

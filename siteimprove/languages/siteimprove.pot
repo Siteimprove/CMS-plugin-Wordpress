@@ -123,3 +123,31 @@ msgstr ""
 #: admin/partials/class-siteimprove-admin-settings.php:473
 msgid "Unable to check website domain. Please try again later"
 msgstr ""
+
+#: admin/partials/class-siteimprove-admin-settings.php:78
+msgid "Ignore Path Segments"
+msgstr ""
+
+#: admin/partials/class-siteimprove-admin-settings.php:260
+msgid "Configure URL transformation settings. Public URL changes the domain/host of the URL. Ignore Path Segments removes specific path segments from the URL. These settings can be used independently or together."
+msgstr ""
+
+#: admin/partials/class-siteimprove-admin-settings.php:320
+msgid "(Optional) Please provide the Public URL for the current site if for any reasons it's not the same as the Admin Panel URL. This changes the domain/host of the URL and works independently of the Ignore Path Segments setting."
+msgstr ""
+
+#: admin/partials/class-siteimprove-admin-settings.php:325
+msgid "Example: Website Admin Panel is hosted at: http://stg-thewebsite.com but the final Public URL will be http://thewebsite.com"
+msgstr ""
+
+#: admin/partials/class-siteimprove-admin-settings.php:340
+msgid "(Optional) Specify path segments to remove from the URL path. Use comma-separated values (e.g. "cms,staging"). This doe not remove anything from the Public URL set. This can be used to clean up path segments from the CMS URLs to better match the end published URLs scanned in the Siteimprove platform in the plugin requests."
+msgstr ""
+
+#: admin/partials/class-siteimprove-admin-settings.php:345
+msgid "Example: If your URL is https://staging.mysite.com/cms/blog/staging/mypost and you set the Ignore Path Segments to "cms,staging", the result will be https://staging.mysite.com/blog/mypost."
+msgstr ""
+
+#: admin/partials/class-siteimprove-admin-settings.php:558
+msgid "Invalid format for Ignore Path Segments field. Only alphanumeric characters, hyphens, underscores, and commas are allowed."
+msgstr ""
