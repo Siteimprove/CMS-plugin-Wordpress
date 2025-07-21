@@ -319,7 +319,7 @@ class Siteimprove_Admin_Settings {
 						<input type="text" id="siteimprove_public_url_field" name="siteimprove_public_url" value="<?php echo esc_attr( get_option( 'siteimprove_public_url' ) ); ?>"  size="50" />
 						<p>
 						<?php
-						esc_html_e( 'Please provide the Public URL for the current site if for any reasons it\'s not the same as the Admin Panel URL. This changes the domain/host of the URL and works independently of the Ignore Path Segments setting.', 'siteimprove' );
+						esc_html_e( '(Optional) Please provide the Public URL for the current site if for any reasons it\'s not the same as the Admin Panel URL. This changes the domain/host of the URL and works independently of the Ignore Path Segments setting.', 'siteimprove' );
 						?>
 						</p>
 						<p>
@@ -341,12 +341,12 @@ class Siteimprove_Admin_Settings {
 						<input type="text" id="siteimprove_ignore_path_segments_field" name="siteimprove_ignore_path_segments" value="<?php echo esc_attr( get_option( 'siteimprove_ignore_path_segments' ) ); ?>"  size="50" />
 						<p>
 						<?php
-						esc_html_e( '(optional) Specify path segments to remove from the URL path. Use comma-separated values (e.g. "wp-admin,staging"). This doe not remove anything from the Public URL set. This can be used to clean up path segments from the CMS URLs to better match the end published URLs scanned in the Siteimprove platform in the plugin requests.', 'siteimprove' );
+						esc_html_e( '(Optional) Specify path segments to remove from the URL path. Use comma-separated values (e.g. "cms,staging"). This doe not remove anything from the Public URL set. This can be used to clean up path segments from the CMS URLs to better match the end published URLs scanned in the Siteimprove platform in the plugin requests.', 'siteimprove' );
 						?>
 						</p>
 						<p>
 						<?php
-						esc_html_e( 'Example: If your URL is https://staging.mysite.com/wp-admin/blog/staging/mypost and you set the Ignore Path Segments to "wp-admin,staging", the result will be https://staging.mysite.com/blog/mypost.', 'siteimprove' );
+						esc_html_e( 'Example: If your URL is https://staging.mysite.com/cms/blog/staging/mypost and you set the Ignore Path Segments to "cms,staging", the result will be https://staging.mysite.com/blog/mypost.', 'siteimprove' );
 						?>
 						</p>
 						<?php
@@ -567,7 +567,7 @@ class Siteimprove_Admin_Settings {
 	public static function validate_ignore_path_segments( $value ) {
 		if ( ! empty( $value ) ) {
 			$old_value = get_option( 'siteimprove_ignore_path_segments' );
-			// Validate that the value contains only alphanumeric characters, hyphens, underscores, and commas
+			// Validate that the value contains only alphanumeric characters, hyphens, underscores, and commas.
 			if ( ! preg_match( '/^[a-zA-Z0-9\-\_,\s]+$/', $value ) ) {
 				add_settings_error( 'siteimprove_messages', 'siteimprove_ignore_path_segments_error', __( 'Invalid format for Ignore Path Segments field. Only alphanumeric characters, hyphens, underscores, and commas are allowed.', 'siteimprove' ) );
 				return $old_value;
