@@ -256,10 +256,44 @@ class Siteimprove_Admin {
 			wp_enqueue_script( 'siteimprove_overlay', $overlay_path, array(), $this->version, true );
 		}
 		$public_url = get_option( 'siteimprove_public_url' );
+		$ignore_segments = get_option( 'siteimprove_ignore_path_segments' );
 
+		// Parse the URL to get its components.
+		$parsed_url = wp_parse_url( $url );
+		$path = isset( $parsed_url['path'] ) ? $parsed_url['path'] : '';
+
+		// Apply path segment filtering if configured.
+		if ( ! empty( $ignore_segments ) && ! empty( $path ) ) {
+			// Split the ignore segments by comma and trim whitespace.
+			$segments_to_ignore = array_map( 'trim', explode( ',', $ignore_segments ) );
+
+			// Split the path into segments.
+			$path_segments = array_filter( explode( '/', $path ) );
+
+			// Remove segments that should be ignored.
+			$filtered_segments = array();
+			foreach ( $path_segments as $segment ) {
+				if ( ! in_array( $segment, $segments_to_ignore, true ) ) {
+					$filtered_segments[] = $segment;
+				}
+			}
+
+			// Reconstruct the path.
+			$path = '/' . implode( '/', $filtered_segments );
+		}
+
+		// Apply public URL transformation if configured.
 		if ( ! empty( $public_url ) ) {
-			$parsed_url = wp_parse_url( $url );
-			$url = "$public_url$parsed_url[path]" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
+			$url = "$public_url$path" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
+		} else {
+			// If no public URL is set, reconstruct the URL with the filtered path.
+			$scheme = isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '';
+			$host = isset( $parsed_url['host'] ) ? $parsed_url['host'] : '';
+			$port = isset( $parsed_url['port'] ) ? ':' . $parsed_url['port'] : '';
+			$query = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
+			$fragment = isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '';
+
+			$url = $scheme . $host . $port . $path . $query . $fragment;
 		}
 
 		$is_content_page = is_preview() || is_singular() || is_front_page();
