@@ -284,7 +284,10 @@ class Siteimprove_Admin {
 
 		// Apply public URL transformation if configured.
 		if ( ! empty( $public_url ) ) {
-			$url = "$public_url$path" . ( isset( $parsed_url['query'] ) ? "?$parsed_url[query]" : '' );
+			$public_url = rtrim( $public_url, '/' );
+			$normalized_path = '/' . ltrim( $path, '/' );
+			$query_string = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
+			$url = $public_url . $normalized_path . $query_string;
 		} else {
 			// If no public URL is set, reconstruct the URL with the filtered path.
 			$scheme = isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '';

@@ -7,6 +7,9 @@ The code on this repository has to match the WordPress Coding Standards in order
 Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+### 2.1.1
+* Bugfix - Ignore trailing slash in public url (prevents potential double slash when filtering first path parameter)
+ 
 ### 2.1.0
 * Added - Ignore Path Segments setting to remove specific path segments when building public URLs
 * Enhanced - Public URL functionality to handle complex URL transformations

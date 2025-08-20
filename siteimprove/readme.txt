@@ -87,6 +87,9 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 
 == Changelog ==
+= 2.1.1 =
+* Bugfix - Ignore trailing slash in public url (prevents potential double slash when filtering first path parameter)
+
 = 2.1.0 =
 * Added - Ignore Path Segments setting to remove specific path segments when building public URLs
 * Enhanced - Public URL functionality to handle complex URL transformations
