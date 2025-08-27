@@ -510,7 +510,7 @@ class Siteimprove_Admin {
 		$has_api_key = intval( strlen( get_option( 'siteimprove_api_key', 0 ) ) > 0 );
 		if ( ( is_preview() || is_singular() || is_front_page() ) && 1 === $prepublish_allowed && 1 === $prepublish_enabled && 1 === $has_api_key ) {
 			$prepublish_button =
-				'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" data-name="Layer 1" viewBox="0 0 300 300" height="28px" width="28px" style="enable-background:new 0 0 300 300;">
+				'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="Layer_1" data-name="Layer 1" viewBox="0 0 300 300" height="28px" width="28px">
 					<defs>
 						<style>
 						.cls-1 {

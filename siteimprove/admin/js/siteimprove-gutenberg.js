@@ -8,39 +8,57 @@ var createElement = wp.element.createElement;
 var useState = wp.element.useState;
 
 const svgIcon = React.createElement(
-    'svg', 
-    {
-        version: '1.1', 
-        xmlns: 'http://www.w3.org/2000/svg', 
-        height: '20px', 
-        width: '20px', 
-        xmlnsXlink: 'http://www.w3.org/1999/xlink', 
-        x: '0px', 
-        y: '0px', 
-        viewBox: '0 0 300 300', 
-        style: { 'enableBackground': 'new 0 0 300 300' },
-        xmlSpace: 'preserve',
-    },
+  'svg',
+  {
+    xmlns: 'http://www.w3.org/2000/svg',
+    xmlnsXlink: 'http://www.w3.org/1999/xlink',
+    id: 'Layer_1',
+    viewBox: '0 0 300 300',
+    width: '20px',
+    height: '20px',
+  },
+  React.createElement(
+    'defs',
+    null,
     React.createElement(
-        'circle', 
-        {
-            fill: '#0D4CD3', 
-            cx: '150', 
-            cy: '150', 
-            r: '150'
-        }
+      'style',
+      null,
+      `.cls-1 { fill: url(#linear-gradient); } .cls-2 { fill: #fff; }`
     ),
     React.createElement(
-        'g', 
-        null,
-        React.createElement(
-            'path', 
-            {
-                fill: '#FFFFFF', 
-                d: 'M167.9,135.3l-14.3-4.2c-6.5-2-11.6-3.8-15.4-5.4c-3.8-1.6-6.5-3.4-8.1-5.2c-1.6-1.8-2.4-4.1-2.4-6.9   c0-3.4,1.1-6.3,3.2-8.7c2.1-2.5,5.1-4.4,9-5.7c3.8-1.3,8.3-2,13.5-2c5.2,0,10.4,0.7,15.6,2c5.2,1.3,9.9,3.2,14.3,5.5   c4.4,2.3,8,5.1,11,8.2l19-28.1c-6.5-6.3-15.1-11.2-25.7-14.8c-10.7-3.6-22.2-5.5-34.6-5.5c-9,0-17.3,1.3-24.9,3.8   c-7.6,2.5-14.2,6.1-19.9,10.7c-5.6,4.6-10,10-13.1,16.2c-3.1,6.2-4.7,13-4.7,20.3c0,11.4,3.7,21.2,11.1,29.3   c7.4,8.1,19.6,14.5,36.5,19.2l14.1,4c9.9,2.7,16.7,5.4,20.3,8.3c3.6,2.9,5.5,6.4,5.5,10.7c0,5.2-2.5,9.1-7.6,11.8   c-5,2.7-11.6,4-19.6,4c-5.7,0-11.6-0.7-17.6-2.2c-6.1-1.4-11.7-3.5-17.1-6.2c-5.3-2.7-9.7-5.8-13.1-9.5l-18.3,29.1   c8.1,7,18.1,12.3,29.8,15.9c11.7,3.7,23.8,5.5,36.2,5.5c13.4,0,24.9-2.2,34.6-6.7s17.2-10.6,22.6-18.6c5.3-7.9,8-17.1,8-27.5   c0-11.9-3.8-21.5-11.3-29C196.8,146.4,184.7,140.2,167.9,135.3z'
-            }
-        )
+      'linearGradient',
+      {
+        id: 'linear-gradient',
+        x1: '0',
+        y1: '150',
+        x2: '300',
+        y2: '150',
+        gradientUnits: 'userSpaceOnUse',
+      },
+      React.createElement('stop', { offset: '0', 'stop-color': '#9d0077' }),
+      React.createElement('stop', { offset: '.13', 'stop-color': '#97027a' }),
+      React.createElement('stop', { offset: '.3', 'stop-color': '#880984' }),
+      React.createElement('stop', { offset: '.49', 'stop-color': '#6e1695' }),
+      React.createElement('stop', { offset: '.69', 'stop-color': '#4b27ad' }),
+      React.createElement('stop', { offset: '.89', 'stop-color': '#1d3cca' }),
+      React.createElement('stop', { offset: '1', 'stop-color': '#0449dc' })
     )
+  ),
+  React.createElement('circle', {
+    id: 'Circle_Background',
+    className: 'cls-1',
+    cx: '150',
+    cy: '150',
+    r: '150',
+  }),
+  React.createElement(
+    'g',
+    { id: 'Icon_S' },
+    React.createElement('path', {
+      className: 'cls-2',
+      d: 'M167.9,135.3l-14.3-4.2c-6.5-2-11.6-3.8-15.4-5.4-3.8-1.6-6.5-3.4-8.1-5.2-1.6-1.8-2.4-4.1-2.4-6.9,0-3.4,1.1-6.3,3.2-8.7,2.1-2.5,5.1-4.4,9-5.7,3.8-1.3,8.3-2,13.5-2s10.4.7,15.6,2c5.2,1.3,9.9,3.2,14.3,5.5,4.4,2.3,8,5.1,11,8.2l19-28.1c-6.5-6.3-15.1-11.2-25.7-14.8-10.7-3.6-22.2-5.5-34.6-5.5-9,0-17.3,1.3-24.9,3.8-7.6,2.5-14.2,6.1-19.9,10.7-5.6,4.6-10,10-13.1,16.2-3.1,6.2-4.7,13-4.7,20.3,0,11.4,3.7,21.2,11.1,29.3s19.6,14.5,36.5,19.2l14.1,4c9.9,2.7,16.7,5.4,20.3,8.3,3.6,2.9,5.5,6.4,5.5,10.7,0,5.2-2.5,9.1-7.6,11.8-5,2.7-11.6,4-19.6,4-5.7,0-11.6-.7-17.6-2.2-6.1-1.4-11.7-3.5-17.1-6.2-5.3-2.7-9.7-5.8-13.1-9.5l-18.3,29.1c8.1,7,18.1,12.3,29.8,15.9,11.7,3.7,23.8,5.5,36.2,5.5,13.4,0,24.9-2.2,34.6-6.7s17.2-10.6,22.6-18.6c5.3-7.9,8-17.1,8-27.5,0-11.9-3.8-21.5-11.3-29-7.7-7.2-19.8-13.4-36.6-18.3Z',
+    })
+  )
 );
 
 var RecheckButton = function () {
