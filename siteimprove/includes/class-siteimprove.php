@@ -60,7 +60,7 @@ class Siteimprove {
 	public function __construct() {
 
 		$this->plugin_name = 'siteimprove';
-		$this->version     = '2.1.1';
+		$this->version     = '2.1.2';
 
 		$this->load_dependencies();
 		$this->set_locale();
