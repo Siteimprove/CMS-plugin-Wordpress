@@ -7,6 +7,9 @@ The code on this repository has to match the WordPress Coding Standards in order
 Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+### 2.1.2
+* Updated - Siteimprove logo
+
 ### 2.1.1
 * Bugfix - Ignore trailing slash in public url (prevents potential double slash when filtering first path parameter)
  

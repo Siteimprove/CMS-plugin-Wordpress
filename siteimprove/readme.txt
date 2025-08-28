@@ -3,7 +3,7 @@ Contributors: siteimprove
 Tags: accessibility, analytics, insights, spelling, seo
 Requires at least: 4.7.2
 Tested up to: 6.8.1
-Stable tag: 2.0.8
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 
 == Changelog ==
+= 2.1.2 =
+* Updated - Siteimprove logo
+
 = 2.1.1 =
 * Bugfix - Ignore trailing slash in public url (prevents potential double slash when filtering first path parameter)
 
