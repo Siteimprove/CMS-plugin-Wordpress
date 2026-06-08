@@ -7,6 +7,9 @@ The code on this repository has to match the WordPress Coding Standards in order
 Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+### 2.1.3
+* Bugfix - Load the front-end overlay and Prepublish toolbar action for any user who can edit content (custom roles, multisite super admins), not just a fixed list of role names
+
 ### 2.1.2
 * Updated - Siteimprove logo
 

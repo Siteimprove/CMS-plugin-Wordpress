@@ -3,7 +3,7 @@ Contributors: siteimprove
 Tags: accessibility, analytics, insights, spelling, seo
 Requires at least: 4.7.2
 Tested up to: 6.8.1
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ Please review whether you have JavaScript turned off in your browser. We use Jav
 
 
 == Changelog ==
+= 2.1.3 =
+* Bugfix - Load the front-end overlay and Prepublish toolbar action for any user who can edit content (custom roles, multisite super admins), not just a fixed list of role names
+
 = 2.1.2 =
 * Updated - Siteimprove logo
 
