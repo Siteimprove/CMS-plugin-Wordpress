@@ -426,16 +426,7 @@ class Siteimprove_Admin {
 	 */
 	public function siteimprove_wp_head() {
 
-		$user = wp_get_current_user();
-		$allowed_roles = array(
-			'shop_manager',
-			'contributor',
-			'author',
-			'editor',
-			'administrator',
-		);
-
-		if ( array_intersect( $allowed_roles, $user->roles ) ) {
+		if ( current_user_can( 'edit_posts' ) ) {
 			$type = $this->get_current_page_type();
 			switch ( $type ) {
 				case 'front':
