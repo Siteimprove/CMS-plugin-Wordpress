@@ -21,3 +21,15 @@ phpcs.xml
 #######################
 
 *.un~
+
+# Browser regression tests
+node_modules/
+playwright-report/
+playwright-wordpress-report/
+test-results/
+.wp-env.override.json
+.wp-env-cache/
+playwright/.auth/
+
+# Separate plugin checkout used by manual test workflows
+.plugin-under-test/

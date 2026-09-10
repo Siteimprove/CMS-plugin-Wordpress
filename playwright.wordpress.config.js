@@ -1,0 +1,26 @@
+const { defineConfig } = require('@playwright/test');
+
+module.exports = defineConfig({
+  testDir: './tests/wordpress',
+  timeout: 60000,
+  outputDir: './test-results/wordpress',
+  workers: 1,
+  forbidOnly: Boolean(process.env.CI),
+  retries: 0,
+  reporter: [
+    ['list', { printSteps: true }],
+    ['html', { open: 'never', outputFolder: 'playwright-wordpress-report' }],
+  ],
+  projects: [
+    { name: 'chromium', use: { browserName: 'chromium' } },
+    { name: 'firefox', use: { browserName: 'firefox' } },
+  ],
+  use: {
+    baseURL: 'http://localhost:8888',
+    // This suite uses only disposable local fixtures and placeholder credentials.
+    // A future authenticated suite needs its own recording/privacy configuration.
+    trace: 'off',
+    screenshot: 'only-on-failure',
+    video: 'off',
+  },
+});

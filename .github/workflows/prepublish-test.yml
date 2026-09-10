@@ -1,0 +1,47 @@
+name: Prepublish test
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin_ref:
+        description: 'Plugin branch, tag or commit to test (e.g. refs/pull/64/head); blank uses this workflow commit'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  browser-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Check out the plugin version under test
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.plugin_ref || github.sha }}
+          path: .plugin-under-test
+          sparse-checkout: siteimprove
+          persist-credentials: false
+      - name: Record the plugin commit under test
+        run: git -C .plugin-under-test rev-parse HEAD
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox
+      - run: npm test
+        env:
+          SITEIMPROVE_TEST_SCRIPT: ${{ github.workspace }}/.plugin-under-test/siteimprove/admin/js/siteimprove.js
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: prepublish-test-report
+          path: |
+            playwright-report/
+            test-results/browser/
+          retention-days: 14
