@@ -10,7 +10,7 @@
     "test:wordpress": "playwright test --config=playwright.wordpress.config.js",
     "test:wordpress:report": "playwright show-report playwright-wordpress-report",
     "test:live": "node tests/live/run.js",
-    "test:live:contracts": "node --test tests/live/settings.test.js",
+    "test:live:contracts": "node --test tests/live/*.test.js",
     "test:live:fixture": "playwright test --config=playwright.live-fixture.config.js"
   },
   "devDependencies": {

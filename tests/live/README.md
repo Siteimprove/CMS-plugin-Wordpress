@@ -90,7 +90,10 @@ is separate from the screenshots enabled for the synthetic tests in PR #65.
 ## Credential-free validation
 
 `npm run test:live:contracts` verifies URL mapping, required configuration and
-recognition of real Live page data versus login/missing-page responses.
+recognition of real Live page data versus login/missing-page responses. It also
+checks both login failure paths for unhandled event rejections and guards against
+adding screenshot/trace/video/session capture or artifact uploads to the current
+live runner and workflow.
 
 The PHP fixture can be checked locally without any Siteimprove credentials:
 

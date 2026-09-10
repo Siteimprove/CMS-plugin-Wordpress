@@ -53,6 +53,23 @@ async function observeCapture(context, marker, evidence) {
   }, { marker, cms:CMS });
 }
 
+async function loginToSiteimprove(page, settings) {
+  // Attach handlers to both promises immediately, including when the click fails.
+  const [popup] = await Promise.all([
+    page.waitForEvent('popup'),
+    page.locator('.si-smallbox button.si-button').click(),
+  ]);
+  await popup.locator('input[name=loginId]').fill(settings.SITEIMPROVE_USERNAME);
+  await popup.getByRole('button', {name:'Continue',exact:true}).click();
+  await popup.locator('input[type=password]').fill(settings.SITEIMPROVE_PASSWORD);
+  const submit = await visibleOne([popup.getByRole('button', {name:/^(Sign in|Log in|Continue)$/i})]);
+  await Promise.all([
+    popup.waitForEvent('close', {timeout:60000}),
+    submit.click(),
+  ]);
+  // Terms, MFA, CAPTCHA or entitlement failures stop here; never bypass them.
+}
+
 async function run() {
   let browser;
   let phase = 'configuration';
@@ -139,19 +156,7 @@ async function run() {
       try { requireCondition(!(await (await anonymous.request.get(previewUrl)).text()).includes(marker)); }
       finally { await anonymous.close(); }
     });
-    await step('Direct Siteimprove login through the plugin', async () => {
-      const popupPromise = page.waitForEvent('popup');
-      await page.locator('.si-smallbox button.si-button').click();
-      const popup = await popupPromise;
-      await popup.locator('input[name=loginId]').fill(settings.SITEIMPROVE_USERNAME);
-      await popup.getByRole('button', {name:'Continue',exact:true}).click();
-      await popup.locator('input[type=password]').fill(settings.SITEIMPROVE_PASSWORD);
-      const submit = await visibleOne([popup.getByRole('button', {name:/^(Sign in|Log in|Continue)$/i})]);
-      const closed = popup.waitForEvent('close', {timeout:60000});
-      await submit.click();
-      await closed;
-      // Terms, MFA, CAPTCHA or entitlement failures stop here; never bypass them.
-    });
+    await step('Direct Siteimprove login through the plugin', () => loginToSiteimprove(page, settings));
     let overlay;
     await step('Existing Live page data arrives for the exact mapped URL', async () => {
       await until(() => liveDataReceived, 60000);
@@ -200,4 +205,4 @@ async function run() {
   }
 }
 if (require.main === module) run().then(code => { process.exitCode = code; });
-module.exports = { observeCapture, run };
+module.exports = { observeCapture, loginToSiteimprove, run };
