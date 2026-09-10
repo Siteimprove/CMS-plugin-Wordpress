@@ -99,10 +99,11 @@ is still unverified. The suite has 18 tests including readiness in each browser.
 
 ## Planned: authenticated Siteimprove checks
 
-These scenarios are **not implemented or verified yet**. They require account
-access, working authentication and URL mapping. The missing-title fixture also
-still needs to be added. Run the small checks across selected WordPress setups;
-the environment matrix is described in [TESTING.md](../TESTING.md).
+An initial runner and missing-title fixture are now prepared in
+[the live-test follow-up](live/README.md), but the authenticated flow is **not
+verified against the account**. It requires an approved manual run to validate
+login, URL mapping and real results. Start with one Chromium configuration;
+additional live environments remain future coverage.
 
 ### Retrieve existing Live page data
 

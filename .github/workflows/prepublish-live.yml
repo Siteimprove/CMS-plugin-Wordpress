@@ -1,0 +1,54 @@
+name: Prepublish live Siteimprove test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: siteimprove-live-test
+  cancel-in-progress: false
+
+jobs:
+  live:
+    # Reviewed workflow code only. Environment approval is required separately.
+    if: github.repository == 'Siteimprove/CMS-plugin-Wordpress' && github.ref == 'refs/heads/master'
+    environment: siteimprove-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Check out the reviewed PR 64 plugin
+        uses: actions/checkout@v6
+        with:
+          ref: a23af8519861f674d700cbe4fe183817f47458dc
+          path: .plugin-under-test
+          sparse-checkout: siteimprove
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run test:live:contracts
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/prepare-live-env.js
+      - run: npm run env:start
+      - name: Verify Live page data and one fresh Prepublish issue
+        run: npm run test:live
+        env:
+          SITEIMPROVE_RUN_LIVE: '1'
+          SITEIMPROVE_PUBLIC_URL: ${{ secrets.SITEIMPROVE_PUBLIC_URL }}
+          SITEIMPROVE_CRAWLED_URL: ${{ secrets.SITEIMPROVE_CRAWLED_URL }}
+          SITEIMPROVE_API_USERNAME: ${{ secrets.SITEIMPROVE_API_USERNAME }}
+          SITEIMPROVE_API_KEY: ${{ secrets.SITEIMPROVE_API_KEY }}
+          SITEIMPROVE_USERNAME: ${{ secrets.SITEIMPROVE_USERNAME }}
+          SITEIMPROVE_PASSWORD: ${{ secrets.SITEIMPROVE_PASSWORD }}
+          DEBUG: ''
+          PWDEBUG: '0'
+      - run: npm run env:stop
+        if: ${{ always() }}
+      # No screenshots, traces, browser state, server logs or account data uploads.
