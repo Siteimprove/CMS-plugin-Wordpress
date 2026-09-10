@@ -18,10 +18,12 @@ function popupFixture(failPassword = false) {
 
 test('Login diagnostics return only fixed boolean fields, never account values or URLs', async () => {
   const state = await loginPageState(popupFixture());
-  assert.deepEqual(state, {popup_open:true,identity_origin:true,username_visible:false,
+  assert.deepEqual(state, {popup_open:true,identity_origin:true,sdk_origin:false,sdk_close_page:false,platform_origin:false,
+    access_denied_visible:false,terms_prompt_visible:false,username_visible:false,
     password_visible:true,alert_visible:false,one_time_code_visible:false,captcha_frame_visible:false});
   assert.doesNotMatch(JSON.stringify(state), new RegExp(sentinel));
-  assert.deepEqual(await loginPageState(undefined), {popup_open:false,identity_origin:false,username_visible:false,
+  assert.deepEqual(await loginPageState(undefined), {popup_open:false,identity_origin:false,sdk_origin:false,sdk_close_page:false,platform_origin:false,
+    access_denied_visible:false,terms_prompt_visible:false,username_visible:false,
     password_visible:false,alert_visible:false,one_time_code_visible:false,captcha_frame_visible:false});
 });
 
@@ -48,4 +50,18 @@ test('Successful login completes each stage without collecting failure diagnosti
   assert.equal(phases.length, 6);
   assert.equal(phases.at(-1), 'Login: submit credentials and await popup close');
   assert.equal(reports, 0);
+});
+
+
+test('Post-login destinations are classified without exposing their URL or query', async () => {
+  for (const [url, field] of [
+    [`https://contentassistant.eu.siteimprove.com/cms/close?secret=${sentinel}`, 'sdk_close_page'],
+    [`https://my2.siteimprove.com/private-account/${sentinel}`, 'platform_origin'],
+  ]) {
+    const popup = popupFixture();
+    popup.url = () => url;
+    const state = await loginPageState(popup);
+    assert.equal(state[field], true);
+    assert.doesNotMatch(JSON.stringify(state), new RegExp(sentinel));
+  }
 });

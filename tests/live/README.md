@@ -84,8 +84,9 @@ written into tracked configuration files.
 
 Login failures identify one of six fixed stages, from opening the popup through
 submitting credentials and waiting for it to close. A LOGIN STATE line contains
-only fixed boolean fields for popup availability, the known identity origin,
-and visible username/password/alert/one-time-code/CAPTCHA controls. It contains
+only fixed boolean fields for popup availability, known identity/SDK/platform
+origins, the SDK close page, and visible username/password/alert/one-time-code/
+CAPTCHA controls or access-denied/terms prompts. It contains
 no URL, page text, field value, screenshot or raw exception. These indicators
 help narrow a failure; they do not prove why authentication was rejected.
 
