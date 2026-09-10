@@ -1,0 +1,18 @@
+{
+  "name": "siteimprove-wordpress-tests",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report",
+    "env:start": "node scripts/wordpress-env.js start --runtime=playground",
+    "env:stop": "node scripts/wordpress-env.js stop",
+    "env:status": "node scripts/wordpress-env.js status",
+    "test:wordpress": "playwright test --config=playwright.wordpress.config.js",
+    "test:wordpress:report": "playwright show-report playwright-wordpress-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@wordpress/env": "11.15.0",
+    "jquery": "3.7.1"
+  }
+}

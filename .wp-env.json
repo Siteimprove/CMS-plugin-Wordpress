@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
+  "core": null,
+  "phpVersion": "8.3",
+  "port": 8888,
+  "testsEnvironment": false,
+  "plugins": ["./siteimprove"],
+  "config": {
+    "WP_ENVIRONMENT_TYPE": "local",
+    "WP_DEBUG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SITEIMPROVE_TEST_ENVIRONMENT": true,
+    "SITEIMPROVE_TEST_MOCK_SERVICE": true
+  },
+  "mappings": {
+    "wp-content/mu-plugins": "./tests/wordpress/support"
+  }
+}
