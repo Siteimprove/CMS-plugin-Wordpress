@@ -237,6 +237,11 @@ the missing-title result. This concerns page-content fidelity, not SDK UI stylin
 
 ### What remains for an actual Siteimprove end-to-end test
 
+A first manual live workflow and runner are now prepared in
+[tests/live/README.md](tests/live/README.md). They have not been authenticated or
+run against Siteimprove. The following account and network requirements still
+apply; PR #65’s existing tests continue to use no secrets.
+
 We still need a Siteimprove test account with Prepublish access and a known
 crawled page accessible to both the browser user and API user. The plugin's
 credential validation compares **Public URL** with the sites available to the
@@ -276,9 +281,9 @@ First configure and validate the real integration in that environment:
    of source files, logs, reports and uploaded traces. Local browser state belongs
    in the ignored `playwright/.auth/` directory.
 
-The full scan test and its authenticated GitHub job have **not** been implemented
-or run yet: the account, registered site and actual overlay/login flow are needed
-to implement and verify those steps. The integration workflow must not be interpreted
+The initial live runner and authenticated GitHub job are **prepared but unverified
+against the account**. The first authorized run must verify the actual login,
+site mapping and fresh scan results. The integration workflow must not be interpreted
 as proof that a Siteimprove scan passed.
 
 The revision fixture uses [WordPress’s autosave API](https://developer.wordpress.org/reference/functions/wp_create_post_autosave/)

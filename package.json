@@ -8,7 +8,10 @@
     "env:stop": "node scripts/wordpress-env.js stop",
     "env:status": "node scripts/wordpress-env.js status",
     "test:wordpress": "playwright test --config=playwright.wordpress.config.js",
-    "test:wordpress:report": "playwright show-report playwright-wordpress-report"
+    "test:wordpress:report": "playwright show-report playwright-wordpress-report",
+    "test:live": "node tests/live/run.js",
+    "test:live:contracts": "node --test tests/live/settings.test.js",
+    "test:live:fixture": "playwright test --config=playwright.live-fixture.config.js"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
