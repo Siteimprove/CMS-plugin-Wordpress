@@ -55,11 +55,20 @@ async function observeCapture(context, marker, evidence) {
 
 // Fixed boolean fields only: never collect text, field values, URLs or images.
 async function loginPageState(popup) {
-  const state = { popup_open:false, identity_origin:false, username_visible:false,
+  const state = { popup_open:false, identity_origin:false, sdk_origin:false, sdk_close_page:false,
+    platform_origin:false, access_denied_visible:false, terms_prompt_visible:false, username_visible:false,
     password_visible:false, alert_visible:false, one_time_code_visible:false, captcha_frame_visible:false };
   if (!popup || popup.isClosed()) return state;
   state.popup_open = true;
-  try { state.identity_origin = new URL(popup.url()).origin === 'https://identity.siteimprove.com'; } catch {}
+  try {
+    const url = new URL(popup.url());
+    state.identity_origin = url.origin === 'https://identity.siteimprove.com';
+    state.sdk_origin = /^https:\/\/contentassistant\.[a-z]+\.siteimprove\.com$/.test(url.origin);
+    state.sdk_close_page = state.sdk_origin && url.pathname === '/cms/close';
+    state.platform_origin = ['https://my2.siteimprove.com','https://my.siteimprove.com'].includes(url.origin);
+  } catch {}
+  try { state.access_denied_visible = await popup.getByText(/access denied|access forbidden|request blocked/i).first().isVisible(); } catch {}
+  try { state.terms_prompt_visible = await popup.getByText(/accept (?:the )?terms|terms and conditions/i).first().isVisible(); } catch {}
   for (const [field, selector] of Object.entries({
     username_visible:'input[name=loginId]', password_visible:'input[type=password]',
     alert_visible:'[role=alert]', one_time_code_visible:'input[autocomplete=one-time-code]',
