@@ -53,21 +53,47 @@ async function observeCapture(context, marker, evidence) {
   }, { marker, cms:CMS });
 }
 
-async function loginToSiteimprove(page, settings) {
-  // Attach handlers to both promises immediately, including when the click fails.
-  const [popup] = await Promise.all([
-    page.waitForEvent('popup'),
-    page.locator('.si-smallbox button.si-button').click(),
-  ]);
-  await popup.locator('input[name=loginId]').fill(settings.SITEIMPROVE_USERNAME);
-  await popup.getByRole('button', {name:'Continue',exact:true}).click();
-  await popup.locator('input[type=password]').fill(settings.SITEIMPROVE_PASSWORD);
-  const submit = await visibleOne([popup.getByRole('button', {name:/^(Sign in|Log in|Continue)$/i})]);
-  await Promise.all([
-    popup.waitForEvent('close', {timeout:60000}),
-    submit.click(),
-  ]);
-  // Terms, MFA, CAPTCHA or entitlement failures stop here; never bypass them.
+// Fixed boolean fields only: never collect text, field values, URLs or images.
+async function loginPageState(popup) {
+  const state = { popup_open:false, identity_origin:false, username_visible:false,
+    password_visible:false, alert_visible:false, one_time_code_visible:false, captcha_frame_visible:false };
+  if (!popup || popup.isClosed()) return state;
+  state.popup_open = true;
+  try { state.identity_origin = new URL(popup.url()).origin === 'https://identity.siteimprove.com'; } catch {}
+  for (const [field, selector] of Object.entries({
+    username_visible:'input[name=loginId]', password_visible:'input[type=password]',
+    alert_visible:'[role=alert]', one_time_code_visible:'input[autocomplete=one-time-code]',
+    captcha_frame_visible:'iframe[src*="recaptcha"], iframe[src*="hcaptcha"]',
+  })) {
+    try { state[field] = await popup.locator(selector).first().isVisible(); } catch {}
+  }
+  return state;
+}
+
+async function loginToSiteimprove(page, settings, step = async (_name, callback) => callback(), report = () => {}) {
+  let popup;
+  try {
+    // Attach handlers to both promises immediately, including when the click fails.
+    [popup] = await step('Login: open Siteimprove popup', () => Promise.all([
+      page.waitForEvent('popup'),
+      page.locator('.si-smallbox button.si-button').click(),
+    ]));
+    await step('Login: enter username', () => popup.locator('input[name=loginId]').fill(settings.SITEIMPROVE_USERNAME));
+    await step('Login: continue to password', () => popup.getByRole('button', {name:'Continue',exact:true}).click());
+    await step('Login: enter password', () => popup.locator('input[type=password]').fill(settings.SITEIMPROVE_PASSWORD));
+    const submit = await step('Login: locate submit control', () => visibleOne([
+      popup.getByRole('button', {name:/^(Sign in|Log in|Continue)$/i}),
+    ]));
+    await step('Login: submit credentials and await popup close', () => Promise.all([
+      popup.waitForEvent('close', {timeout:60000}),
+      submit.click(),
+    ]));
+    // Terms, MFA, CAPTCHA or entitlement failures stop here; never bypass them.
+  } catch (error) {
+    // Diagnostic collection must not replace the original failing phase.
+    try { report(await loginPageState(popup)); } catch {}
+    throw error;
+  }
 }
 
 async function run() {
@@ -156,7 +182,7 @@ async function run() {
       try { requireCondition(!(await (await anonymous.request.get(previewUrl)).text()).includes(marker)); }
       finally { await anonymous.close(); }
     });
-    await step('Direct Siteimprove login through the plugin', () => loginToSiteimprove(page, settings));
+    await step('Direct Siteimprove login through the plugin', () => loginToSiteimprove(page, settings, step, state => console.log(`LOGIN STATE: ${JSON.stringify(state)}`)));
     let overlay;
     await step('Existing Live page data arrives for the exact mapped URL', async () => {
       await until(() => liveDataReceived, 60000);
@@ -205,4 +231,4 @@ async function run() {
   }
 }
 if (require.main === module) run().then(code => { process.exitCode = code; });
-module.exports = { observeCapture, loginToSiteimprove, run };
+module.exports = { observeCapture, loginPageState, loginToSiteimprove, run };

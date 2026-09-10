@@ -1,9 +1,9 @@
 # Manual live Siteimprove test
 
-Status: the workflow and initial test implementation are prepared, but no
-GitHub run, authenticated login or real Prepublish scan has been performed.
-The first approved run must validate the account, network access and SDK UI
-selectors. A failure is not converted into a skip or a pass.
+Status: the first approved GitHub run passed API entitlement, plugin setup and
+draft mapping/privacy checks, then failed during Siteimprove browser login.
+A successful authenticated login and real Prepublish scan remain unverified.
+A failure is not converted into a skip or a pass.
 
 This follow-up builds on the credential-free infrastructure in PR #65. It adds
 one Chromium smoke test with two outcomes: existing Live page data for the exact
@@ -70,8 +70,8 @@ plugin-ref input in this secret-bearing job. Changing the plugin commit requires
 a reviewed workflow change. The ordinary credential-free workflows retain their
 flexible `plugin_ref` inputs.
 
-No workflow has been dispatched. Review this implementation before an authorized
-maintainer starts and approves the first live run.
+The first live run is recorded in GitHub Actions as run 34519097100. Subsequent
+runs remain manual and require the environment approval rules.
 
 ## Diagnostics and secrets
 
@@ -81,6 +81,13 @@ account content. Screenshots, traces, video, saved browser sessions and server-l
 uploads are disabled. WordPress debug logging is disabled. Secrets are supplied
 only to the live test step, after environment approval; no secret values are
 written into tracked configuration files.
+
+Login failures identify one of six fixed stages, from opening the popup through
+submitting credentials and waiting for it to close. A LOGIN STATE line contains
+only fixed boolean fields for popup availability, the known identity origin,
+and visible username/password/alert/one-time-code/CAPTCHA controls. It contains
+no URL, page text, field value, screenshot or raw exception. These indicators
+help narrow a failure; they do not prove why authentication was rejected.
 
 Failures identify a phase such as API entitlement, login, URL mapping or new
 Prepublish completion. The tradeoff is less detail for investigating SDK changes;
