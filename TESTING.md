@@ -1,5 +1,13 @@
 # Testing the plugin
 
+## WordPress integration regressions
+
+The [integration regression suite](tests/integration-regressions/README.md) adds real
+WordPress multisite, capability, URL mapping and settings checks, plus browser
+recheck contracts. Its [coverage catalog](tests/integration-regressions/COVERAGE.md)
+describes behavior and distinguishes automated coverage from planned scenarios.
+All fixtures must use synthetic identities, content, tokens and reserved domains.
+
 ## Prepublish test
 
 Run these tests for the cross-origin Prepublish issue. The deployment checks
@@ -65,7 +73,7 @@ install browser system dependencies. For one browser, use
 `npm test -- --project=chromium`. To inspect the HTML report, run
 `npm run test:report`.
 
-The suite runs 15 scenarios in each of Chromium and Firefox. It loads the
+The capture tests run 15 scenarios in each of Chromium and Firefox. They load the
 complete production `siteimprove/admin/js/siteimprove.js` with real jQuery.
 Two local HTTP servers on different ports supply separate CMS and delivery
 origins; the browser itself enforces same-origin restrictions, X-Frame-Options
@@ -216,7 +224,8 @@ button interactions are not covered yet.
 Browser requests outside localhost are blocked. With the default
 `SITEIMPROVE_TEST_MOCK_SERVICE: true`, the fixture also blocks outbound WordPress
 HTTP API calls. This mode is for these credential-free integration tests only.
-The existing `npm test` still runs the separate 30 browser regression checks.
+`npm test` runs 46 browser checks: 30 capture checks and 16 integration regression checks.
+The additional multisite regression checks run with `npm run test:regressions`.
 
 The manual **Prepublish WordPress environment** GitHub workflow starts a fresh
 instance on the selected branch, runs the integration tests in both browsers and
@@ -228,7 +237,7 @@ the default branch, and the selected workflow branch must contain its supporting
 
 ### Why the draft and style tests were added
 
-[Morten’s review on PR #64](https://github.com/Siteimprove/CMS-plugin-Wordpress/pull/64#pullrequestreview-5041911406)
+[Review on PR #64](https://github.com/Siteimprove/CMS-plugin-Wordpress/pull/64#pullrequestreview-5041911406)
 asks for evidence that draft content and styles reach Prepublish. The new
 integration checks connect real WordPress preview rendering to the plugin's
 SDK handoff. A live report rerender remains a separate acceptance check: confirm
@@ -556,4 +565,4 @@ The unified action supports three modes:
     svn-password: ${{ secrets.WP_SVN_PASSWORD }}
 ```
 
-This simplified approach ensures your deployment process is reliable and safe before using it for production releases. 
+This simplified approach ensures your deployment process is reliable and safe before using it for production releases.
