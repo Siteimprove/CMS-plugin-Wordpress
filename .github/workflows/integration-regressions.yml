@@ -1,6 +1,9 @@
 name: WordPress integration regressions
 
 on:
+  push:
+    branches:
+      - test/integration-regressions
   workflow_dispatch:
     inputs:
       plugin_ref:
