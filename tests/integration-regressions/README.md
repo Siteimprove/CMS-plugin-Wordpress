@@ -17,6 +17,11 @@ Do not derive synthetic identifiers by hashing real identifiers.
 Review diffs and report attachments before publishing; ignored files are not a
 substitute for sanitizing artifacts. New scenarios must follow the same policy.
 
+Both regression configurations disable Playwright Git commit and diff capture
+to keep contributor names and email addresses out of that report metadata.
+Failure attachments may contain synthetic fixture credentials from test-source
+snippets. This setting affects future runs; it does not sanitize existing reports.
+
 ## Run locally
 
 ```sh

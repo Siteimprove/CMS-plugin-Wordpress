@@ -1,6 +1,8 @@
 const { defineConfig } = require('@playwright/test');
 
 module.exports = defineConfig({
+  // CI reports must not collect contributor identities or source diffs.
+  captureGitInfo: { commit: false, diff: false },
   testDir: './tests/integration-regressions',
   timeout: 60000,
   expect: { timeout: 5000 },
