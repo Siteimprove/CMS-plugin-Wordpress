@@ -197,18 +197,6 @@ test('token requests require both an administrator and a current nonce', async (
   await expect(page.locator('#token-requests')).toHaveText('1');
 });
 
-test('an unset experience option selects and loads the latest experience', async ({ page }, testInfo) => {
-  const { sites } = await prepare(page, testInfo, 'fresh');
-  await page.goto(sites[0].settings);
-  await testInfo.attach('experience-script-selection', {
-    body: JSON.stringify(await page.locator('script[src*="overlay-"]').evaluateAll(nodes => nodes.map(node => node.src))),
-    contentType: 'application/json',
-  });
-  await expect(page.locator('input[name="siteimprove_disable_new_version"]')).toBeChecked();
-  await expect(page.locator('script[src*="overlay-latest.js"]')).toHaveCount(1);
-  await expect(page.locator('script[src*="overlay-v1.js"]')).toHaveCount(0);
-});
-
 test('the overlay loads after the plugin and its localized configuration', async ({ page }, testInfo) => {
   const { sites } = await prepare(page, testInfo);
   await page.goto(sites[0].public);

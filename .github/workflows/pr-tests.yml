@@ -1,0 +1,107 @@
+name: WordPress plugin PR tests
+
+on:
+  workflow_call:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-pr-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  browser:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox
+      - name: Validate regression coverage catalog
+        run: npm run test:regressions:catalog
+      - name: Test live runner contracts and privacy safeguards
+        run: npm run test:live:contracts
+      - name: Test content capture, rechecks, and highlighting handoff
+        run: npm test
+      - name: Upload browser report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-browser-test-report
+          path: playwright-report/
+          retention-days: 14
+      - name: Explain coverage and reports
+        if: ${{ always() }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          ### Browser tests
+          Chromium and Firefox test content capture, recheck callbacks, and highlighting handoff on local fixtures. Catalog and live-runner privacy contracts are also checked. Siteimprove is mocked; no account credentials are used.
+
+          See the step results for outcomes and `pr-browser-test-report` in Artifacts for individual browser cases, when available.
+          SUMMARY
+
+  wordpress:
+    name: WordPress tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox
+      - name: Start disposable WordPress
+        id: wordpress_environment
+        run: npm run env:start
+      - name: Test drafts, previews, autosaves, and content capture
+        if: ${{ !cancelled() && steps.wordpress_environment.outcome == 'success' }}
+        run: npm run test:wordpress
+      - name: Stop disposable WordPress
+        if: ${{ always() }}
+        run: npm run env:stop
+      - name: Allow multisite to use the standard HTTP port
+        if: ${{ !cancelled() }}
+        run: sudo sysctl -w net.ipv4.ip_unprivileged_port_start=0
+      - name: Start disposable WordPress multisite
+        id: regression_environment
+        if: ${{ !cancelled() }}
+        run: npm run env:regressions:start
+      - name: Test roles, multisite, URL mapping, and settings
+        if: ${{ !cancelled() && steps.regression_environment.outcome == 'success' }}
+        run: npm run test:regressions
+      - name: Stop disposable WordPress multisite
+        if: ${{ always() }}
+        run: npm run env:regressions:stop
+      - name: Upload WordPress reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-wordpress-test-reports
+          path: |
+            playwright-wordpress-report/
+            playwright-integration-regressions-report/
+            test-results/integration-regressions-results.json
+          retention-days: 14
+      - name: Explain coverage and reports
+        if: ${{ always() }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          ### WordPress tests
+          Chromium and Firefox test drafts, previews, autosaves, content capture, roles, multisite, URL mapping, and settings. Single-site and multisite fixtures run sequentially with one dependency/browser installation. Siteimprove is mocked; no account credentials are used.
+
+          See the step results for outcomes and `pr-wordpress-test-reports` in Artifacts for individual cases, when available. Failed steps remain failures even if later suites pass.
+          SUMMARY

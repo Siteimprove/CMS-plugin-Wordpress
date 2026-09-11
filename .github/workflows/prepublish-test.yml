@@ -1,4 +1,4 @@
-name: Prepublish test
+name: WordPress plugin browser tests
 
 on:
   workflow_dispatch:
@@ -16,6 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Explain test coverage
+        if: ${{ always() }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          ### WordPress plugin browser tests
+          - Environment: Chromium and Firefox; local browser fixtures; Siteimprove mocked.
+          - Coverage: Content capture, recheck callbacks, and highlighting handoff.
+          - Report: plugin-browser-test-report
+          - Results: see the test steps below; this description does not indicate a pass.
+          SUMMARY
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
@@ -34,13 +44,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox
-      - run: npm test
+      - name: Test content capture, rechecks, and highlighting handoff
+        run: npm test
         env:
           SITEIMPROVE_TEST_SCRIPT: ${{ github.workspace }}/.plugin-under-test/siteimprove/admin/js/siteimprove.js
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: prepublish-test-report
+          name: plugin-browser-test-report
           path: |
             playwright-report/
             test-results/browser/

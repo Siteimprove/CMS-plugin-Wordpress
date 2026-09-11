@@ -5,17 +5,24 @@ on:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
+permissions:
+  contents: read
+
 jobs:
+  validation:
+    uses: ./.github/workflows/release-checks.yml
+
   build:
+    needs: validation
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Archive Release
-        uses: Siteimprove/zip-release@main
+      - uses: actions/checkout@v6
+      - name: Download the validated release ZIP
+        uses: actions/download-artifact@v4
         with:
-          type: 'zip'
-          filename: 'siteimprove.zip'
-          exclusions: '*.git* /*node_modules/* .editorconfig .gitignore phpcs.xml README.md /*.github/*'
+          name: validated-release-package
       - name: Upload Release
         uses: Siteimprove/release-action@v1
         with:
@@ -27,7 +34,7 @@ jobs:
     needs: build
     if: contains(github.ref_name, '-dry-run')
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v6
       - name: Deploy to WordPress Marketplace (Dry Run)
         uses: ./.github/actions/deploy-to-wordpress
         with:
@@ -45,7 +52,7 @@ jobs:
     needs: build
     if: contains(github.ref_name, '-test')
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v6
       - name: Deploy to WordPress Marketplace (Test)
         uses: ./.github/actions/deploy-to-wordpress
         with:
@@ -63,7 +70,7 @@ jobs:
     needs: build
     if: "!contains(github.ref_name, '-test') && !contains(github.ref_name, '-dry-run')"
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v6
       - name: Deploy to WordPress Marketplace (Production)
         uses: ./.github/actions/deploy-to-wordpress
         with:

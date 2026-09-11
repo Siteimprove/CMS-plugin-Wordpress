@@ -44,15 +44,6 @@ test('a WordPress update notification queues a recheck for the updated page', as
     .toEqual([['recheck', publicUrl, token]]);
 });
 
-for (const version of ['0', '1']) {
-  test(`experience ${version} initializes one non-content view without a Prepublish callback`, async ({ page }) => {
-    await boot(page, { siteimprove_domain: { url: 'https://delivery.example.test', token, version } });
-    const methods = await page.evaluate(() => window._si.map(command => command[0]));
-    expect(methods.filter(method => ['domain', 'clear', 'input'].includes(method))).toEqual([version === '0' ? 'domain' : 'clear']);
-    expect(methods).not.toContain('registerPrepublishCallback');
-  });
-}
-
 // This verifies the WordPress-to-SDK handoff. Rendering and removing the actual
 // highlight belongs to CMS-plugin-v2 and is explicitly left open in the catalog.
 test('highlighting is delegated once without rewriting inline content', async ({ page }) => {

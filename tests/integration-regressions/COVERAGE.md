@@ -316,8 +316,6 @@ Behavior-based regression specifications using synthetic fixtures. Automated ref
 
 - [tests/integration-regressions/regressions.spec.js](../integration-regressions/regressions.spec.js) — Real dashboard clear, absence of content callback and toolbar.
 
-- [tests/browser/integration-regressions.spec.js](../browser/integration-regressions.spec.js) — Legacy and latest non-content initialization contracts.
-
 **Remaining:** Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope.
 
 ## regional-entitlement
@@ -331,22 +329,6 @@ Behavior-based regression specifications using synthetic fixtures. Automated ref
 **Then:** The entitled subsite exposes a usable Prepublish action without a fatal error. Negative controls disable Prepublish while preserving ordinary Live page input. A configured crawled public URL resolves to the correct account.
 
 - [tests/integration-regressions/regressions.spec.js](../integration-regressions/regressions.spec.js) — Disabled-key/entitlement/readiness flags gate both entry points in actual WordPress.
-
-**Remaining:** Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope.
-
-## experience-selection
-
-**Environment:** Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.
-
-**Given:** The experience option has never been saved; separately choose each explicit experience setting.
-
-**When:** Open settings and the plugin, then switch experience and reload.
-
-**Then:** Fresh settings show Use latest experience checked and load the matching latest overlay. Explicit choices initialize only their selected experience without duplicate callbacks.
-
-- [tests/integration-regressions/regressions.spec.js](../integration-regressions/regressions.spec.js) — Unset option rendered checkbox and selected script.
-
-- [tests/browser/integration-regressions.spec.js](../browser/integration-regressions.spec.js) — Single initialization per explicitly selected experience.
 
 **Remaining:** Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope.
 

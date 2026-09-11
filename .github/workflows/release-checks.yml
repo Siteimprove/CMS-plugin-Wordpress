@@ -1,0 +1,49 @@
+name: Release checks
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    uses: ./.github/workflows/pr-tests.yml
+  coding-standard:
+    uses: ./.github/workflows/wpcs.yml
+  live:
+    needs: [integration, coding-standard]
+    uses: ./.github/workflows/prepublish-live.yml
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Build and test the release ZIP lifecycle
+        run: bash scripts/test-release-package.sh
+      - name: Retain the validated release ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: validated-release-package
+          path: siteimprove.zip
+          retention-days: 14
+  passed:
+    name: All release checks passed
+    if: ${{ always() }}
+    needs: [integration, coding-standard, live, package]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every check to succeed
+        env:
+          INTEGRATION: ${{ needs.integration.result }}
+          STANDARD: ${{ needs.coding-standard.result }}
+          LIVE: ${{ needs.live.result }}
+          PACKAGE: ${{ needs.package.result }}
+        run: |
+          test "$INTEGRATION" = success
+          test "$STANDARD" = success
+          test "$LIVE" = success
+          test "$PACKAGE" = success
+          printf '%s\n' 'All automated release checks passed for this commit.' >> "$GITHUB_STEP_SUMMARY"

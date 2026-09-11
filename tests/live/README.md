@@ -58,20 +58,16 @@ browser document would not exercise the same path.
 
 ## Execution and approval
 
-The workflow is `prepublish-live.yml` (**Prepublish live Siteimprove test**).
-It has only `workflow_dispatch`, runs only from `master` in this repository,
-and uses the `siteimprove-test` environment's approval rules. It cannot run
-from a PR branch. Workflow availability requires merging it into the default
-branch; neither creating the PR nor adding secrets starts it.
+The workflow is `prepublish-live.yml` (**WordPress–Siteimprove live integration tests**).
+It supports manual dispatch and reuse by the release checks in this repository.
+It does not run on PR events and uses the `siteimprove-test` environment's
+approval and deployment rules. Configure that environment to allow the release
+refs that should receive credentials. Missing approval or secrets blocks release
+validation; it does not bypass the live test.
 
-The plugin is pinned to reviewed PR #64 commit
-`a23af8519861f674d700cbe4fe183817f47458dc`. There is deliberately no arbitrary
-plugin-ref input in this secret-bearing job. Changing the plugin commit requires
-a reviewed workflow change. The ordinary credential-free workflows retain their
-flexible `plugin_ref` inputs.
-
-The first live run is recorded in GitHub Actions as run 34519097100. Subsequent
-runs remain manual and require the environment approval rules.
+The plugin and test harness use the triggering commit (`github.sha`), including
+for releases. There is no separate plugin-ref input in this credential-bearing
+workflow. Release refs and workflow changes must be reviewed before approval.
 
 ## Diagnostics and secrets
 

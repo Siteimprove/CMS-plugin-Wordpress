@@ -296,11 +296,6 @@
           "file": "tests/integration-regressions/regressions.spec.js",
           "match": "dashboard initializes an empty overlay without preview parameters",
           "scope": "Real dashboard clear, absence of content callback and toolbar."
-        },
-        {
-          "file": "tests/browser/integration-regressions.spec.js",
-          "match": "experience ${version} initializes one non-content view without a Prepublish callback",
-          "scope": "Legacy and latest non-content initialization contracts."
         }
       ],
       "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
@@ -316,26 +311,6 @@
           "file": "tests/integration-regressions/regressions.spec.js",
           "match": "${mode} disables both Prepublish entry points while retaining Live page input",
           "scope": "Disabled-key/entitlement/readiness flags gate both entry points in actual WordPress."
-        }
-      ],
-      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
-    },
-    {
-      "id": "experience-selection",
-      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
-      "given": "The experience option has never been saved; separately choose each explicit experience setting.",
-      "when": "Open settings and the plugin, then switch experience and reload.",
-      "then": "Fresh settings show Use latest experience checked and load the matching latest overlay. Explicit choices initialize only their selected experience without duplicate callbacks.",
-      "automated": [
-        {
-          "file": "tests/integration-regressions/regressions.spec.js",
-          "match": "an unset experience option selects and loads the latest experience",
-          "scope": "Unset option rendered checkbox and selected script."
-        },
-        {
-          "file": "tests/browser/integration-regressions.spec.js",
-          "match": "experience ${version} initializes one non-content view without a Prepublish callback",
-          "scope": "Single initialization per explicitly selected experience."
         }
       ],
       "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."

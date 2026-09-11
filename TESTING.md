@@ -8,9 +8,9 @@ recheck contracts. Its [coverage catalog](tests/integration-regressions/COVERAGE
 describes behavior and distinguishes automated coverage from planned scenarios.
 All fixtures must use synthetic identities, content, tokens and reserved domains.
 
-## Prepublish test
+## WordPress plugin browser tests
 
-Run these tests for the cross-origin Prepublish issue. The deployment checks
+These tests cover the fixture browser layer for prepublish flow and related plugin UI/command handoff contracts. The deployment checks
 further down this document only test packaging/deployment, not this bug.
 
 For a plain-English checklist, read [Prepublish test scenarios](tests/SCENARIOS.md).
@@ -35,6 +35,9 @@ The planned authenticated smoke test is limited to two functional outcomes:
    issue, initially an empty/missing rendered HTML title if that rule is available
    to the account. Blank editor title text alone is not the fixture. The result
    must belong to this new check, rather than existing crawl results.
+
+This fixture workflow also exercises non-prepublish command wiring, recheck flow and
+highlight handoff assertions in addition to prepublish preview capture.
 
 Use the normal plugin configuration to map the URL; do not rewrite the SDK's
 outgoing requests to force the expected result. Run the same small functional
@@ -104,10 +107,10 @@ by its command queue and callback contract; its actual UI is not exercised.
 
 ### GitHub Actions
 
-Both new Prepublish workflows run only by manual dispatch; pushing a commit or
+Both new browser-driven workflows run only by manual dispatch; pushing a commit or
 opening/updating a PR does not trigger them. Commit the workflows, package files
 (including the lockfile), Playwright configs, tests, and documentation to the PR
-branch. A manually started **Prepublish test** run attaches an HTML report plus
+branch. A manually started **WordPress plugin browser tests** run attaches an HTML report plus
 failure traces/screenshots. It has read-only repository permissions and does not deploy.
 The manual **Run workflow** button is available once the workflow exists on the
 repository's default branch. Both workflows accept `plugin_ref`: enter a branch,
@@ -142,8 +145,8 @@ evidence: a screenshot shows the visible page and may not show the captured DOM.
 
 After a GitHub run, open **Actions > workflow run > Artifacts** and download:
 
-- `prepublish-test-report` for the browser regression tests (also includes failure traces).
-- `prepublish-wordpress-report` for the real WordPress tests (screenshots and HTML report; no traces or video).
+- `plugin-browser-test-report` for the browser regression tests (also includes failure traces).
+- `wordpress-env-test-report` for the real WordPress tests (screenshots and HTML report; no traces or video).
 
 Extract the artifact and open the report's `index.html`, or use Playwright's
 report viewer on its report directory. Artifacts are retained for 14 days.
@@ -227,7 +230,7 @@ HTTP API calls. This mode is for these credential-free integration tests only.
 `npm test` runs 46 browser checks: 30 capture checks and 16 integration regression checks.
 The additional multisite regression checks run with `npm run test:regressions`.
 
-The manual **Prepublish WordPress environment** GitHub workflow starts a fresh
+The manual **WordPress plugin environment tests** GitHub workflow starts a fresh
 instance on the selected branch, runs the integration tests in both browsers and
 stops it. The site
 exists only on the runner while the job executes; GitHub does not host a lasting,
@@ -566,3 +569,25 @@ The unified action supports three modes:
 ```
 
 This simplified approach ensures your deployment process is reliable and safe before using it for production releases.
+
+### Workflow summary privacy
+
+Coverage summaries contain only fixed descriptions of the test scope and report names. They do not include email addresses, account details, customer URLs, credentials, or Git author metadata. HTML reports disable Git commit and diff capture. Local suites use synthetic fixtures; the authenticated live suite suppresses raw failures and uploads no browser recordings or account data.
+
+GitHub still displays the account that triggered a run, and existing commit metadata remains part of Git history. These workflow settings do not remove previously uploaded logs or reports.
+
+### Automatic PR checks
+
+`pr-tests.yml` runs on PR creation, updates, and reopening, with two parallel jobs: **Browser tests** and **WordPress tests**. It tests the PR merge commit using read-only repository permissions and no Siteimprove secrets. New updates cancel the previous run for that PR.
+
+The browser suite runs once, alongside catalog validation and live-runner privacy contracts. The WordPress job installs dependencies and browsers once, then runs the single-site and multisite suites sequentially with separate disposable environments. Both jobs use Chromium and Firefox. Reports contain synthetic fixture data and exclude Git author metadata.
+
+The existing individual test workflows remain available for manual investigation. The regression workflow no longer runs separately on branch pushes. WPCS remains its own PR check; the authenticated live workflow remains manual and protected. Branch-protection settings are not changed. Configure **Browser tests**, **WordPress tests**, and **WPCS** as required checks after their first successful GitHub run. Measure that run before setting a runtime target.
+
+### Release validation
+
+Both **Create Release** (`v*` tags) and **Deploy to WordPress Marketplace** call `release-checks.yml` before publishing. That reusable workflow runs the two PR test jobs, WPCS, the protected live Siteimprove test, and a disposable-container ZIP lifecycle check. Every check must succeed, including the live check; missing credentials, failed checks, or skipped checks prevent publishing. Existing deployment triggers remain in place, including manual and `wp-*` releases.
+
+All checks use the triggering commit. The ZIP contains only tracked `siteimprove/` files. The package check installs and activates it in WordPress, verifies plugin bootstrap, then deactivates and deletes it. **Create Release** downloads and publishes that validated ZIP; Marketplace deployment uses plugin sources from the same commit. The live suite uses credentials from the `siteimprove-test` environment, whose deployment rules must allow the intended release refs. No secrets are passed to the PR suites.
+
+The first GitHub run must establish package lifecycle and live-test success. Workflow parsing and local contract tests do not establish those results. Broader hosting compatibility and visual overlay inspection remain outside these automated checks.

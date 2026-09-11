@@ -1,6 +1,8 @@
 name: WPCS check
 
-on: pull_request
+on:
+  pull_request:
+  workflow_call:
 
 jobs:
   phpcs:
