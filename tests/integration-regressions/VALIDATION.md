@@ -15,8 +15,10 @@ site identities; they do not rely on the environment startup banner.
 | Workflow and documentation | Workflow YAML parses; catalog references and documentation links resolve; diff whitespace check passes |
 
 There are **25 new executable scenarios**, each run in both browsers: eight
-browser scenarios and seventeen WordPress scenarios. The manual workflow is
-prepared but has not been dispatched on GitHub.
+browser scenarios and seventeen WordPress scenarios. GitHub runs against that candidate subsequently passed the browser, WordPress
+environment, and regression suites. The live smoke run also passed, with the
+missing-title result assertion explicitly skipped. Scan-result correctness and
+page-report/S2 rerender fidelity remain unverified.
 
 ## Limits
 

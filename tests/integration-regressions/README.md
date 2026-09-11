@@ -63,8 +63,8 @@ an expendable package copy so they cannot delete the checkout.
 
 Reports go to ignored `playwright-report/` and
 `playwright-integration-regressions-report/`. Use `npm run test:regressions:report`
-to view the latter. The WordPress integration regressions workflow runs on
-pushes to `test/integration-regressions`, testing that branch's plugin source.
+to view the latter. The two-job PR workflow runs the regression suite automatically against the
+PR merge commit. The individual regression workflow is manual only.
 Manual runs can select another plugin revision once the workflow exists on the
 default branch. These runs do not deploy the plugin. Ordinary assertion failures remain failures.
 

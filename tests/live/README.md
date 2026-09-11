@@ -1,7 +1,8 @@
 # Manual live Siteimprove test
 
 Status: repeated live runs passed login, Live page data, fresh draft handoff,
-and loading-state exit. They failed to locate the expected missing-title issue.
+and loading-state exit. The final run passed with the missing-title result
+assertion explicitly skipped; earlier runs failed to locate that issue.
 That assertion is explicitly skipped until the result mapping is verified.
 No reliable evidence yet distinguishes a hidden or differently labelled issue
 from an absent result. The runner does not claim scan-result correctness.
@@ -26,7 +27,7 @@ uses English SDK control labels. The expected issue mapping remains unverified.
 The runner must reach the Siteimprove API, SDK and identity services. The crawled
 website itself is not visited: its URL is used as the plugin's normal mapping
 context. Whether an unrelated existing crawled site can serve as that context
-for this local fixture remains unverified with the real service.
+for this local fixture was verified by the PR64 live runs.
 
 ## What the test does
 
