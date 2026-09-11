@@ -25,7 +25,8 @@ jobs:
           cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
           ### WordPress–Siteimprove live integration tests
           - Environment: Chromium; local WordPress connected to the real Siteimprove platform.
-          - Coverage: Configuration, entitlement, login, Live page data, and a fresh Prepublish check.
+          - Coverage: Configuration, entitlement, login, Live page data, fresh draft handoff, and loading-state exit.
+          - Skipped: Missing-title result assertion; scan-result correctness remains unverified.
           - Report: No artifacts are uploaded for this authenticated suite.
           - Results: see the test steps below; this description does not indicate a pass.
           SUMMARY
@@ -49,7 +50,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: node scripts/prepare-live-env.js
       - run: npm run env:start
-      - name: Verify Live page data and one fresh Prepublish issue
+      - name: Verify Live page data, draft handoff, and loading-state exit
         run: npm run test:live
         env:
           SITEIMPROVE_RUN_LIVE: '1'
