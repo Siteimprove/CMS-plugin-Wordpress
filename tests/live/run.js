@@ -215,14 +215,23 @@ async function run() {
       requireCondition(evidence.preview.emptyTitle && evidence.preview.excludesPublished && evidence.preview.excludesPlugin);
       requireCondition(evidence.handoff.style && evidence.handoff.excludesPublished);
     });
-    await step('The new check completes and reports the missing title', async () => {
-      // A new submission was observed above. Require the terminal recheck control,
-      // no active cancellation control, and the expected issue in Prepublish view.
-      await overlay.getByRole('button',{name:/^Recheck draft$/i}).waitFor({state:'visible',timeout:180000});
-      await until(async () => !(await overlay.getByRole('button',{name:/Cancel content check/i}).isVisible()),180000);
+    // Async results share one five-minute budget after draft handoff is verified.
+    const completionDeadline = Date.now() + 300000;
+    function completionTimeRemaining() {
+      const remaining = completionDeadline - Date.now();
+      requireCondition(remaining > 0);
+      return remaining;
+    }
+    await step('Prepublish completion: recheck control becomes available', async () => {
+      await overlay.getByRole('button',{name:/^Recheck draft$/i}).waitFor({state:'visible',timeout:completionTimeRemaining()});
+    });
+    await step('Prepublish completion: active check indicator clears', async () => {
+      await until(async () => !(await overlay.getByRole('button',{name:/Cancel content check/i}).isVisible()),completionTimeRemaining());
+    });
+    await step('Prepublish results: expected missing-title issue appears', async () => {
       const missingTitle = await visibleOne([
         overlay.getByText(/^(Page has no title|Page title is missing|Missing page title|Page does not have a title|Page is missing a title)$/i),
-      ],30000);
+      ],completionTimeRemaining());
       requireCondition(await missingTitle.isVisible());
     });
     console.log('PASS: Live page data and fresh Prepublish missing-title check');

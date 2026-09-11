@@ -127,3 +127,7 @@ secrets are supplied. Do not enable that flag merely to validate fixture code.
 - [Prepublish workflow](https://help.siteimprove.com/support/solutions/articles/80001077559-how-to-run-a-prepublish-check-with-the-new-plugin-ui)
 - [Public SDK loader](https://cdn.siteimprove.net/cms/overlay-latest.js) — inspected version 2.1.3130.1 for iframe, polling and message contracts.
 - The public identity form was inspected without entering credentials; its first step uses `loginId` and a Continue button. The subsequent password step still needs authenticated-flow verification.
+
+## Prepublish completion timing
+
+After verifying the fresh draft handoff, the runner allows up to five minutes in total for completion and the expected missing-title issue. Separate fixed log stages identify whether it is waiting for the recheck control, the active-check indicator to clear, or the expected issue to appear. Each stage uses the remaining shared budget; the timeout does not restart at each stage. These are UI observations, not proof of individual backend check statuses. Raw response bodies and account values remain suppressed.
