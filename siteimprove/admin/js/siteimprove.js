@@ -5,35 +5,96 @@
 (function ($) {
   "use strict";
 
-  const getDom = async function (url, nonce) {
+  // Upper bound on waiting for the hidden frame used by the Prepublish check.
+  const DOM_FETCH_TIMEOUT_MS = 30000;
+
+  /**
+   * Builds the URL the Prepublish check loads in order to read the DOM.
+   *
+   * This deliberately derives from window.location and NOT from the url passed
+   * around elsewhere in this file, because that one has the "Public URL" setting
+   * applied to it. When Public URL points at a different host than the one
+   * serving WordPress (a separate delivery domain, for instance), the frame
+   * below becomes cross-origin and the browser forbids us from reading its
+   * document. window.location is always same-origin and, on a preview page,
+   * already carries the preview arguments needed to render the draft.
+   *
+   * The Public URL is still what we report to Siteimprove; only the fetch is
+   * local. See the contentcheck_flatdom call in the click handler below.
+   */
+  const buildDomFetchUrl = function (nonce) {
+    const fetchUrl = new URL(window.location.href);
+    fetchUrl.searchParams.set("si_preview_nonce", nonce);
+    // A fragment would swallow the query string we just set.
+    fetchUrl.hash = "";
+    return fetchUrl.href;
+  };
+
+  const getDom = async function (nonce) {
     const iframeContainer = document.createElement("div");
     iframeContainer.setAttribute("id", "div_iframe");
     document.body.appendChild(iframeContainer);
-    const separator = url.includes("?") ? "&" : "?";
-    iframeContainer.innerHTML = `<iframe id='domIframe' src=${url}${separator}si_preview_nonce=${nonce} style='height:100vh; width:100%'></iframe>`;
-    const iframe = document.getElementById("domIframe");
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("id", "domIframe");
+    iframe.setAttribute("style", "height:100vh; width:100%");
+    iframe.src = buildDomFetchUrl(nonce);
+    iframeContainer.appendChild(iframe);
     const promise = new Promise(function (resolve, reject) {
+      // Without this the frame is only torn down on success, so a failure
+      // leaves a full-viewport iframe sitting on top of the page.
+      let removed = false;
+      const removeFrame = function () {
+        if (!removed) {
+          removed = true;
+          document.body.removeChild(iframeContainer);
+        }
+      };
+
+      // A frame that never fires load would otherwise leave this promise
+      // pending forever, and the caller waiting on it with no way to recover.
+      const timeoutId = setTimeout(function () {
+        removeFrame();
+        reject(
+          new Error(
+            "Siteimprove: timed out after " +
+              DOM_FETCH_TIMEOUT_MS +
+              "ms loading " +
+              iframe.src +
+              " for the Prepublish check."
+          )
+        );
+      }, DOM_FETCH_TIMEOUT_MS);
+
       iframe.addEventListener(
         "load",
         () => {
-          // In order to preserve the DOM node hierarchy for highlights, we have chosen to empty the #wp-admin-bar from the new DOM instead of outright removing it.
-          var adminBar = iframe.contentWindow.document.getElementById('wpadminbar');
-          if (adminBar) {
-            adminBar.innerHTML = '<div></div>';
-            adminBar.id = 'wpadminbar-disabled';
+          clearTimeout(timeoutId);
+          try {
+            // In order to preserve the DOM node hierarchy for highlights, we have chosen to empty the #wp-admin-bar from the new DOM instead of outright removing it.
+            var adminBar = iframe.contentWindow.document.getElementById('wpadminbar');
+            if (adminBar) {
+              adminBar.innerHTML = '<div></div>';
+              adminBar.id = 'wpadminbar-disabled';
+            }
+            const cleanDom = iframe.contentWindow.document;
+            removeFrame();
+            resolve(cleanDom);
+          } catch (err) {
+            // Reading the frame's document throws if it turned out not to be
+            // same-origin, or if it was refused by X-Frame-Options / CSP.
+            // Surface it rather than hanging.
+            removeFrame();
+            reject(err);
           }
-          const cleanDom = iframe.contentWindow.document;
-          document.body.removeChild(iframeContainer);
-          resolve(cleanDom);
         },
         { once: true }
       );
     });
-  
+
     const documentReturned = await promise;
     $(".si-overlay").remove();
     return documentReturned;
-  };  
+  };
 
   window.siteimprove = {
     input: function (url, token, version, is_content_page, nonce) {
@@ -43,13 +104,13 @@
       this.version = version;
       this.is_content_page = is_content_page;
       this.nonce = nonce;
-      this.common(url);
+      this.common();
     },
     domain: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "domain";
-      this.common(url);
+      this.common();
     },
     clear: function (callback, token) {
       this.callback = callback;
@@ -62,13 +123,13 @@
       this.url = url;
       this.token = token;
       this.method = "recheck";
-      this.common(url);
+      this.common();
     },
     recrawl: function (url, token) {
       this.url = url;
       this.token = token;
       this.method = "recrawl";
-      this.common(url);
+      this.common();
     },
     contentcheck_flatdom: function (domReference, url, token, callback) {
       this.url = url;
@@ -76,9 +137,9 @@
       this.domReference = domReference;
       this.method = "contentcheck-flat-dom";
       this.callback = callback;
-      this.common(url);
+      this.common();
     },
-    common: function (url) {
+    common: function () {
       const _si = window._si || [];
       if (this.method == "contentcheck-flat-dom") {
         _si.push([
@@ -106,8 +167,11 @@
       }]);
 
 
+      // Captured here because getDomCallback is invoked later by the overlay,
+      // with no guarantee about what `this` will be bound to.
+      const nonce = this.nonce;
       const getDomCallback = function () {
-        return getDom(url);
+        return getDom(nonce);
       };
     
       
@@ -240,7 +304,17 @@
         var si_prepublish_data = siGetCurrentUrlAndToken();
         evt.preventDefault();
         $("body").append('<div class="si-overlay"></div>');
-        var dom = await getDom(si_prepublish_data.url, si_prepublish_data.nonce);
+        // The DOM is read from the current origin; the url reported to
+        // Siteimprove stays the public one, so results land on the crawled URL.
+        var dom;
+        try {
+          dom = await getDom(si_prepublish_data.nonce);
+        } catch (err) {
+          // Leaving the spinner up makes this look like it is still working.
+          $(".si-overlay").remove();
+          console.error("Siteimprove: could not read the page for the Prepublish check.", err);
+          return;
+        }
         siteimprove.contentcheck_flatdom(
           dom,
           si_prepublish_data.url,
