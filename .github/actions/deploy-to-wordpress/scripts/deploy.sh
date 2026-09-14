@@ -108,9 +108,9 @@ prepare_plugin_files() {
     # Update version in main file
     print_status $YELLOW "Updating version in main plugin file..."
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s/Version:.*/Version:             $VERSION/" deploy/siteimprove.php
+        sed -i '' "s/Version:.*/Version:             $SVN_VERSION/" deploy/siteimprove.php
     else
-        sed -i "s/Version:.*/Version:             $VERSION/" deploy/siteimprove.php
+        sed -i "s/Version:.*/Version:             $SVN_VERSION/" deploy/siteimprove.php
     fi
     
     # Validate WordPress plugin file
