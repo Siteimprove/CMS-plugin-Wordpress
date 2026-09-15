@@ -1,4 +1,4 @@
-name: WPCS check
+name: Code standards
 
 on:
   pull_request:

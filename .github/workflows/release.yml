@@ -1,5 +1,12 @@
 name: Create and deploy release
 on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Dry run prepares files only; test commits to TEST_SVN_URL; production publishes'
+        type: choice
+        default: dry-run
+        options: [dry-run, test, production]
   push:
     # Sequence of patterns matched against refs/tags
     tags:
@@ -8,12 +15,57 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: wordpress-release
+  cancel-in-progress: false
+
 jobs:
+  target:
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.target.outputs.mode }}
+    steps:
+      - name: Require a version tag and resolve deployment mode
+        id: target
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+        run: |
+          test "$REF_TYPE" = tag
+          [[ "$REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-test|-dry-run)?$ ]] || exit 1
+          mode="$REQUESTED_MODE"
+          if [ -z "$mode" ]; then
+            case "$REF_NAME" in
+              *-dry-run) mode=dry-run ;;
+              *-test) mode=test ;;
+              *) mode=production ;;
+            esac
+          fi
+          case "$mode" in dry-run|test|production) ;; *) exit 1 ;; esac
+          if [ "$mode" = production ]; then
+            [[ "$REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          fi
+          printf 'mode=%s\n' "$mode" >> "$GITHUB_OUTPUT"
+          printf 'Release tag: `%s` — mode: **%s**\n' "$REF_NAME" "$mode" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Require a separate test destination
+        if: steps.target.outputs.mode == 'test'
+        env:
+          TEST_URL: ${{ vars.TEST_SVN_URL }}
+          PRODUCTION_URL: ${{ vars.WP_SVN_URL || 'https://plugins.svn.wordpress.org/siteimprove/' }}
+        run: |
+          test -n "$TEST_URL"
+          test "${TEST_URL%/}" != "${PRODUCTION_URL%/}"
+          test "${TEST_URL%/}" != 'https://plugins.svn.wordpress.org/siteimprove'
+
   validation:
+    needs: target
     uses: ./.github/workflows/release-checks.yml
 
   build:
-    needs: validation
+    needs: [target, validation]
+    if: needs.target.outputs.mode != 'dry-run'
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -31,8 +83,8 @@ jobs:
 
   deploy-dry-run:
     runs-on: ubuntu-latest
-    needs: build
-    if: contains(github.ref_name, '-dry-run')
+    needs: [target, validation]
+    if: needs.target.outputs.mode == 'dry-run'
     steps:
       - uses: actions/checkout@v6
       - name: Deploy to WordPress Marketplace (Dry Run)
@@ -49,8 +101,8 @@ jobs:
 
   deploy-test:
     runs-on: ubuntu-latest
-    needs: build
-    if: contains(github.ref_name, '-test')
+    needs: [target, build]
+    if: needs.target.outputs.mode == 'test'
     steps:
       - uses: actions/checkout@v6
       - name: Deploy to WordPress Marketplace (Test)
@@ -67,8 +119,8 @@ jobs:
 
   deploy-production:
     runs-on: ubuntu-latest
-    needs: build
-    if: "!contains(github.ref_name, '-test') && !contains(github.ref_name, '-dry-run')"
+    needs: [target, build]
+    if: needs.target.outputs.mode == 'production'
     steps:
       - uses: actions/checkout@v6
       - name: Deploy to WordPress Marketplace (Production)

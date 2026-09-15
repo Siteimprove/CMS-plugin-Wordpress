@@ -57,7 +57,7 @@ browser document would not exercise the same path.
 
 ## Execution and approval
 
-The workflow is `prepublish-live.yml` (**WordPress–Siteimprove live integration tests**).
+The workflow is `prepublish-live.yml` (**Live Siteimprove test**).
 It supports manual dispatch and reuse by the release checks in this repository.
 It does not run on PR events and uses the `siteimprove-test` environment's
 approval and deployment rules. Configure that environment to allow the release

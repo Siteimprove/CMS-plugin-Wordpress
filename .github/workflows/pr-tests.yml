@@ -1,9 +1,21 @@
-name: WordPress plugin PR tests
+name: Plugin tests
 
 on:
   workflow_call:
   pull_request:
   workflow_dispatch:
+    inputs:
+      plugin_ref:
+        description: 'Plugin branch, tag or commit; blank tests the workflow commit'
+        type: string
+      wordpress_version:
+        description: 'WordPress version for single-site and multisite tests'
+        default: '6.9.4'
+        type: string
+      php_version:
+        description: 'PHP version supported by Playground'
+        default: '8.3'
+        type: string
 
 permissions:
   contents: read
@@ -21,6 +33,16 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Check out the plugin under test
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.plugin_ref || github.sha }}
+          path: .plugin-under-test
+          sparse-checkout: siteimprove
+          persist-credentials: false
+      - name: Record the plugin commit
+        run: |
+          printf 'Tested plugin commit: `%s`\n' "$(git -C .plugin-under-test rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
       - name: Record the tested commit
         run: |
           printf 'Tested repository commit: `%s`\n' "$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
@@ -36,6 +58,8 @@ jobs:
         run: npm run test:live:contracts
       - name: Test content capture, rechecks, and highlighting handoff
         run: npm test
+        env:
+          SITEIMPROVE_TEST_SCRIPT: ${{ github.workspace }}/.plugin-under-test/siteimprove/admin/js/siteimprove.js
       - name: Upload browser report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -61,6 +85,16 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Check out the plugin under test
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.plugin_ref || github.sha }}
+          path: .plugin-under-test
+          sparse-checkout: siteimprove
+          persist-credentials: false
+      - name: Record the plugin commit
+        run: |
+          printf 'Tested plugin commit: `%s`\n' "$(git -C .plugin-under-test rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
       - name: Record the tested commit
         run: |
           printf 'Tested repository commit: `%s`\n' "$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
@@ -70,6 +104,16 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox
+      - name: Configure the selected plugin and runtime
+        env:
+          WORDPRESS_VERSION: ${{ inputs.wordpress_version }}
+          PHP_VERSION: ${{ inputs.php_version || '8.3' }}
+        run: |
+          node - <<'NODE'
+          const config = {plugins: ['./.plugin-under-test/siteimprove'], phpVersion: process.env.PHP_VERSION};
+          if (process.env.WORDPRESS_VERSION) config.core = `WordPress/WordPress#${process.env.WORDPRESS_VERSION}`;
+          require('node:fs').writeFileSync('.wp-env.override.json', JSON.stringify(config));
+          NODE
       - name: Start disposable WordPress
         id: wordpress_environment
         run: npm run env:start
@@ -86,6 +130,10 @@ jobs:
         id: regression_environment
         if: ${{ !cancelled() }}
         run: npm run env:regressions:start
+        env:
+          SITEIMPROVE_TEST_PLUGIN: .plugin-under-test/siteimprove
+          REGRESSION_WP_VERSION: ${{ inputs.wordpress_version || '6.9.4' }}
+          REGRESSION_PHP_VERSION: ${{ inputs.php_version || '8.3' }}
       - name: Test roles, multisite, URL mapping, and settings
         if: ${{ !cancelled() && steps.regression_environment.outcome == 'success' }}
         run: npm run test:regressions

@@ -64,7 +64,7 @@ an expendable package copy so they cannot delete the checkout.
 Reports go to ignored `playwright-report/` and
 `playwright-integration-regressions-report/`. Use `npm run test:regressions:report`
 to view the latter. The two-job PR workflow runs the regression suite automatically against the
-PR merge commit. The individual regression workflow is manual only.
+PR merge commit. Manual investigation uses the same **Plugin tests** workflow with plugin and runtime inputs.
 Manual runs can select another plugin revision once the workflow exists on the
 default branch. These runs do not deploy the plugin. Ordinary assertion failures remain failures.
 
