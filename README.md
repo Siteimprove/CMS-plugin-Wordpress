@@ -9,6 +9,7 @@ Every pull request will be checked against WPCS through GitHub Actions.
 ## Development and releases
 
 See [GitHub Actions: tests and publishing](docs/workflows.md) for workflow selection, reports, and release instructions.
+See [Testing the plugin](tests/README.md) for local setup and test coverage.
 
 ## Version History
 ### 2.1.4

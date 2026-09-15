@@ -11,7 +11,6 @@
 	<!-- Test and tooling code. Only /siteimprove is published to WordPress.org,
 	     so WPCS is scoped to the code that actually ships. -->
 	<exclude-pattern>/tests/*</exclude-pattern>
-	<exclude-pattern>/playwright*.config.js</exclude-pattern>
 	<exclude-pattern>/scripts/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 
