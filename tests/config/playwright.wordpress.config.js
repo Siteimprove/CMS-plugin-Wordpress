@@ -1,17 +1,19 @@
+const path = require('node:path');
+const root = path.resolve(__dirname, '../..');
 const { defineConfig } = require('@playwright/test');
 
 module.exports = defineConfig({
   // Keep contributor identities and source diffs out of reports.
   captureGitInfo: { commit: false, diff: false },
-  testDir: './tests/wordpress',
+  testDir: path.join(root, './tests/wordpress'),
   timeout: 60000,
-  outputDir: './test-results/wordpress',
+  outputDir: path.join(root, './test-results/wordpress'),
   workers: 1,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
   reporter: [
     ['list', { printSteps: true }],
-    ['html', { open: 'never', outputFolder: 'playwright-wordpress-report' }],
+    ['html', { open: 'never', outputFolder: path.join(root, 'playwright-wordpress-report') }],
   ],
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } },

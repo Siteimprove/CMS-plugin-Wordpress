@@ -38,7 +38,7 @@ No real Siteimprove credentials are used.
 Open the failed step first, then download **pr-browser-test-report** or
 **pr-wordpress-test-reports** from the run's Artifacts. Reports are retained for
 14 days and contain individual assertions and synthetic failure screenshots.
-A startup failure may have no browser report. See [testing details](../TESTING.md)
+A startup failure may have no browser report. See [testing details](../tests/README.md)
 and the [regression catalog](../tests/integration-regressions/COVERAGE.md).
 
 ## Check the real Siteimprove connection
@@ -59,7 +59,8 @@ highlighting. See [live test coverage and setup](../tests/live/README.md).
 ## Create and deploy a release
 
 1. Merge the reviewed change after all PR checks pass. Update the plugin version
-   and release notes before tagging.
+   in `siteimprove/siteimprove.php` and the changelog in `siteimprove/readme.txt`
+   before tagging.
 2. Use a version tag such as `v2.1.5`. Pushing that tag automatically starts
    production validation and publishing. Do not push a production tag merely
    to try a dry run.
@@ -84,6 +85,15 @@ Production uses `WP_SVN_USERNAME`, `WP_SVN_PASSWORD`, and optional `WP_SVN_URL`
 (default `https://plugins.svn.wordpress.org/siteimprove/`). Test mode requires
 `TEST_SVN_USERNAME`, `TEST_SVN_PASSWORD`, and `TEST_SVN_URL`, which must differ
 from production. Shared optional variables are `WP_PLUGIN_SLUG` and `WP_ASSETS_DIR`.
+
+### Troubleshooting
+
+- If no run starts, check that the version tag was pushed and contains the release workflow.
+- For SVN authentication failures, check the credentials for the selected mode and
+  their write access to the destination repository.
+- For missing-file errors, confirm the tagged commit contains `siteimprove/siteimprove.php`.
+- For an existing-version error, inspect the GitHub release and SVN tag before retrying;
+  do not delete published version tags to make a retry succeed.
 
 ## Cleanup map
 

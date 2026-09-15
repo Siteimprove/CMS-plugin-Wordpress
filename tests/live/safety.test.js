@@ -42,7 +42,7 @@ test('The live runner and workflow do not capture or upload account artifacts', 
   assert.doesNotMatch(workflow, /uses:\s*[^\n]*(?:upload-artifact|upload-pages-artifact)/);
   assert.match(workflow, /run: npm run test:live\s/);
   assert.doesNotMatch(workflow, /run:\s*(?:npx playwright test|npm run test:live:fixture)/);
-  const fixtureConfig = require('../../playwright.live-fixture.config');
+  const fixtureConfig = require('../config/playwright.live-fixture.config');
   assert.equal(fixtureConfig.use.screenshot, 'off');
   assert.equal(fixtureConfig.use.trace, 'off');
   assert.equal(fixtureConfig.use.video, 'off');

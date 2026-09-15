@@ -1,10 +1,13 @@
 # Testing the plugin
 
+Run the commands below from the repository root. Playwright configurations live in
+`tests/config/`; reports and test results remain in their existing root directories.
+
 ## WordPress integration regressions
 
-The [integration regression suite](tests/integration-regressions/README.md) adds real
+The [integration regression suite](integration-regressions/README.md) adds real
 WordPress multisite, capability, URL mapping and settings checks, plus browser
-recheck contracts. Its [coverage catalog](tests/integration-regressions/COVERAGE.md)
+recheck contracts. Its [coverage catalog](integration-regressions/COVERAGE.md)
 describes behavior and distinguishes automated coverage from planned scenarios.
 All fixtures must use synthetic identities, content, tokens and reserved domains.
 
@@ -13,7 +16,7 @@ All fixtures must use synthetic identities, content, tokens and reserved domains
 These tests cover the fixture browser layer for prepublish flow and related plugin UI/command handoff contracts. The deployment checks
 further down this document only test packaging/deployment, not this bug.
 
-For a plain-English checklist, read [Prepublish test scenarios](tests/SCENARIOS.md).
+For a plain-English checklist, read [Prepublish test scenarios](SCENARIOS.md).
 The automated tests use named Given / When / Then steps, shown in the console,
 GitHub Actions logs and the browser suite's HTML report. The checklist clearly
 separates existing automated coverage from planned authenticated checks.
@@ -108,7 +111,7 @@ by its command queue and callback contract; its actual UI is not exercised.
 ### GitHub Actions
 
 Use **Plugin tests** for automatic PR checks or manual plugin/runtime selection.
-See [the workflow guide](docs/workflows.md) for inputs, tested commits, reports,
+See [the workflow guide](../docs/workflows.md) for inputs, tested commits, reports,
 release procedures and credentials. The manual workflows have been consolidated;
 all browser, single-site and multisite suites remain.
 
@@ -223,7 +226,7 @@ the missing-title result. This concerns page-content fidelity, not SDK UI stylin
 ### What remains for an actual Siteimprove end-to-end test
 
 The live workflow and runner are documented in
-[tests/live/README.md](tests/live/README.md). GitHub runs against PR64 verified
+[tests/live/README.md](live/README.md). GitHub runs against PR64 verified
 login, Live page data, draft handoff, and loading-state exit. The missing-title
 result assertion is explicitly skipped. The following account and network
 requirements still apply; local fixture suites use no secrets.
@@ -319,7 +322,7 @@ References: [Playwright CI setup](https://playwright.dev/docs/ci-intro) and
 
 ## Deployment validation
 
-See [Create and deploy a release](docs/workflows.md#create-and-deploy-a-release)
+See [Create and deploy a release](../docs/workflows.md#create-and-deploy-a-release)
 for the supported tag formats, manual modes, destination settings, release checks,
 and dry-run limitations. The separate Marketplace deployment workflow is retired.
 
@@ -343,7 +346,7 @@ unchanged; the check names remain **Browser tests**, **WordPress tests**, and **
 
 **Create and deploy release** calls the shared `release-checks.yml` before any
 publishing. Every check must succeed, including the protected live test and ZIP
-lifecycle check. See [the workflow guide](docs/workflows.md) for the exact sequence.
+lifecycle check. See [the workflow guide](../docs/workflows.md) for the exact sequence.
 
 ### Live result assertion temporarily skipped
 
