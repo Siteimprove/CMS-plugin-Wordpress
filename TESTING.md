@@ -586,9 +586,9 @@ The existing individual test workflows remain available for manual investigation
 
 ### Release validation
 
-Both **Create Release** (`v*` tags) and **Deploy to WordPress Marketplace** call `release-checks.yml` before publishing. That reusable workflow runs the two PR test jobs, WPCS, the protected live Siteimprove test, and a disposable-container ZIP lifecycle check. Every check must succeed, including the live check; missing credentials, failed checks, or skipped checks prevent publishing. Existing deployment triggers remain in place, including manual and `wp-*` releases.
+Both **Create and deploy release** (`v*` tags) and **Deploy to WordPress Marketplace** call `release-checks.yml` before publishing. That reusable workflow runs the two PR test jobs, WPCS, the protected live Siteimprove test, and a disposable-container ZIP lifecycle check. Every check must succeed, including the live check; missing credentials, failed checks, or skipped checks prevent publishing. Existing deployment triggers remain in place, including manual and `wp-*` releases.
 
-All checks use the triggering commit. The ZIP contains only tracked `siteimprove/` files. The package check installs and activates it in WordPress, verifies plugin bootstrap, then deactivates and deletes it. **Create Release** downloads and publishes that validated ZIP; Marketplace deployment uses plugin sources from the same commit. The live suite uses credentials from the `siteimprove-test` environment, whose deployment rules must allow the intended release refs. No secrets are passed to the PR suites.
+All checks use the triggering commit. The ZIP contains only tracked `siteimprove/` files. The package check installs and activates it in WordPress, verifies plugin bootstrap, then deactivates and deletes it. **Create and deploy release** downloads and publishes that validated ZIP; Marketplace deployment uses plugin sources from the same commit. The live suite uses credentials from the `siteimprove-test` environment, whose deployment rules must allow the intended release refs. No secrets are passed to the PR suites.
 
 The first GitHub run must establish package lifecycle and live-test success. Workflow parsing and local contract tests do not establish those results. Broader hosting compatibility and visual overlay inspection remain outside these automated checks.
 

@@ -1,4 +1,4 @@
-name: Create Release
+name: Create and deploy release
 on:
   push:
     # Sequence of patterns matched against refs/tags
