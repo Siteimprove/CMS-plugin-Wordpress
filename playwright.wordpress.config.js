@@ -1,6 +1,8 @@
 const { defineConfig } = require('@playwright/test');
 
 module.exports = defineConfig({
+  // Keep contributor identities and source diffs out of reports.
+  captureGitInfo: { commit: false, diff: false },
   testDir: './tests/wordpress',
   timeout: 60000,
   outputDir: './test-results/wordpress',

@@ -1,0 +1,84 @@
+name: WordPress integration regressions
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin_ref:
+        description: 'Plugin branch, tag or commit under test; blank uses this workflow commit'
+        required: false
+        type: string
+      wordpress_version:
+        description: 'WordPress version (default: 6.9.4)'
+        default: '6.9.4'
+        type: string
+      php_version:
+        description: 'PHP version supported by Playground'
+        default: '8.3'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Explain test coverage
+        if: ${{ always() }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          ### WordPress integration regressions
+          - Environment: Chromium and Firefox; disposable WordPress multisite; Siteimprove mocked.
+          - Coverage: Regression catalog, browser contracts, roles, multisite, URL mapping, and settings.
+          - Report: integration-regressions-test-report
+          - Results: see the test steps below; this description does not indicate a pass.
+          SUMMARY
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.plugin_ref || github.sha }}
+          path: .plugin-under-test
+          sparse-checkout: siteimprove
+          persist-credentials: false
+      - name: Record the plugin commit under test
+        run: git -C .plugin-under-test rev-parse HEAD
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox
+      - name: Validate regression coverage catalog
+        run: npm run test:regressions:catalog
+      - name: Test content capture, rechecks, and highlighting handoff
+        run: npm test
+        env:
+          SITEIMPROVE_TEST_SCRIPT: ${{ github.workspace }}/.plugin-under-test/siteimprove/admin/js/siteimprove.js
+      - name: Allow Playground multisite to use the standard HTTP port
+        if: ${{ !cancelled() }}
+        run: sudo sysctl -w net.ipv4.ip_unprivileged_port_start=0
+      - run: npm run env:regressions:start
+        id: regression_environment
+        if: ${{ !cancelled() }}
+        env:
+          SITEIMPROVE_TEST_PLUGIN: .plugin-under-test/siteimprove
+          REGRESSION_WP_VERSION: ${{ inputs.wordpress_version }}
+          REGRESSION_PHP_VERSION: ${{ inputs.php_version }}
+      - name: Test roles, multisite, URL mapping, and settings
+        run: npm run test:regressions
+        if: ${{ !cancelled() && steps.regression_environment.outcome == 'success' }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: integration-regressions-test-report
+          path: |
+            playwright-report/
+            playwright-integration-regressions-report/
+            test-results/integration-regressions/
+            test-results/integration-regressions-results.json
+          retention-days: 14
+      - run: npm run env:regressions:stop
+        if: ${{ always() }}

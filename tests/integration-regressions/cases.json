@@ -1,0 +1,429 @@
+{
+  "policy": "Behavior-based regression specifications using synthetic fixtures. Automated references cover only their stated scope; unimplemented cases are not passing tests.",
+  "cases": [
+    {
+      "id": "capability-access",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Configure a multisite subsite with Prepublish enabled. Grant a network Super Admin no explicit subsite membership. Add a custom Custom Editor with edit_posts and a custom read-only role.",
+      "when": "Sign in separately as Editor, custom editor, and Super Admin; open a private subsite preview and start Prepublish. Repeat as the read-only role.",
+      "then": "Authorized editors see the overlay and capture the draft; no explicit membership is required for Super Admin. Read-only users cannot read the draft or load the frontend overlay.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "${role} captures a subsite draft without a role-name allowlist",
+          "scope": "Real WordPress capabilities, multisite membership, frontend script, toolbar and draft callback; SDK queue substituted."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "wordpress-slow-policy",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Use a controlled subscription/policy service fixture with QA and accessibility completing promptly and a delayed Policy response. Repeat with zero integration-visible policies and with several eligible policies.",
+      "when": "Run an initial check, a second check and a same-page recheck, then exercise cancellation and a Policy request that never completes.",
+      "then": "Only entitled checks and eligible policies run; completed results remain available. A delayed or failed Policy request terminates or reports a recoverable error within the service's documented deadline; cancellation releases the UI. Record per-check durations and request counts.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "split-origin-preview",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A WordPress draft differs from its published delivery URL. Configure Public URL to another origin and a current preview nonce; use Content-site access as the positive SSO control and Analytics-only access as the negative control.",
+      "when": "Open the draft and run Prepublish through both toolbar and callback. Repeat with DENY/CSP and a cross-origin redirect.",
+      "then": "Capture reads the local authenticated draft and reports its mapped public URL. Blocked capture submits nothing and removes its frame and loading UI. With Content access, the SSO session opens the report; Analytics-only access must not grant Content access.",
+      "automated": [
+        {
+          "file": "tests/browser/prepublish.spec.js",
+          "match": "split-domain preview",
+          "scope": "Real browser cross-origin capture, nonce and public URL contract; companion failure cases cover frame restrictions."
+        },
+        {
+          "file": "tests/wordpress/prepublish.spec.js",
+          "match": "Prepublish captures",
+          "scope": "Actual WordPress drafts and autosaves; service is mocked."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "accessibility-install",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A disposable WordPress site meeting the artifact's declared requirements, with PHP error logging and a downloaded siteimprove-accessibility ZIP.",
+      "when": "Upload the ZIP, install and activate it; load its dashboard and a public page, deactivate and reactivate.",
+      "then": "Installation and activation finish, plugin screens load, the frontend remains available and PHP logs contain no plugin fatal errors.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "hub-preview",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A hub draft renders through a custom preview that participates in WordPress preview detection. Configure two representative language subsites with distinct Public URLs and tokens; no subsite preview exists.",
+      "when": "Run Prepublish from the hub toolbar and inspect existing Live page data on each mapped subsite.",
+      "then": "Hub Prepublish captures hub draft content and starts a check instead of only adding a hash. Subsite Live requests use their own URLs/tokens without inventing a one-to-one live URL for the hub.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "sso-username",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A test IdP maps username and email to different values, using synthetic identifiers.",
+      "when": "Enter the configured username in plugin SSO, finish IdP login and reopen the plugin; also try an unmapped email.",
+      "then": "The mapped username redirects to the IdP and opens the correct account. An unmapped identifier gives a usable error without granting access. Do not require email login when the IdP maps username.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "path-mapping",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Create /content-root/published/ and configure Ignore Path Segments to content-root with a trailing-slash Public URL. Include a second subsite with its own token.",
+      "when": "Open each content page and its overlay.",
+      "then": "The input URL removes the configured segment, has one separating slash, and uses that site's token. In a crawled-site fixture, the matching page has Live data rather than Page not found.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "path filtering maps exact segments and keeps each subsite token",
+          "scope": "Real PHP URL transformation and per-site options through the JS input queue."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "cms-install-compatibility",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A disposable site using the selected WordPress and plugin versions, plus a candidate-release matrix using its oldest supported PHP/WP versions.",
+      "when": "Install and activate, open frontend, dashboard, edit and preview, save an edit, then deactivate.",
+      "then": "All screens remain available with no plugin fatal errors or undefined-index notices, and plugin initialization appears where supported.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "smallbox-accessible-names",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Load the actual smallbox with nonzero issue counts and its collapsed and expanded states.",
+      "when": "Tab to both right-side controls and inspect their accessible names, roles and enclosing landmark; activate them using the keyboard.",
+      "then": "Both controls have meaningful names identifying their action rather than only Button or a numeric count; the landmark is named and keyboard activation works.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "firefox-login",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A test user with Content-site access and a signed-out plugin in Firefox.",
+      "when": "Open the side panel and complete login with standard and strict tracking protection settings.",
+      "then": "Login opens the authorized page without a popup loop. If browser policy prevents session completion, show an actionable recovery path rather than silent failure.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "right-side-cancel",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "The real plugin is right-docked and a content check remains pending.",
+      "when": "Reach Cancel content check and the accessibility control by pointer and keyboard, then cancel.",
+      "then": "Controls are visible, within the viewport and unobstructed; cancellation stops pending work and restores usable page controls.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "preview-live-identity",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Use a preview whose published canonical URL is in the account's crawl inventory, then a second preview whose live page is absent.",
+      "when": "Open the collapsed smallbox, then expand it and run Prepublish.",
+      "then": "The known live page resolves in both states without a misleading Page not found icon. The uncrawled page communicates absence of Live data while still permitting entitled Prepublish.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "edit-initialization",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "An administrator edits a published page, with a valid site token and selected overlay version.",
+      "when": "Open the block editor.",
+      "then": "WordPress loads one plugin script and the configured overlay and sends the published URL as input; the actual smallbox is visible when using the SDK.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "block editor initializes the overlay with the published page URL",
+          "scope": "Real WordPress block-editor enqueue/localization and queue."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "accessibility-text-domain",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Install a test translation for a known UI string under the siteimprove-accessibility text domain and activate a matching locale.",
+      "when": "Load the plugin screen containing that string; inspect gettext calls and plugin metadata during package validation.",
+      "then": "The translated text appears and every plugin-owned gettext domain/header uses siteimprove-accessibility, not siteimprove_accessibility.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "static-homepage",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Set a published page as a subsite's static homepage, with a known crawled homepage URL.",
+      "when": "Open its edit screen and preview, then run Prepublish.",
+      "then": "Both modes send the same canonical homepage URL. Live data is available in preview and new Prepublish results appear separately from Live data.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "static homepage has the same Live page identity in edit and preview",
+          "scope": "Real PHP static-homepage identity and callback registration."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "highlight-deduplication",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Run both production highlight sources on one issue element.",
+      "when": "Select the same issue through each source and move between occurrences.",
+      "then": "Exactly one visible highlight layer, border and background remain; no duplicate wrappers or cumulative opacity occur.",
+      "automated": [
+        {
+          "file": "tests/browser/integration-regressions.spec.js",
+          "match": "highlighting is delegated once without rewriting inline content",
+          "scope": "WordPress delegates one highlighting callback; no actual SDK rendering."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "devmode-overlay",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "An administrator opens plugin settings with devmode on a local local site.",
+      "when": "Save a full custom overlay JS URL and open a content page.",
+      "then": "The custom script URL is loaded independently of hosting hostname.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "devmode persists a custom overlay URL",
+          "scope": "Actual settings save and PHP enqueue on localhost."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "flatdom-detached-document",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A real WordPress capture document whose temporary iframe has been removed, including custom elements and nested frames.",
+      "when": "Pass the returned document to the actual SDK FlatDOM processor through toolbar and callback.",
+      "then": "The processor handles a missing browsing context/defaultView without reading customElements from null, and both checks produce results with no unhandled errors.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "plugin-display-name",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Select the plugin artifact/checkout to validate.",
+      "when": "Read the plugin entry-point metadata and run the directory Plugin Check before release.",
+      "then": "Plugin Name is Siteimprove and contains no extra restricted Plugin term.",
+      "automated": [
+        {
+          "file": "tests/browser/integration-regressions.spec.js",
+          "match": "the distributed CMS plugin has the approved display name",
+          "scope": "Production entry-point display-name assertion."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "script-placement",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Open a content page with the plugin enabled.",
+      "when": "WordPress renders scripts and their localized configuration.",
+      "then": "The overlay loads in the footer after the integration script and initialization data; enqueue calls explicitly choose header/footer placement.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "the overlay loads after the plugin and its localized configuration",
+          "scope": "Rendered script order, footer placement and successful input queue."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "settings-nonces",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "An administrator has configured a Public URL; prepare missing, invalid and valid settings nonces and a lower-privilege user.",
+      "when": "POST settings updates and token requests using each nonce/role combination.",
+      "then": "Missing/invalid nonces and unauthorized roles cannot change settings or issue tokens. A valid administrator request succeeds.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "missing and invalid settings nonces cannot replace the public URL",
+          "scope": "Real options.php rejects missing/invalid nonces; actual form save is the positive control. Token AJAX checks rejected nonces, a valid administrator nonce, a subscriber, and service-request counts."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "missing-preview-parameter",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "An authenticated multisite administrator loads a request with neither si_preview nor si_preview_nonce.",
+      "when": "Open the dashboard and plugin settings after upgrade.",
+      "then": "No Undefined index notice or PHP fatal appears, and the non-content overlay initializes normally.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "dashboard initializes an empty overlay without preview parameters",
+          "scope": "Current source on real multisite with WP_DEBUG_DISPLAY enabled and no preview parameters."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "inline-highlight-restoration",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Render <strong><em>Example town</em></strong><br> in a footer and obtain real SDK issue occurrences for the word and footer.",
+      "when": "Highlight the word, switch occurrence, return, and clear highlighting.",
+      "then": "The original inline element structure, bold/italic computed styles and line break are restored exactly, including after a BODY/footer-level highlight.",
+      "automated": [
+        {
+          "file": "tests/browser/integration-regressions.spec.js",
+          "match": "highlighting is delegated once without rewriting inline content",
+          "scope": "WordPress delegates highlighting without modifying fixture markup."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "non-content-initialization",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Configure a token and Prepublish, then navigate to dashboard, settings and a published content page.",
+      "when": "Initialize the plugin on each page.",
+      "then": "Non-content v2 pages initialize an empty smallbox with clear and no Prepublish callback; legacy site view remains available. Content pages retain input and the published-page toolbar action.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "dashboard initializes an empty overlay without preview parameters",
+          "scope": "Real dashboard clear, absence of content callback and toolbar."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "regional-entitlement",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A standalone crawled subsite, valid API credentials and active trial; controls for absent key, disallowed and not-yet-enabled Prepublish.",
+      "when": "Save credentials, activate Prepublish, and open the subsite preview.",
+      "then": "The entitled subsite exposes a usable Prepublish action without a fatal error. Negative controls disable Prepublish while preserving ordinary Live page input. A configured crawled public URL resolves to the correct account.",
+      "automated": [
+        {
+          "file": "tests/integration-regressions/regressions.spec.js",
+          "match": "${mode} disables both Prepublish entry points while retaining Live page input",
+          "scope": "Disabled-key/entitlement/readiness flags gate both entry points in actual WordPress."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "clean-capture",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "An authenticated preview with an admin bar and plugin script uses a PHP-validated capture nonce.",
+      "when": "Run both Prepublish entry points and inspect the submitted document.",
+      "then": "The capture contains page content without active admin-bar controls or recursive smallbox script; preserve the admin-bar placeholder's hierarchy for selectors. The outer page remains usable.",
+      "automated": [
+        {
+          "file": "tests/wordpress/prepublish.spec.js",
+          "match": "pluginScripts",
+          "scope": "Real PHP omits plugin script in the captured document."
+        },
+        {
+          "file": "tests/browser/prepublish.spec.js",
+          "match": "disabledBar",
+          "scope": "Capture empties/renames toolbar and removes temporary nodes."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "regional-prepublish-recovery",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "An unpublished revision and a regional service fixture that can respond, stall or fail.",
+      "when": "Open Preview Changes, start Prepublish and recheck in each region.",
+      "then": "Successful checks display their results; failed/stalled checks reach a visible recoverable terminal state and release the page overlay instead of waiting indefinitely.",
+      "automated": [
+        {
+          "file": "tests/browser/prepublish.spec.js",
+          "match": "the preview never finishes loading",
+          "scope": "Only WordPress capture timeout and UI cleanup, not US/EU check completion."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "smallbox-close",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "The dashboard's plugin is collapsed.",
+      "when": "Open it, click X, reopen it, then activate Close by keyboard.",
+      "then": "Both close actions collapse the panel, release any blocking overlay and return focus to a usable launcher; reopening works.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "login-server-error",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A signed-out plugin with an identity/page service fixture returning one 500 followed by success.",
+      "when": "Click the login tab, observe failure, retry login and navigate to another page.",
+      "then": "Failure is actionable without an endless open/close popup loop; retry establishes a usable session and loads the authorized page.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "oversized-login-headers",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A signed-out draft and a controlled identity fixture returning the documented oversized-header error, followed by a clean-session control.",
+      "when": "Log in, clear only the test identity cookies, and retry.",
+      "then": "The first attempt reports a recoverable authentication failure; the clean-session attempt opens the correct draft's plugin without stale account data.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "recheck-history",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A published page and a service that completes rechecks with distinct operation IDs.",
+      "when": "Click Recheck twice, waiting for completion between clicks, and inspect History.",
+      "then": "Each click sends exactly one request for the correct URL/token, the button re-enables on completion, and both completed operations appear in History.",
+      "automated": [
+        {
+          "file": "tests/browser/integration-regressions.spec.js",
+          "match": "${placement} recheck submits once per click and can be repeated after completion",
+          "scope": "Real integration JavaScript, button disabled state, two requests and completion callbacks."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    },
+    {
+      "id": "plugin-removal",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "Install and activate an expendable copy of the CMS plugin, never a bind-mounted working checkout.",
+      "when": "Deactivate and delete it through WordPress, then open frontend/admin and reinstall the same artifact.",
+      "then": "Deletion completes without a fatal error; the plugin is absent from the list/files, other content stays available, and reinstall succeeds.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "account-switch-refresh",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "User A is signed in on site A; navigate to site B with the plugin panel open.",
+      "when": "Log out and log in as User B who has access to site B.",
+      "then": "The open panel refreshes to User B's authorized page data immediately without close/reopen; no User A results remain visible.",
+      "automated": [],
+      "remaining": "Specification only. Requires a dedicated disposable environment and controlled dependencies before automation."
+    },
+    {
+      "id": "update-recheck",
+      "environment": "Disposable WordPress installation with synthetic content and identities; use controlled SDK/service fixtures where required.",
+      "given": "A published page with a known URL and token and an open plugin panel.",
+      "when": "Change its content and click Update, then allow the queued recheck to finish.",
+      "then": "Exactly one recheck is dispatched for that page and the open panel/History reflect its completion.",
+      "automated": [
+        {
+          "file": "tests/browser/integration-regressions.spec.js",
+          "match": "a WordPress update notification queues a recheck for the updated page",
+          "scope": "Integration JS consumes the PHP-localized update notification and queues one recheck."
+        }
+      ],
+      "remaining": "Validate the complete scenario with the actual SDK and controlled services; automated references cover only the stated scope."
+    }
+  ]
+}

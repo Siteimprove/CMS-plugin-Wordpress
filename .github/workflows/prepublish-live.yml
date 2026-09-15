@@ -1,6 +1,7 @@
-name: Prepublish live Siteimprove test
+name: WordPress–Siteimprove live integration tests
 
 on:
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -13,18 +14,29 @@ concurrency:
 jobs:
   live:
     # Reviewed workflow code only. Environment approval is required separately.
-    if: github.repository == 'Siteimprove/CMS-plugin-Wordpress' && github.ref == 'refs/heads/master'
+    if: github.repository == 'Siteimprove/CMS-plugin-Wordpress' && github.event_name != 'pull_request'
     environment: siteimprove-test
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Explain test coverage
+        if: ${{ always() }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          ### WordPress–Siteimprove live integration tests
+          - Environment: Chromium; local WordPress connected to the real Siteimprove platform.
+          - Coverage: Configuration, entitlement, login, Live page data, fresh draft handoff, and loading-state exit.
+          - Skipped: Missing-title result assertion; scan-result correctness remains unverified.
+          - Report: No artifacts are uploaded for this authenticated suite.
+          - Results: see the test steps below; this description does not indicate a pass.
+          SUMMARY
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: Check out the reviewed PR 64 plugin
+      - name: Check out the plugin commit under test
         uses: actions/checkout@v6
         with:
-          ref: a23af8519861f674d700cbe4fe183817f47458dc
+          ref: ${{ github.sha }}
           path: .plugin-under-test
           sparse-checkout: siteimprove
           persist-credentials: false
@@ -33,11 +45,12 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npm run test:live:contracts
+      - name: Test live runner contracts and privacy safeguards
+        run: npm run test:live:contracts
       - run: npx playwright install --with-deps chromium
       - run: node scripts/prepare-live-env.js
       - run: npm run env:start
-      - name: Verify Live page data and one fresh Prepublish issue
+      - name: Verify Live page data, draft handoff, and loading-state exit
         run: npm run test:live
         env:
           SITEIMPROVE_RUN_LIVE: '1'

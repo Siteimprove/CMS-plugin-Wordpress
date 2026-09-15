@@ -33,3 +33,9 @@ playwright/.auth/
 
 # Separate plugin checkout used by manual test workflows
 .plugin-under-test/
+
+.customer-support-env/
+playwright-customer-support-report/
+
+.integration-regressions-env/
+playwright-integration-regressions-report/

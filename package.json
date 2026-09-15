@@ -11,7 +11,12 @@
     "test:wordpress:report": "playwright show-report playwright-wordpress-report",
     "test:live": "node tests/live/run.js",
     "test:live:contracts": "node --test tests/live/*.test.js",
-    "test:live:fixture": "playwright test --config=playwright.live-fixture.config.js"
+    "test:live:fixture": "playwright test --config=playwright.live-fixture.config.js",
+    "env:regressions:start": "node scripts/integration-regressions-env.js start",
+    "env:regressions:stop": "node scripts/integration-regressions-env.js stop",
+    "test:regressions": "playwright test --config=playwright.integration-regressions.config.js",
+    "test:regressions:catalog": "node scripts/regression-coverage.js",
+    "test:regressions:report": "playwright show-report playwright-integration-regressions-report"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

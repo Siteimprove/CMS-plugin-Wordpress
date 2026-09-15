@@ -25,8 +25,15 @@ on:
     tags:
       - 'wp-*' # Push events to matching wp-*, i.e. wp-2.0.8
 
+permissions:
+  contents: read
+
 jobs:
+  validation:
+    uses: ./.github/workflows/release-checks.yml
+
   deploy:
+    needs: validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

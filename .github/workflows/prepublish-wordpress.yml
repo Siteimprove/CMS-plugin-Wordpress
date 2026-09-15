@@ -1,4 +1,4 @@
-name: Prepublish WordPress environment
+name: WordPress plugin environment tests
 
 on:
   workflow_dispatch:
@@ -16,6 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Explain test coverage
+        if: ${{ always() }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          ### WordPress plugin environment tests
+          - Environment: Chromium and Firefox; disposable local WordPress; Siteimprove mocked.
+          - Coverage: Drafts, previews, autosaves, nonces, and content capture.
+          - Report: wordpress-env-test-report
+          - Results: see the test steps below; this description does not indicate a pass.
+          SUMMARY
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
@@ -37,11 +47,12 @@ jobs:
       - name: Point WordPress at the selected plugin
         run: node -e "require('node:fs').writeFileSync('.wp-env.override.json', JSON.stringify({plugins:['./.plugin-under-test/siteimprove']}))"
       - run: npm run env:start
-      - run: npm run test:wordpress
+      - name: Test WordPress drafts, previews, and content capture
+        run: npm run test:wordpress
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: prepublish-wordpress-report
+          name: wordpress-env-test-report
           path: |
             playwright-wordpress-report/
             test-results/wordpress/
