@@ -6,6 +6,10 @@ The code on this repository has to match the WordPress Coding Standards in order
 
 Every pull request will be checked against WPCS through GitHub Actions.
 
+## Development and releases
+
+See [GitHub Actions: tests and publishing](docs/workflows.md) for workflow selection, reports, and release instructions.
+
 ## Version History
 ### 2.1.4
 * Bugfix - Prepublish now reads the page from the WordPress domain rather than the configured Public URL, so the check works on setups where Public URL points at a separate delivery domain

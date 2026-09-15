@@ -6,7 +6,7 @@ them in its HTML report (`npm run test:report`). A failed step identifies which
 part of the scenario failed; technical assertion details remain available below it.
 Both suites attach failure screenshots. The WordPress HTML report is available
 with `npm run test:wordpress:report`. GitHub runs upload the reports as
-`prepublish-test-report` and `prepublish-wordpress-report`, retained for 14 days.
+`pr-browser-test-report` and `pr-wordpress-test-reports`, retained for 14 days.
 
 ## Automated today: browser capture
 

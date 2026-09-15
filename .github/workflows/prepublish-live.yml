@@ -1,4 +1,4 @@
-name: WordPress–Siteimprove live integration tests
+name: Live Siteimprove test
 
 on:
   workflow_call:
