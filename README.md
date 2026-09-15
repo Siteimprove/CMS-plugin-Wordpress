@@ -7,6 +7,11 @@ The code on this repository has to match the WordPress Coding Standards in order
 Every pull request will be checked against WPCS through GitHub Actions.
 
 ## Version History
+### 2.1.4
+* Bugfix - Prepublish now reads the page from the WordPress domain rather than the configured Public URL, so the check works on setups where Public URL points at a separate delivery domain
+* Bugfix - Prepublish now reports an error and clears the loading overlay when it cannot read the page, instead of waiting indefinitely
+* Bugfix - Send the preview nonce when Prepublish is triggered from the overlay, so the checked page no longer contains the plugin's own scripts
+
 ### 2.1.3
 * Bugfix - Load the front-end overlay and Prepublish toolbar action for any user who can edit content (custom roles, multisite super admins), not just a fixed list of role names
 
