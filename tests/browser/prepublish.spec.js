@@ -59,8 +59,6 @@ async function setup(page, options = {}) {
 
     const preview = url.searchParams.get('preview') === 'true';
     const toolbar = '<div id="wpadminbar"><div class="siteimprove-trigger-contentcheck"><a href="#">Prepublish</a></div></div>';
-    // Some themes and security plugins refuse to run inside a frame and reload
-    // themselves as the top-level page (CST-5609).
     const frameBuster = options.frameBuster
       ? '<script>if (window.top !== window.self) { window.top.location.href = window.location.href; }</script>'
       : '';

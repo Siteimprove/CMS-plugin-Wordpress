@@ -36,16 +36,8 @@
     document.body.appendChild(iframeContainer);
     const iframe = document.createElement("iframe");
     iframe.setAttribute("id", "domIframe");
-    // Some themes and security plugins reload themselves as the top-level page
-    // when they detect a frame, which replaces the editor's page and abandons
-    // the check (CST-5609). Leaving out allow-top-navigation blocks that, while
-    // allow-same-origin keeps the document readable and allow-scripts keeps
-    // script-rendered content intact.
+    // No allow-top-navigation: stops frame-busting scripts replacing the editor's page.
     iframe.setAttribute("sandbox", "allow-same-origin allow-scripts");
-    // The frame only exists so its document can be read. It keeps a full
-    // viewport so the page lays out as it would for a visitor, but it is
-    // invisible and inert so the editor sees the loading indicator instead of
-    // what looks like a second copy of the page.
     iframe.setAttribute(
       "style",
       "position:fixed; top:0; left:0; width:100%; height:100vh; border:0; opacity:0; pointer-events:none;"
