@@ -36,7 +36,15 @@
     document.body.appendChild(iframeContainer);
     const iframe = document.createElement("iframe");
     iframe.setAttribute("id", "domIframe");
-    iframe.setAttribute("style", "height:100vh; width:100%");
+    // No allow-top-navigation: stops frame-busting scripts replacing the editor's page.
+    iframe.setAttribute("sandbox", "allow-same-origin allow-scripts");
+    iframe.setAttribute(
+      "style",
+      "position:fixed; top:0; left:0; width:100%; height:100vh; border:0; opacity:0; pointer-events:none;"
+    );
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.setAttribute("tabindex", "-1");
+    iframe.setAttribute("title", "Siteimprove Prepublish");
     iframe.src = buildDomFetchUrl(nonce);
     iframeContainer.appendChild(iframe);
     const promise = new Promise(function (resolve, reject) {
