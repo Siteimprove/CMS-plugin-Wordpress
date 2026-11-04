@@ -36,7 +36,23 @@
     document.body.appendChild(iframeContainer);
     const iframe = document.createElement("iframe");
     iframe.setAttribute("id", "domIframe");
-    iframe.setAttribute("style", "height:100vh; width:100%");
+    // Some themes and security plugins reload themselves as the top-level page
+    // when they detect a frame, which replaces the editor's page and abandons
+    // the check (CST-5609). Leaving out allow-top-navigation blocks that, while
+    // allow-same-origin keeps the document readable and allow-scripts keeps
+    // script-rendered content intact.
+    iframe.setAttribute("sandbox", "allow-same-origin allow-scripts");
+    // The frame only exists so its document can be read. It keeps a full
+    // viewport so the page lays out as it would for a visitor, but it is
+    // invisible and inert so the editor sees the loading indicator instead of
+    // what looks like a second copy of the page.
+    iframe.setAttribute(
+      "style",
+      "position:fixed; top:0; left:0; width:100%; height:100vh; border:0; opacity:0; pointer-events:none;"
+    );
+    iframe.setAttribute("aria-hidden", "true");
+    iframe.setAttribute("tabindex", "-1");
+    iframe.setAttribute("title", "Siteimprove Prepublish");
     iframe.src = buildDomFetchUrl(nonce);
     iframeContainer.appendChild(iframe);
     const promise = new Promise(function (resolve, reject) {

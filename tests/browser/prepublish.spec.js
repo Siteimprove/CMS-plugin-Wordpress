@@ -59,8 +59,13 @@ async function setup(page, options = {}) {
 
     const preview = url.searchParams.get('preview') === 'true';
     const toolbar = '<div id="wpadminbar"><div class="siteimprove-trigger-contentcheck"><a href="#">Prepublish</a></div></div>';
+    // Some themes and security plugins refuse to run inside a frame and reload
+    // themselves as the top-level page (CST-5609).
+    const frameBuster = options.frameBuster
+      ? '<script>if (window.top !== window.self) { window.top.location.href = window.location.href; }</script>'
+      : '';
     response.writeHead(200, headers);
-    response.end(`<!doctype html><html><head><title>Fixture</title><link id="fixture-stylesheet" rel="stylesheet" href="/assets/prepublish.css"><style id="fixture-inline-style">#style-fixture { background-color: rgb(240, 230, 220); }</style></head><body>
+    response.end(`<!doctype html><html><head><title>Fixture</title>${frameBuster}<link id="fixture-stylesheet" rel="stylesheet" href="/assets/prepublish.css"><style id="fixture-inline-style">#style-fixture { background-color: rgb(240, 230, 220); }</style></head><body>
         ${options.noAdminBar && isFrame ? '' : toolbar}
         <div id="style-fixture" style="border-top: 3px solid rgb(70, 80, 90)">STYLE CAPTURE MARKER</div><main id="content">${preview ? 'DRAFT ONLY CONTENT' : 'PUBLISHED CONTENT'}</main>
         ${isFrame && url.searchParams.get('si_preview_nonce') !== NONCE ? '<div id="plugin-would-load">Invalid or missing nonce</div>' : ''}
@@ -183,6 +188,34 @@ for (const entry of ['toolbar', 'overlay']) {
       expect(styles.border).toBe('3px solid rgb(70, 80, 90)');
     });
     await test.step('And it removes the temporary frame and loading indicator', () => expectCleanup(page));
+  });
+
+  test(`${entry}: a page that reloads itself out of frames cannot take over the browser tab`, async ({ page }) => {
+    const state = await test.step('Given a preview whose scripts navigate the top window when framed', () =>
+      setup(page, { frameBuster: true }));
+    const editorUrl = page.url();
+    await test.step(startDescription, () => start(page, entry));
+    await test.step('Then the plugin still hands over the draft content', async () => {
+      expect(await readResult(page, entry)).toMatchObject({ content: 'DRAFT ONLY CONTENT', invalidNonce: false });
+    });
+    await test.step('And the editor stays on the preview page it started from', async () => {
+      expect(page.url()).toBe(editorUrl);
+      expect(state.frames).toHaveLength(1);
+    });
+    await test.step('And it removes the temporary frame and loading indicator', () => expectCleanup(page));
+  });
+
+  test(`${entry}: the temporary frame is hidden from the editor while it loads`, async ({ page }) => {
+    await test.step('Given a preview that is slow to load', () => setup(page, { failure: 'timeout' }));
+    await test.step(startDescription, () => start(page, entry));
+    await test.step('Then the frame cannot be seen, clicked or reached with the keyboard', async () => {
+      const frame = page.locator('#domIframe');
+      await expect(frame).toHaveCount(1);
+      await expect(frame).toHaveCSS('opacity', '0');
+      await expect(frame).toHaveCSS('pointer-events', 'none');
+      await expect(frame).toHaveAttribute('aria-hidden', 'true');
+      await expect(frame).toHaveAttribute('tabindex', '-1');
+    });
   });
 
   const failures = {
